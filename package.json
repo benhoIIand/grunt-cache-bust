@@ -1,7 +1,7 @@
 {
   "name": "grunt-cachebust",
   "description": "Add a hash as a query string parameter on static assets",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "licenses": [
     {
       "type": "MIT",
@@ -10,6 +10,9 @@
   ],
   "engines": {
     "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.2.0",
