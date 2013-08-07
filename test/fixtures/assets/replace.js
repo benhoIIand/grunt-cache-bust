@@ -1,1 +1,1 @@
-Dummy file
+alert('JS is working');

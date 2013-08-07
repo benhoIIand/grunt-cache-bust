@@ -23,7 +23,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'test/fixtures',
-                    src: ['*'],
+                    src: ['**'],
                     dest: 'tmp/'
                 }]
             }
@@ -39,7 +39,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'tmp/',
-                    src: ['standard.html', 'script.html', 'images.html']
+                    src: ['standard.html', 'stylesheet.html', 'script.html', 'images.html']
                 }]
             },
             replace: {

@@ -56,9 +56,9 @@ exports.cachebust = {
         test.expect(3);
 
         var standard = grunt.file.read('tmp/replace.html');
-        test.ok(standard.match(/standard\.js\?[a-z0-9]{16}/), 'testing combination of CSS, JS and images');
-        test.ok(standard.match(/standard\.css\?[a-z0-9]{16}/), 'testing combination of CSS, JS and images');
-        test.ok(standard.match(/standard\.jpg\?[a-z0-9]{16}/), 'testing combination of CSS, JS and images');
+        test.ok(standard.match(/replace_[a-z0-9]{16}\.js/), 'testing replaceName combination of CSS, JS and images');
+        test.ok(standard.match(/replace_[a-z0-9]{16}\.css/), 'testing replaceName combination of CSS, JS and images');
+        test.ok(standard.match(/replace_[a-z0-9]{16}\.png/), 'testing replaceName combination of CSS, JS and images');
 
         test.done();
     },

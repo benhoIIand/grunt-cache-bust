@@ -46,8 +46,9 @@ module.exports = function(grunt) {
             }).map(function(filepath) {
                 var data = grunt.file.read(filepath, fileOptions);
 
-                grunt.util._.forEach(regexs, function(regex, type) {
+                grunt.util._.each(regexs, function(regex, type) {
                     var matches = data.match(regex.src) || [];
+                    console.log(matches);
                     matches.forEach(function(snippet) {
 
                         // Generate hash
@@ -58,21 +59,22 @@ module.exports = function(grunt) {
                         if(options.rename) {
                             var path = filepath.split('/');
                             path.pop();
+                            path = path.join('/') + '/';
 
                             var name = snippet.match(regex.file)[1];
-                            console.log(name);
 
-                            var filename = path.join('/') + '/' + name;
+                            var filename = path + name;
+                            var newFilename = path + name.replace(extension, '') +'_'+ hash + extension;
 
-                            console.log(filename);
+                            snippet = snippet.substring(0, snippet.length - 1);
+                            data = data.replace(snippet, snippet.replace(extension, '') +'_'+ hash + extension);
 
-                            // TODO
-                            data = data.replace(snippet, snippet.replace());
-
-                            return true;
+                            grunt.file.copy(filename, newFilename);
+                            grunt.file.delete(filename);
+                        } else {
+                            snippet = snippet.substring(0, snippet.length - 1);
+                            data = data.replace(snippet, snippet + '?' + hash);
                         }
-
-                        data = data.replace(snippet, snippet + '?' + hash);
                     });
                 });
 
