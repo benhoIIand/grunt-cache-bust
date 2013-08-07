@@ -39,7 +39,15 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'tmp/',
-                    src: ['*.html']
+                    src: ['standard.html', 'script.html', 'images.html']
+                }]
+            },
+            replace: {
+                options: {
+                    rename: true
+                },
+                files: [{
+                    src: 'tmp/replace.html'
                 }]
             }
         },

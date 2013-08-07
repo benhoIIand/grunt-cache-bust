@@ -4,11 +4,20 @@ module.exports = function(grunt) {
         path   = require('path'),
         crypto = require('crypto');
 
-    var regexs = [
-        /<script.+src=['"]([^"']+)["']/gm,
-        /<link.+href=.*\.css["']/gm,
-        /<img[^\>]+src=['"]([^"']+)["']/gm
-    ];
+    var regexs = {
+        js: {
+            src: /<script.+src=['"]([^"']+)["']/gm,
+            file: /src=['"]([^"']+)["']/m
+        },
+        css: {
+            src: /<link.+href=.*\.css["']/gm,
+            file: /href=['"]([^"']+)["']/m
+        },
+        images: {
+            src: /<img[^\>]+src=['"](?!data:image)([^"']+)["']/gm,
+            file: /src=['"]([^"']+)["']/m
+        }
+    };
 
     var fileOptions = {
         encoding: 'utf-8'
@@ -17,10 +26,13 @@ module.exports = function(grunt) {
     var options = {
         encoding: 'utf8',
         length: 16,
-        algorithm: 'md5'
+        algorithm: 'md5',
+        rename: false
     };
 
     grunt.registerMultiTask('cachebust', 'Add a hash as a query string parameter on static assets', function() {
+
+        grunt.util._.extend(options, this.options());
 
         this.files.forEach(function(f) {
             var src = f.src.filter(function(filepath) {
@@ -34,11 +46,32 @@ module.exports = function(grunt) {
             }).map(function(filepath) {
                 var data = grunt.file.read(filepath, fileOptions);
 
-                regexs.forEach(function(regex) {
-                    var matches = data.match(regex) || [];
+                grunt.util._.forEach(regexs, function(regex, type) {
+                    var matches = data.match(regex.src) || [];
                     matches.forEach(function(snippet) {
-                        var hash = crypto.createHash('md5').update(data + new Date().getTime(), 'utf8').digest('hex');
-                        snippet = snippet.substring(0, snippet.length - 1);
+
+                        // Generate hash
+                        var hash = crypto.createHash(options.algorithm).update(data, options.encoding).digest('hex').substring(0, options.length);
+
+                        var extension = type !== 'images' ? '.'+type : snippet.match(/\.\w+/)[0];
+
+                        if(options.rename) {
+                            var path = filepath.split('/');
+                            path.pop();
+
+                            var name = snippet.match(regex.file)[1];
+                            console.log(name);
+
+                            var filename = path.join('/') + '/' + name;
+
+                            console.log(filename);
+
+                            // TODO
+                            data = data.replace(snippet, snippet.replace());
+
+                            return true;
+                        }
+
                         data = data.replace(snippet, snippet + '?' + hash);
                     });
                 });

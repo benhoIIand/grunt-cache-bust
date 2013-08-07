@@ -90,7 +90,7 @@ grunt.initConfig({
   cachebust: {
     options: {
       algorithm: 'sha1',
-      length: 4
+      length: 32
     },
     files: [{
       expand: true,
