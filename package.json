@@ -1,6 +1,6 @@
 {
   "name": "grunt-cachebust",
-  "description": "Add a hash as a query string parameter on static assets",
+  "description": "Cache bust static assets using content hashing",
   "version": "0.0.2",
   "licenses": [
     {

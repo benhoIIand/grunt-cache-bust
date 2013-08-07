@@ -6,11 +6,18 @@ module.exports = function(grunt) {
 
     var regexs = [
         /<script.+src=['"]([^"']+)["']/gm,
-        /<link.+href=.*\.css["']/gm
+        /<link.+href=.*\.css["']/gm,
+        /<img[^\>]+src=['"]([^"']+)["']/gm
     ];
 
     var fileOptions = {
         encoding: 'utf-8'
+    };
+
+    var options = {
+        encoding: 'utf8',
+        length: 16,
+        algorithm: 'md5'
     };
 
     grunt.registerMultiTask('cachebust', 'Add a hash as a query string parameter on static assets', function() {

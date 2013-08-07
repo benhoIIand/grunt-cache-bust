@@ -30,11 +30,16 @@ module.exports = function(grunt) {
         },
 
         cachebust: {
+            options: {
+                encoding: 'utf8',
+                length: 16,
+                algorithm: 'md5'
+            },
             main: {
                 files: [{
                     expand: true,
                     cwd: 'tmp/',
-                    src: ['*']
+                    src: ['*.html']
                 }]
             }
         },
