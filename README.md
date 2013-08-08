@@ -1,4 +1,4 @@
-# grunt-cachebust [![Build Status](https://travis-ci.org/hollandben/grunt-cachebust.png?branch=master)](https://travis-ci.org/hollandben/grunt-cachebust)
+# grunt-cachebust [![Build Status](https://travis-ci.org/hollandben/grunt-cache-bust.png?branch=master)](https://travis-ci.org/hollandben/grunt-cachebust)
 
 > Bust static assets from the cache using content hashing
 
