@@ -1,4 +1,4 @@
-# grunt-cachebust [![Build Status](https://travis-ci.org/hollandben/grunt-cache-bust.png?branch=master)](https://travis-ci.org/hollandben/grunt-cachebust)
+# grunt-cache-bust [![Build Status](https://travis-ci.org/hollandben/grunt-cache-bust.png?branch=master)](https://travis-ci.org/hollandben/grunt-cache-bust)
 
 > Bust static assets from the cache using content hashing
 
@@ -8,13 +8,13 @@ _If you haven't used [grunt][] before, be sure to check out the [Getting Started
 From the same directory as your project's [Gruntfile][Getting Started] and [package.json][], install this plugin with the following command:
 
 ```bash
-npm install grunt-cache --save-dev
+npm install grunt-bust-cache --save-dev
 ```
 
 Once that's done, add this line to your project's Gruntfile:
 
 ```js
-grunt.loadNpmTasks('grunt-cachebust');
+grunt.loadNpmTasks('grunt-cache-bust');
 ```
 
 If the plugin has been installed correctly, running `grunt --help` at the command line should list the newly-installed plugin's task or tasks. In addition, the plugin should be listed in package.json as a `devDependency`, which ensures that it will be installed whenever the `npm install` command is run.
@@ -23,18 +23,18 @@ If the plugin has been installed correctly, running `grunt --help` at the comman
 [Getting Started]: https://github.com/gruntjs/grunt/blob/devel/docs/getting_started.md
 [package.json]: https://npmjs.org/doc/json.html
 
-## The "cachebust" task
+## The "cache-bust" task
 
-Use the **cachebust** task for cache busting static files in your application. This allows them to be cached forever by the browser, justp oint the task towards any file that contains references to static assets.
+Use the **cache-bust** task for cache busting static files in your application. This allows them to be cached forever by the browser, justp oint the task towards any file that contains references to static assets.
 
 _Currently supported static assets: **CSS**, **JavaScript** and **images**_
 
 ### Overview
-In your project's Gruntfile, add a section named `cachebust` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `cache-bust` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
-  cachebust: {
+  cache-bust: {
     options: {
       encoding: 'utf8',
       algorithm: 'md5',
@@ -81,7 +81,7 @@ When true, `cachbust` will rename the refernce to the file and the file it's wit
 
 ```js
 grunt.initConfig({
-  cachebust: {
+  cache-bust: {
     files: {
       src: ['index.html', 'contact.html']
     }
@@ -93,7 +93,7 @@ grunt.initConfig({
 
 ```js
 grunt.initConfig({
-  cachebust: {
+  cache-bust: {
     options: {
       algorithm: 'sha1',
       length: 32
