@@ -1,6 +1,6 @@
 {
   "name": "grunt-cachebust",
-  "description": "Cache bust static assets using content hashing",
+  "description": "Bust static assets from the cache using content hashing",
   "version": "0.0.3",
   "licenses": [
     {

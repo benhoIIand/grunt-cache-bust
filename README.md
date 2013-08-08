@@ -1,6 +1,6 @@
 # grunt-cachebust [![Build Status](https://travis-ci.org/hollandben/grunt-cachebust.png?branch=master)](https://travis-ci.org/hollandben/grunt-cachebust)
 
-> Cache bust static assets using content hashing
+> Bust static assets from the cache using content hashing
 
 ## Getting Started
 _If you haven't used [grunt][] before, be sure to check out the [Getting Started][] guide._
@@ -25,7 +25,7 @@ If the plugin has been installed correctly, running `grunt --help` at the comman
 
 ## The "cachebust" task
 
-Use the **cachebust** task for cache busting static files in your application. This allows them to be cached focachebuster by the browser. Point the task towards any file that contains references to static assets.
+Use the **cachebust** task for cache busting static files in your application. This allows them to be cached forever by the browser, justp oint the task towards any file that contains references to static assets.
 
 _Currently supported static assets: **CSS**, **JavaScript** and **images**_
 
@@ -68,6 +68,12 @@ Type: `Number`
 Default value: `16`
 
 The number of characters of the file content hash to prefix the file name with.
+
+#### options.rename
+Type: `Boolean`
+Default value: `false`
+
+When true, `cachbust` will rename the refernce to the file and the file it's with a hash. When set to false, then a query string parameter is added to the end of the file reference.
 
 ### Usage Examples
 
