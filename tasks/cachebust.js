@@ -30,7 +30,7 @@ module.exports = function(grunt) {
         rename: false
     };
 
-    grunt.registerMultiTask('cachebust', 'Add a hash as a query string parameter on static assets', function() {
+    grunt.registerMultiTask('cacheBust', 'Add a hash as a query string parameter on static assets', function() {
 
         grunt.util._.extend(options, this.options());
 

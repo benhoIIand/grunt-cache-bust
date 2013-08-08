@@ -29,7 +29,7 @@ module.exports = function(grunt) {
             }
         },
 
-        cachebust: {
+        cacheBust: {
             options: {
                 encoding: 'utf8',
                 length: 16,
@@ -67,5 +67,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
-    grunt.registerTask('test', ['clean', 'copy', 'cachebust', 'nodeunit']);
+    grunt.registerTask('test', ['clean', 'copy', 'cacheBust', 'nodeunit']);
 };
