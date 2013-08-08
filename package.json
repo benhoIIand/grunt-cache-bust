@@ -2,6 +2,14 @@
   "name": "grunt-cachebust",
   "description": "Bust static assets from the cache using content hashing",
   "version": "0.0.3",
+  "author": {
+    "name": "Ben Holland",
+    "url": "http://benholland.me"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/hollandben/grunt-cachebust.git"
+  },
   "licenses": [
     {
       "type": "MIT",
