@@ -8,7 +8,7 @@ _If you haven't used [grunt][] before, be sure to check out the [Getting Started
 From the same directory as your project's [Gruntfile][Getting Started] and [package.json][], install this plugin with the following command:
 
 ```bash
-npm install grunt-bust-cache --save-dev
+npm install grunt-cache-bust --save-dev
 ```
 
 Once that's done, add this line to your project's Gruntfile:
@@ -34,7 +34,7 @@ In your project's Gruntfile, add a section named `cache-bust` to the data object
 
 ```js
 grunt.initConfig({
-  cache-bust: {
+  'cache-bust': {
     options: {
       encoding: 'utf8',
       algorithm: 'md5',
@@ -81,7 +81,7 @@ When true, `cachbust` will rename the refernce to the file and the file it's wit
 
 ```js
 grunt.initConfig({
-  cache-bust: {
+  'cache-bust': {
     files: {
       src: ['index.html', 'contact.html']
     }
@@ -93,7 +93,7 @@ grunt.initConfig({
 
 ```js
 grunt.initConfig({
-  cache-bust: {
+  'cache-bust': {
     options: {
       algorithm: 'sha1',
       length: 32
