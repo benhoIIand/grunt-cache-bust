@@ -23,18 +23,18 @@ If the plugin has been installed correctly, running `grunt --help` at the comman
 [Getting Started]: https://github.com/gruntjs/grunt/blob/devel/docs/getting_started.md
 [package.json]: https://npmjs.org/doc/json.html
 
-## The "cache-bust" task
+## The "cacheBust" task
 
-Use the **cache-bust** task for cache busting static files in your application. This allows them to be cached forever by the browser, justp oint the task towards any file that contains references to static assets.
+Use the **cacheBust** task for cache busting static files in your application. This allows them to be cached forever by the browser, justp oint the task towards any file that contains references to static assets.
 
 _Currently supported static assets: **CSS**, **JavaScript** and **images**_
 
 ### Overview
-In your project's Gruntfile, add a section named `cache-bust` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `cacheBust` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
-  cache-bust: {
+  cacheBust: {
     options: {
       encoding: 'utf8',
       algorithm: 'md5',
@@ -81,7 +81,7 @@ When true, `cachbust` will rename the refernce to the file and the file it's wit
 
 ```js
 grunt.initConfig({
-  cache-bust: {
+  cacheBust: {
     files: {
       src: ['index.html', 'contact.html']
     }
@@ -93,7 +93,7 @@ grunt.initConfig({
 
 ```js
 grunt.initConfig({
-  cache-bust: {
+  cacheBust: {
     options: {
       algorithm: 'sha1',
       length: 32
