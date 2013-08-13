@@ -29,6 +29,20 @@ Use the **cacheBust** task for cache busting static files in your application. T
 
 _Currently supported static assets: **CSS**, **JavaScript** and **images**_
 
+_Note:_ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust.  This assumes that remote URLs for these assets will
+be CDN hosted content, typically for well known libraries like jQuery or Bootstrap.  These URLs typically include a version
+identifier in the URL to deal with browser caching, and it is in the best interest of your app to use the standard URL as-is
+to ensure browser cache hits for popular libraries.  For example, all of below URLs will be ignored:
+
+```html
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+<img src="https://secure.gravatar.com/avatar/d3b2094f1b3386e660bb737e797f5dcc?s=420" alt="test" />
+```
+
 ### Overview
 In your project's Gruntfile, add a section named `cacheBust` to the data object passed into `grunt.initConfig()`.
 
