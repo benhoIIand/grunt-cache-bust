@@ -63,6 +63,17 @@ exports.cachebust = {
         test.done();
     },
 
+    alreadyBusted: function(test) {
+        test.expect(3);
+
+        var alreadyBusted = grunt.file.read('tmp/alreadyBusted.html');
+        test.ok(alreadyBusted.match(/alreadyBusted\.js\?(?!492ff540bf666622)[a-z0-9]{16}/), 'testing alreadyBusted of CSS, JS and images');
+        test.ok(alreadyBusted.match(/alreadyBusted\.css\?(?!4f57df083d7b37b0)[a-z0-9]{16}/), 'testing alreadyBusted of CSS, JS and images');
+        test.ok(alreadyBusted.match(/alreadyBusted\.jpg\?(?!f23467496aef741a)[a-z0-9]{16}/), 'testing alreadyBusted of CSS, JS and images');
+
+        test.done();
+    },
+
     all: function(test) {
         test.expect(3);
 

@@ -39,7 +39,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'tmp/',
-                    src: ['standard.html', 'stylesheet.html', 'script.html', 'images.html']
+                    src: ['*.html', '!replace.html']
                 }]
             },
             replace: {

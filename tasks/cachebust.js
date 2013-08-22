@@ -10,7 +10,7 @@ module.exports = function(grunt) {
             file: /src=['"]([^"']+)["']/m
         },
         css: {
-            src: /<link.+href=.*\.css["']/gm,
+            src: /<link.+href\=".*\.css("|\?.*")/gm,
             file: /href=['"]([^"']+)["']/m
         },
         images: {
@@ -63,17 +63,17 @@ module.exports = function(grunt) {
 
                             var name = snippet.match(regex.file)[1];
 
-                            var filename = path + name;
+                            var filename    = path + name;
                             var newFilename = path + name.replace(extension, '') +'_'+ hash + extension;
 
                             snippet = snippet.substring(0, snippet.length - 1);
-                            data = data.replace(snippet, snippet.replace(extension, '') +'_'+ hash + extension);
+                            data    = data.replace(snippet, snippet.replace(extension, '') +'_'+ hash + extension);
 
                             grunt.file.copy(filename, newFilename);
                             grunt.file.delete(filename);
                         } else {
                             snippet = snippet.substring(0, snippet.length - 1);
-                            data = data.replace(snippet, snippet + '?' + hash);
+                            data    = data.replace(snippet, snippet.split('?')[0] + '?' + hash);
                         }
                     });
                 });
