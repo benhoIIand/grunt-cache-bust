@@ -6,15 +6,15 @@ module.exports = function(grunt) {
 
     var regexs = {
         js: {
-            src: /<script.+src=['"]([^"']+)["']/gm,
+            src: /<script.+src=['"](?!http:|https:|\/\/)([^"']+)["']/gm,
             file: /src=['"]([^"']+)["']/m
         },
         css: {
-            src: /<link.+href\=".*\.css("|\?.*")/gm,
+            src: /<link.+href=["'](?!http:|https:|\/\/).*\.css("|\?.*")/gm,
             file: /href=['"]([^"']+)["']/m
         },
         images: {
-            src: /<img[^\>]+src=['"](?!data:image)([^"']+)["']/gm,
+            src: /<img[^\>]+src=['"](?!http:|https:|\/\/|data:image)([^"']+)["']/gm,
             file: /src=['"]([^"']+)["']/m
         }
     };

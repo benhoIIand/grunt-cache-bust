@@ -2,7 +2,7 @@ var grunt = require('grunt');
 
 exports.cachebust = {
     scripts: function(test) {
-        test.expect(4);
+        test.expect(7);
 
         var scripts = grunt.file.read('tmp/script.html');
         test.ok(scripts.match(/script1\.js\?[a-z0-9]{16}/), 'testing script1');
@@ -10,23 +10,32 @@ exports.cachebust = {
         test.ok(scripts.match(/script3\.js\?[a-z0-9]{16}/), 'testing script3');
         test.ok(scripts.match(/script4\.js\?[a-z0-9]{16}/), 'testing script4');
 
+        test.ok(scripts.match(/src="\/\/ajax.googleapis.com\/ajax\/libs\/angularjs\/1.0.6\/angular.min.js"/), 'remotely hosted // syntax should remain untouched');
+        test.ok(scripts.match(/src="https:\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.10.2\/jquery.min.js"/), 'remotely hosted https:// syntax should remain untouched');
+        test.ok(scripts.match(/src="http:\/\/code.jquery.com\/qunit\/qunit-1.12.0.js"/), 'remotely hosted http:// syntax should remain untouched');
+
         test.done();
     },
 
     stylesheets: function(test) {
-        test.expect(4);
+        test.expect(7);
 
         var stylesheet = grunt.file.read('tmp/stylesheet.html');
+        console.log(stylesheet);
         test.ok(stylesheet.match(/stylesheet1\.css\?[a-z0-9]{16}/), 'testing stylesheet1');
         test.ok(stylesheet.match(/stylesheet2\.css\?[a-z0-9]{16}/), 'testing stylesheet2');
         test.ok(stylesheet.match(/stylesheet3\.css\?[a-z0-9]{16}/), 'testing stylesheet3');
         test.ok(stylesheet.match(/stylesheet4\.css\?[a-z0-9]{16}/), 'testing stylesheet4');
+        
+        test.ok(stylesheet.match(/href="\/\/netdna.bootstrapcdn.com\/twitter-bootstrap\/2.3.2\/css\/bootstrap-combined.min.css"/), 'remotely hosted // syntax should remain untouched');
+        test.ok(stylesheet.match(/href="https:\/\/twitter.github.com\/bootstrap\/assets\/css\/bootstrap.css"/), 'remotely hosted https:// syntax should remain untouched');
+        test.ok(stylesheet.match(/href="http:\/\/twitter.github.com\/bootstrap\/assets\/css\/bootstrap.css"/), 'remotely hosted http:// syntax should remain untouched');
 
         test.done();
     },
 
     images: function(test) {
-        test.expect(16);
+        test.expect(17);
 
         var images = grunt.file.read('tmp/images.html');
         test.ok(images.match(/image1\.jpg\?[a-z0-9]{16}/), 'testing image1 .jpg');
@@ -48,6 +57,8 @@ exports.cachebust = {
         test.ok(images.match(/image3\.webp\?[a-z0-9]{16}/), 'testing image3 .webp');
 
         test.ok(images.match(/src=\"data:image\/png\;base64\,iVBORw0KGgoAAAANS"/), 'testing image4 base64');
+        console.log(images);
+        test.ok(images.match(/src=\"https:\/\/gravatar.example.com\/avatar\/d3b2094f1b3386e660bb737e797f5dcc\?s=420"/), 'remotely hosted https:// syntax should remain untouched');
 
         test.done();
     },

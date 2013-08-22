@@ -23,18 +23,32 @@ If the plugin has been installed correctly, running `grunt --help` at the comman
 [Getting Started]: https://github.com/gruntjs/grunt/blob/devel/docs/getting_started.md
 [package.json]: https://npmjs.org/doc/json.html
 
-## The "cache-bust" task
+## The "cacheBust" task
 
-Use the **cache-bust** task for cache busting static files in your application. This allows them to be cached forever by the browser, justp oint the task towards any file that contains references to static assets.
+Use the **cacheBust** task for cache busting static files in your application. This allows them to be cached forever by the browser, justp oint the task towards any file that contains references to static assets.
 
 _Currently supported static assets: **CSS**, **JavaScript** and **images**_
 
+_Note:_ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust.  This assumes that remote URLs for these assets will
+be CDN hosted content, typically for well known libraries like jQuery or Bootstrap.  These URLs typically include a version
+identifier in the URL to deal with browser caching, and it is in the best interest of your app to use the standard URL as-is
+to ensure browser cache hits for popular libraries.  For example, all of below URLs will be ignored:
+
+```html
+<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+<img src="https://secure.gravatar.com/avatar/d3b2094f1b3386e660bb737e797f5dcc?s=420" alt="test" />
+```
+
 ### Overview
-In your project's Gruntfile, add a section named `cache-bust` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `cacheBust` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
-  cache-bust: {
+  cacheBust: {
     options: {
       encoding: 'utf8',
       algorithm: 'md5',
@@ -73,7 +87,7 @@ The number of characters of the file content hash to prefix the file name with.
 Type: `Boolean`
 Default value: `false`
 
-When true, `cachbust` will rename the refernce to the file and the file it's with a hash. When set to false, then a query string parameter is added to the end of the file reference.
+When true, `cachbust` will rename the refernce to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
 
 ### Usage Examples
 
@@ -81,7 +95,7 @@ When true, `cachbust` will rename the refernce to the file and the file it's wit
 
 ```js
 grunt.initConfig({
-  cache-bust: {
+  cacheBust: {
     files: {
       src: ['index.html', 'contact.html']
     }
@@ -93,7 +107,7 @@ grunt.initConfig({
 
 ```js
 grunt.initConfig({
-  cache-bust: {
+  cacheBust: {
     options: {
       algorithm: 'sha1',
       length: 32
