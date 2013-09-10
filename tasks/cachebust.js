@@ -14,7 +14,7 @@ module.exports = function(grunt) {
             file: /href=['"]([^"']+)["']/m
         },
         images: {
-            src: /<img[^\>]+src=['"](?!http:|https:|\/\/|data:image)([^"']+)["']/gm,
+            src: /<img[^\>]+src=['"](?!http:|https:|\/\/|data:image)([a-zA-Z0-9\/]*)(\.[a-zA-Z]{2,})([^"']+)(["'])/gm,
             file: /src=['"]([^"']+)["']/m
         }
     };
@@ -30,7 +30,7 @@ module.exports = function(grunt) {
         rename: false
     };
 
-    grunt.registerMultiTask('cacheBust', 'Add a hash as a query string parameter on static assets', function() {
+    grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
 
         grunt.util._.extend(options, this.options());
 

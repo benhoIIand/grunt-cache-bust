@@ -26,7 +26,7 @@ exports.cachebust = {
         test.ok(stylesheet.match(/stylesheet2\.css\?[a-z0-9]{16}/), 'testing stylesheet2');
         test.ok(stylesheet.match(/stylesheet3\.css\?[a-z0-9]{16}/), 'testing stylesheet3');
         test.ok(stylesheet.match(/stylesheet4\.css\?[a-z0-9]{16}/), 'testing stylesheet4');
-        
+
         test.ok(stylesheet.match(/href="\/\/netdna.bootstrapcdn.com\/twitter-bootstrap\/2.3.2\/css\/bootstrap-combined.min.css"/), 'remotely hosted // syntax should remain untouched');
         test.ok(stylesheet.match(/href="https:\/\/twitter.github.com\/bootstrap\/assets\/css\/bootstrap.css"/), 'remotely hosted https:// syntax should remain untouched');
         test.ok(stylesheet.match(/href="http:\/\/twitter.github.com\/bootstrap\/assets\/css\/bootstrap.css"/), 'remotely hosted http:// syntax should remain untouched');
@@ -78,9 +78,20 @@ exports.cachebust = {
         test.expect(3);
 
         var alreadyBusted = grunt.file.read('tmp/alreadyBusted.html');
-        test.ok(alreadyBusted.match(/alreadyBusted\.js\?(?!492ff540bf666622)[a-z0-9]{16}/), 'testing alreadyBusted of CSS, JS and images');
-        test.ok(alreadyBusted.match(/alreadyBusted\.css\?(?!4f57df083d7b37b0)[a-z0-9]{16}/), 'testing alreadyBusted of CSS, JS and images');
+        test.ok(alreadyBusted.match(/alreadyBusted\.css\?(?!ba366c2f0f734f23)[a-z0-9]{16}/), 'testing alreadyBusted of CSS, JS and images');
         test.ok(alreadyBusted.match(/alreadyBusted\.jpg\?(?!f23467496aef741a)[a-z0-9]{16}/), 'testing alreadyBusted of CSS, JS and images');
+        test.ok(alreadyBusted.match(/alreadyBusted\.js\?(?!b574cbb60333af12)[a-z0-9]{16}/), 'testing alreadyBusted of CSS, JS and images');
+
+        test.done();
+    },
+
+    placeholder: function(test) {
+        test.expect(1);
+
+        var correctContent = grunt.file.read('test/fixtures/placeholder.html'),
+            alreadyBusted  = grunt.file.read('tmp/placeholder.html');
+
+        test.equal(correctContent, alreadyBusted, 'testing placeholder images');
 
         test.done();
     },
