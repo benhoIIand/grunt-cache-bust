@@ -69,23 +69,8 @@ module.exports = function(grunt) {
                             snippet = snippet.substring(0, snippet.length - 1);
                             data    = data.replace(snippet, snippet.replace(extension, '') +'_'+ hash + extension);
 
-							var themeId = "\$\{Html\.GetAppSetting\(\'ThemeId\'\)\}";
-							console.log(filename);
-							console.log(themeId);
-							console.log(filename.indexOf(themeId));
-							if (filename.indexOf(themeId) != -1) {
-							console.log("path 2");
-								filename1 = filename.replace(themeId, "uk");
-								grunt.file.copy(filename1, newFilename);
-								//grunt.file.delete(filename1);
-								filename2 = filename.replace(themeId, "com");
-								grunt.file.copy(filename2, newFilename);
-								//grunt.file.delete(filename2);
-							} else {
-							console.log("path1");
-								grunt.file.copy(filename, newFilename);
-								grunt.file.delete(filename);
-							}
+							grunt.file.copy(filename, newFilename);
+							grunt.file.delete(filename);
                         } else {
                             snippet = snippet.substring(0, snippet.length - 1);
 							console.log(snippet);			
