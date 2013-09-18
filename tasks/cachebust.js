@@ -57,23 +57,45 @@ module.exports = function(grunt) {
                         var extension = type !== 'images' ? '.'+type : snippet.match(/\.\w+/)[0];
 
                         if(options.rename) {
-                            var path = filepath.split('/');
-                            path.pop();
-                            path = path.join('/') + '/';
+                           // var path = filepath.split('/');
+                           // path.pop();
+                           // path = path.join('/') + '/';
 
                             var name = snippet.match(regex.file)[1];
 
-                            var filename    = path + name;
+                            var filename    =  "Web/"+ name;
                             var newFilename = path + name.replace(extension, '') +'_'+ hash + extension;
 
                             snippet = snippet.substring(0, snippet.length - 1);
                             data    = data.replace(snippet, snippet.replace(extension, '') +'_'+ hash + extension);
 
-                            grunt.file.copy(filename, newFilename);
-                            grunt.file.delete(filename);
+							var themeId = "\$\{Html\.GetAppSetting\(\'ThemeId\'\)\}";
+							console.log(filename);
+							console.log(themeId);
+							console.log(filename.indexOf(themeId));
+							if (filename.indexOf(themeId) != -1) {
+							console.log("path 2");
+								filename1 = filename.replace(themeId, "uk");
+								grunt.file.copy(filename1, newFilename);
+								//grunt.file.delete(filename1);
+								filename2 = filename.replace(themeId, "com");
+								grunt.file.copy(filename2, newFilename);
+								//grunt.file.delete(filename2);
+							} else {
+							console.log("path1");
+								grunt.file.copy(filename, newFilename);
+								grunt.file.delete(filename);
+							}
                         } else {
                             snippet = snippet.substring(0, snippet.length - 1);
-                            data    = data.replace(snippet, snippet.split('?')[0] + '?' + hash);
+							console.log(snippet);			
+							var modified = snippet.split('?')[0] + '?' + hash;
+							modified = modified.replace("Scripts/", "Scripts/${Html.GetAppSetting('BuildVersion')}/");
+							modified = modified.replace("scripts/", "Scripts/${Html.GetAppSetting('BuildVersion')}/");
+							modified = modified.replace("Content/", "Content/${Html.GetAppSetting('BuildVersion')}/");
+							modified = modified.replace("content/", "Content/${Html.GetAppSetting('BuildVersion')}/");
+							console.log(modified);							
+                            data    = data.replace(snippet, modified);
                         }
                     });
                 });
