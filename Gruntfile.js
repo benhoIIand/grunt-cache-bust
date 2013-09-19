@@ -44,6 +44,7 @@ module.exports = function(grunt) {
             },
             replace: {
                 options: {
+                    baseDir: './tmp',
                     rename: true
                 },
                 files: [{

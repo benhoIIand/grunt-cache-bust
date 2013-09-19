@@ -24,15 +24,18 @@ module.exports = function(grunt) {
     };
 
     var options = {
+        algorithm: 'md5',
+        baseDir: './',
+        deleteOriginals: false,
         encoding: 'utf8',
         length: 16,
-        algorithm: 'md5',
+        replaceTerms:[],
         rename: false
     };
 
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
 
-        grunt.util._.extend(options, this.options());
+        var opts = grunt.util._.defaults(this.options(), options);
 
         this.files.forEach(function(f) {
             var src = f.src.filter(function(filepath) {
@@ -48,29 +51,43 @@ module.exports = function(grunt) {
 
                 grunt.util._.each(regexs, function(regex, type) {
                     var matches = data.match(regex.src) || [];
-                    console.log(matches);
                     matches.forEach(function(snippet) {
 
                         // Generate hash
-                        var hash = crypto.createHash(options.algorithm).update(data, options.encoding).digest('hex').substring(0, options.length);
+                        var hash = opts.hash || crypto.createHash(opts.algorithm).update(data, opts.encoding).digest('hex').substring(0, opts.length);
 
-                        var extension = type !== 'images' ? '.'+type : snippet.match(/\.\w+/)[0];
+                        var extension = type !== 'images' ? '.'+ type : snippet.match(/\.\w+/)[0];
 
-                        if(options.rename) {
-                            var path = filepath.split('/');
-                            path.pop();
-                            path = path.join('/') + '/';
+                        if(opts.rename) {
+                            var path     = opts.baseDir + '/';
+                            var _snippet = snippet;
+
+                            // Replacing specific terms in the import path so renaming files
+                            if(opts.replaceTerms && opts.replaceTerms.length > 0) {
+                                opts.replaceTerms.forEach(function(obj) {
+                                    grunt.util._.each(obj, function(replacement, term) {
+                                        snippet = snippet.replace(term, replacement);
+                                    });
+                                });
+                            }
+
+                            // Remove duplicate hashes
+                            snippet = snippet.replace(new RegExp('_'+ opts.hash+'|[a-zA-Z0-9]{'+ opts.length +'}', 'ig'), '');
+                            _snippet = _snippet.replace(new RegExp('_'+ opts.hash+'|[a-zA-Z0-9]{'+ opts.length +'}', 'ig'), '');
 
                             var name = snippet.match(regex.file)[1];
-
                             var filename    = path + name;
                             var newFilename = path + name.replace(extension, '') +'_'+ hash + extension;
 
-                            snippet = snippet.substring(0, snippet.length - 1);
-                            data    = data.replace(snippet, snippet.replace(extension, '') +'_'+ hash + extension);
+
+                            _snippet = _snippet.substring(0, _snippet.length - 1);
+                            data     = data.replace(_snippet, _snippet.replace(extension, '') +'_'+ hash + extension);
 
                             grunt.file.copy(filename, newFilename);
-                            grunt.file.delete(filename);
+
+                            if(opts.deleteOriginals) {
+                                grunt.file.delete(filename);
+                            }
                         } else {
                             snippet = snippet.substring(0, snippet.length - 1);
                             data    = data.replace(snippet, snippet.split('?')[0] + '?' + hash);
