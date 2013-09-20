@@ -8,7 +8,7 @@ _If you haven't used [grunt][] before, be sure to check out the [Getting Started
 From the same directory as your project's [Gruntfile][Getting Started] and [package.json][], install this plugin with the following command:
 
 ```bash
-npm install grunt-bust-cache --save-dev
+npm install grunt-cache-bust --save-dev
 ```
 
 Once that's done, add this line to your project's Gruntfile:
