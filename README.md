@@ -25,7 +25,7 @@ If the plugin has been installed correctly, running `grunt --help` at the comman
 
 ## The "cacheBust" task
 
-Use the **cacheBust** task for cache busting static files in your application. This allows them to be cached forever by the browser, justp oint the task towards any file that contains references to static assets.
+Use the **cacheBust** task for cache busting static files in your application. This allows them to be cached forever by the browser, just point the task towards any file that contains references to static assets.
 
 _Currently supported static assets: **CSS**, **JavaScript** and **images**_
 
