@@ -63,6 +63,27 @@ exports.cachebust = {
         test.done();
     },
 
+    favicons: function(test) {
+        test.expect(12);
+
+        var favicon = grunt.file.read('tmp/favicon.html');
+
+        test.ok(favicon.match(/favicon1\.png\?[a-z0-9]{16}/), 'testing favicon1.png');
+        test.ok(favicon.match(/favicon1\.ico\?[a-z0-9]{16}/), 'testing favicon1.ico');
+        test.ok(favicon.match(/favicon1\.gif\?[a-z0-9]{16}/), 'testing favicon1.gif');
+        test.ok(favicon.match(/favicon1\.jpeg\?[a-z0-9]{16}/), 'testing favicon1.jpeg');
+        test.ok(favicon.match(/favicon1\.jpg\?[a-z0-9]{16}/), 'testing favicon1.jpg');
+        test.ok(favicon.match(/favicon1\.bmp\?[a-z0-9]{16}/), 'testing favicon1.bmp');
+        test.ok(favicon.match(/FAVICON2\.PNG\?[a-z0-9]{16}/), 'testing FAVICON2.PNG');
+        test.ok(favicon.match(/FAVICON2\.ICO\?[a-z0-9]{16}/), 'testing FAVICON2.ICO');
+        test.ok(favicon.match(/FAVICON2\.GIF\?[a-z0-9]{16}/), 'testing FAVICON2.GIF');
+        test.ok(favicon.match(/FAVICON2\.JPEG\?[a-z0-9]{16}/), 'testing FAVICON2.JPEG');
+        test.ok(favicon.match(/FAVICON2\.JPG\?[a-z0-9]{16}/), 'testing FAVICON2.JPG');
+        test.ok(favicon.match(/FAVICON2\.BMP\?[a-z0-9]{16}/), 'testing FAVICON2.BMP');
+
+        test.done();
+    },
+
     replaceName: function(test) {
         test.expect(3);
 
