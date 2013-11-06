@@ -18,7 +18,7 @@ module.exports = function(grunt) {
             file: /src=['"]([^"']+)["']/m
         },
         favicon: {
-            src: /<link.+?href=["'](?!http:|https:|\/\/).+?\.(gif|jpeg|jpg|png|ico|bmp)("|\?.+?")/gmi,
+            src: /<link rel="shortcut icon" .+?href=["'](?!http:|https:|\/\/).+?\.(gif|jpeg|jpg|png|ico|bmp)("|\?.+?")/gmi,
             file: /href=['"]([^"']+)["']/m
         }
     };
@@ -97,6 +97,7 @@ module.exports = function(grunt) {
                             data    = data.replace(snippet, snippet.split('?')[0] + '?' + hash);
                         }
                     });
+
                 });
 
                 grunt.file.write(filepath, data, fileOptions);
