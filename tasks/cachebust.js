@@ -16,6 +16,10 @@ module.exports = function(grunt) {
         images: {
             src: /<img[^\>]+src=['"](?!http:|https:|\/\/|data:image)([a-zA-Z0-9\/]*)(\.[a-zA-Z]{2,})([^"']+)(["'])/gm,
             file: /src=['"]([^"']+)["']/m
+        },
+        favicon: {
+            src: /<link.+?href=["'](?!http:|https:|\/\/).+?\.(gif|jpeg|jpg|png|ico|bmp)("|\?.+?")/gmi,
+            file: /href=['"]([^"']+)["']/m
         }
     };
 
