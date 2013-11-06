@@ -21,7 +21,7 @@ exports.cachebust = {
         test.expect(7);
 
         var stylesheet = grunt.file.read('tmp/stylesheet.html');
-        console.log(stylesheet);
+
         test.ok(stylesheet.match(/stylesheet1\.css\?[a-z0-9]{16}/), 'testing stylesheet1');
         test.ok(stylesheet.match(/stylesheet2\.css\?[a-z0-9]{16}/), 'testing stylesheet2');
         test.ok(stylesheet.match(/stylesheet3\.css\?[a-z0-9]{16}/), 'testing stylesheet3');
@@ -57,7 +57,6 @@ exports.cachebust = {
         test.ok(images.match(/image3\.webp\?[a-z0-9]{16}/), 'testing image3 .webp');
 
         test.ok(images.match(/src=\"data:image\/png\;base64\,iVBORw0KGgoAAAANS"/), 'testing image4 base64');
-        console.log(images);
         test.ok(images.match(/src=\"https:\/\/gravatar.example.com\/avatar\/d3b2094f1b3386e660bb737e797f5dcc\?s=420"/), 'remotely hosted https:// syntax should remain untouched');
 
         test.done();
@@ -124,6 +123,23 @@ exports.cachebust = {
         test.ok(standard.match(/standard\.js\?[a-z0-9]{16}/), 'testing combination of CSS, JS and images');
         test.ok(standard.match(/standard\.css\?[a-z0-9]{16}/), 'testing combination of CSS, JS and images');
         test.ok(standard.match(/standard\.jpg\?[a-z0-9]{16}/), 'testing combination of CSS, JS and images');
+
+        test.done();
+    },
+
+    minified: function(test) {
+        test.expect(6);
+
+        var minified = grunt.file.read('tmp/minified.html');
+
+        test.ok(minified.match(/stylesheet1\.css\?[a-z0-9]{16}/), 'testing stylesheet1');
+        test.ok(minified.match(/stylesheet2\.css\?[a-z0-9]{16}/), 'testing stylesheet2');
+
+        test.ok(minified.match(/javascript1\.js\?[a-z0-9]{16}/), 'testing javascript1');
+        test.ok(minified.match(/javascript2\.js\?[a-z0-9]{16}/), 'testing javascript2');
+
+        test.ok(minified.match(/image1\.png\?[a-z0-9]{16}/), 'testing image1');
+        test.ok(minified.match(/image2\.png\?[a-z0-9]{16}/), 'testing image2');
 
         test.done();
     }
