@@ -6,11 +6,11 @@ module.exports = function(grunt) {
 
     var regexs = {
         js: {
-            src: /<script.+src=['"](?!http:|https:|\/\/)([^"']+)["']/gm,
+            src: /<script.+?src=['"](?!http:|https:|\/\/)([^"']+?)["']/gm,
             file: /src=['"]([^"']+)["']/m
         },
         css: {
-            src: /<link.+href=["'](?!http:|https:|\/\/).*\.css("|\?.*")/gm,
+            src: /<link.+?href=["'](?!http:|https:|\/\/).+?\.css("|\?.+?")/gm,
             file: /href=['"]([^"']+)["']/m
         },
         images: {
