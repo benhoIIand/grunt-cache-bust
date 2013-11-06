@@ -33,7 +33,8 @@ module.exports = function(grunt) {
             options: {
                 encoding: 'utf8',
                 length: 16,
-                algorithm: 'md5'
+                algorithm: 'md5',
+                baseDir: 'tmp/'
             },
             main: {
                 files: [{

@@ -18,7 +18,7 @@ module.exports = function(grunt) {
             file: /src=['"]([^"']+)["']/m
         },
         favicon: {
-            src: /<link rel="shortcut icon" .+?href=["'](?!http:|https:|\/\/).+?\.(gif|jpeg|jpg|png|ico|bmp)("|\?.+?")/gmi,
+            src: /<link rel="shortcut icon" +?href=["'](?!http:|https:|\/\/).+?\.(gif|jpeg|jpg|png|ico|bmp)("|\?.+?")/gmi,
             file: /href=['"]([^"']+)["']/m
         }
     };
@@ -57,13 +57,20 @@ module.exports = function(grunt) {
                     var matches = data.match(regex.src) || [];
                     matches.forEach(function(snippet) {
 
+                        var path     = opts.baseDir + '/';
+                        var name     = snippet.match(regex.file)[1];
+                        var filename = path + name;
+
+                        filename = filename.split('?')[0];
+
+                        var fileData = fs.readFileSync(filename, opts.encoding);
+
                         // Generate hash
-                        var hash = opts.hash || crypto.createHash(opts.algorithm).update(data, opts.encoding).digest('hex').substring(0, opts.length);
+                        var hash = opts.hash || crypto.createHash(opts.algorithm).update(fileData, opts.encoding).digest('hex').substring(0, opts.length);
 
                         var extension = type !== 'images' ? '.'+ type : snippet.match(/\.\w+/)[0];
 
                         if(opts.rename) {
-                            var path     = opts.baseDir + '/';
                             var _snippet = snippet;
 
                             // Replacing specific terms in the import path so renaming files
@@ -79,8 +86,6 @@ module.exports = function(grunt) {
                             snippet = snippet.replace(new RegExp('_'+ opts.hash+'|[a-zA-Z0-9]{'+ opts.length +'}', 'ig'), '');
                             _snippet = _snippet.replace(new RegExp('_'+ opts.hash+'|[a-zA-Z0-9]{'+ opts.length +'}', 'ig'), '');
 
-                            var name = snippet.match(regex.file)[1];
-                            var filename    = path + name;
                             var newFilename = path + name.replace(extension, '') +'_'+ hash + extension;
 
 
