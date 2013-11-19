@@ -117,7 +117,8 @@ grunt.initConfig({
       cwd: 'src',
       src: ['*.html'],
       dest: 'dest/'
-    }]
+    }],
+	exclusions: ['excluded.js', 'also/excluded.js']
   }
 })
 ```

@@ -40,7 +40,8 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: 'tmp/',
                     src: ['*.html', '!replace.html']
-                }]
+                }],
+				exclusions: ['excluded.js', '/also/excluded.js']
             },
             replace: {
                 options: {
