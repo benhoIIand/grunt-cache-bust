@@ -69,12 +69,13 @@ exports.cachebust = {
     },
 
     replaceName: function(test) {
-        test.expect(3);
+        test.expect(4);
 
         var standard = grunt.file.read('tmp/replace.html');
         test.ok(standard.match(/replace_[a-z0-9]{16}\.js/), 'testing replaceName combination of CSS, JS and images');
         test.ok(standard.match(/replace_[a-z0-9]{16}\.css/), 'testing replaceName combination of CSS, JS and images');
         test.ok(standard.match(/replace_[a-z0-9]{16}\.png/), 'testing replaceName combination of CSS, JS and images');
+        test.ok(standard.match(/data-main=\"assets\/replace_[a-z0-9]{16}\.js\"/), 'testing replaceName RequireJS');
 
         test.done();
     },

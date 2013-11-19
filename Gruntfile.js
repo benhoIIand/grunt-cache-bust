@@ -50,7 +50,8 @@ module.exports = function(grunt) {
                 },
                 files: [{
                     src: 'tmp/replace.html'
-                }]
+                }],
+				exclusions: ['excluded.js']				
             }
         },
 

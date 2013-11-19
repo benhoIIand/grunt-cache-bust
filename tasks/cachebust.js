@@ -5,22 +5,25 @@ module.exports = function(grunt) {
         crypto = require('crypto');
 
     var regexs = {
-        js: {
-            src: /<script.+src=['"](?!http:|https:|\/\/)([^"']+)["']/gm,
-            file: /src=['"]([^"']+)["']/m
-        },
-		requirejs: {
-            src: /<script.+data-main=['"](?!http:|https:|\/\/)([^"']+)["']/gm,
-            file: /data-main=['"]([^"']+)["']/m
-		},
-        css: {
-            src: /<link.+href=["'](?!http:|https:|\/\/).*\.css("|\?.*")/gm,
-            file: /href=['"]([^"']+)["']/m
-        },
-        images: {
-            src: /<img[^\>]+src=['"](?!http:|https:|\/\/|data:image)([a-zA-Z0-9\/]*)(\.[a-zA-Z]{2,})([^"']+)(["'])/gm,
-            file: /src=['"]([^"']+)["']/m
-        }
+        js: [{
+				src: /<script.+src=['"](?!http:|https:|\/\/)([^"']+)["']/gm,
+				file: /src=['"]([^"']+)["']/m
+			},
+			{
+				src: /<script.+data-main=['"](?!http:|https:|\/\/)([^"']+)["']/gm,
+				file: /data-main=['"]([^"']+)["']/m
+			}
+		],
+        css: [{
+				src: /<link.+href=["'](?!http:|https:|\/\/).*\.css("|\?.*")/gm,
+				file: /href=['"]([^"']+)["']/m
+			}
+		],
+        images: [{
+				src: /<img[^\>]+src=['"](?!http:|https:|\/\/|data:image)([a-zA-Z0-9\/]*)(\.[a-zA-Z]{2,})([^"']+)(["'])/gm,
+				file: /src=['"]([^"']+)["']/m
+			}
+		]
     };
 
     var fileOptions = {
@@ -54,52 +57,54 @@ module.exports = function(grunt) {
                 }
             }).map(function(filepath) {
                 var data = grunt.file.read(filepath, fileOptions);
-                grunt.util._.each(regexs, function(regex, type) {
-                    var matches = data.match(regex.src) || [];
-                    matches.forEach(function(snippet) {
-						// Don't need to generate hash for excluded files
-						if (excluded.indexOf(snippet.match(regex.file)[1]) === -1) {
-							// Generate hash
-							var hash = opts.hash || crypto.createHash(opts.algorithm).update(data, opts.encoding).digest('hex').substring(0, opts.length);
+                grunt.util._.each(regexs, function(regexList, type) {					
+					grunt.util._.each(regexList, function(regex) {					
+						var matches = data.match(regex.src) || [];
+						matches.forEach(function(snippet) {
+							// Don't need to generate hash for excluded files
+							if (excluded.indexOf(snippet.match(regex.file)[1]) === -1) {
+								// Generate hash
+								var hash = opts.hash || crypto.createHash(opts.algorithm).update(data, opts.encoding).digest('hex').substring(0, opts.length);
 
-							var extension = type !== 'images' ? '.'+ type : snippet.match(/\.\w+/)[0];
+								var extension = type !== 'images' ? '.'+ type : snippet.match(/\.\w+/)[0];
+								
+								if(opts.rename) {
+									var path     = opts.baseDir + '/';
+									var _snippet = snippet;
 
-							if(opts.rename) {
-								var path     = opts.baseDir + '/';
-								var _snippet = snippet;
-
-								// Replacing specific terms in the import path so renaming files
-								if(opts.replaceTerms && opts.replaceTerms.length > 0) {
-									opts.replaceTerms.forEach(function(obj) {
-										grunt.util._.each(obj, function(replacement, term) {
-											snippet = snippet.replace(term, replacement);
+									// Replacing specific terms in the import path so renaming files
+									if(opts.replaceTerms && opts.replaceTerms.length > 0) {
+										opts.replaceTerms.forEach(function(obj) {
+											grunt.util._.each(obj, function(replacement, term) {
+												snippet = snippet.replace(term, replacement);
+												
+											});
 										});
-									});
+									}
+
+									// Remove duplicate hashes
+									snippet = snippet.replace(new RegExp('_'+ opts.hash+'|[a-zA-Z0-9]{'+ opts.length +'}', 'ig'), '');
+									_snippet = _snippet.replace(new RegExp('_'+ opts.hash+'|[a-zA-Z0-9]{'+ opts.length +'}', 'ig'), '');
+									
+									var name = snippet.match(regex.file)[1];
+									var filename    = path + name;
+									var newFilename = path + name.replace(extension, '') +'_'+ hash + extension;
+
+									_snippet = _snippet.substring(0, _snippet.length - 1);
+									data     = data.replace(_snippet, _snippet.replace(extension, '') +'_'+ hash + extension);
+
+									grunt.file.copy(filename, newFilename);
+
+									if(opts.deleteOriginals) {
+										grunt.file.delete(filename);
+									}
+								} else {
+									snippet = snippet.substring(0, snippet.length - 1);
+									data    = data.replace(snippet, snippet.split('?')[0] + '?' + hash);
 								}
-
-								// Remove duplicate hashes
-								snippet = snippet.replace(new RegExp('_'+ opts.hash+'|[a-zA-Z0-9]{'+ opts.length +'}', 'ig'), '');
-								_snippet = _snippet.replace(new RegExp('_'+ opts.hash+'|[a-zA-Z0-9]{'+ opts.length +'}', 'ig'), '');
-
-								var name = snippet.match(regex.file)[1];
-								var filename    = path + name;
-								var newFilename = path + name.replace(extension, '') +'_'+ hash + extension;
-
-
-								_snippet = _snippet.substring(0, _snippet.length - 1);
-								data     = data.replace(_snippet, _snippet.replace(extension, '') +'_'+ hash + extension);
-
-								grunt.file.copy(filename, newFilename);
-
-								if(opts.deleteOriginals) {
-									grunt.file.delete(filename);
-								}
-							} else {
-								snippet = snippet.substring(0, snippet.length - 1);
-								data    = data.replace(snippet, snippet.split('?')[0] + '?' + hash);
 							}
-						}
-                    });
+						});
+					});
                 });
 
                 grunt.file.write(filepath, data, fileOptions);
