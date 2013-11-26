@@ -18,13 +18,12 @@ exports.cachebust = {
     },
 
     stylesheets: function(test) {
-        test.expect(7);
+        test.expect(6);
 
         var stylesheet = grunt.file.read('tmp/stylesheet.html');
 
         test.ok(stylesheet.match(/stylesheet1\.css\?[a-z0-9]{16}/), 'testing stylesheet1');
         test.ok(stylesheet.match(/stylesheet2\.css\?[a-z0-9]{16}/), 'testing stylesheet2');
-        test.ok(stylesheet.match(/stylesheet3\.css\?[a-z0-9]{16}/), 'testing stylesheet3');
         test.ok(stylesheet.match(/stylesheet4\.css\?[a-z0-9]{16}/), 'testing stylesheet4');
 
         test.ok(stylesheet.match(/href="\/\/netdna.bootstrapcdn.com\/twitter-bootstrap\/2.3.2\/css\/bootstrap-combined.min.css"/), 'remotely hosted // syntax should remain untouched');
@@ -108,8 +107,8 @@ exports.cachebust = {
     placeholder: function(test) {
         test.expect(1);
 
-        var correctContent = grunt.file.read('test/fixtures/placeholder.html'),
-            alreadyBusted  = grunt.file.read('tmp/placeholder.html');
+        var correctContent = grunt.file.read('test/fixtures/placeholder.html');
+        var alreadyBusted  = grunt.file.read('tmp/placeholder.html');
 
         test.equal(correctContent, alreadyBusted, 'testing placeholder images');
 

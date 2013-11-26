@@ -56,6 +56,13 @@ module.exports = function(grunt) {
 
         nodeunit: {
             tests: ['test/*_test.js']
+        },
+
+        watch: {
+            task: {
+                files: 'tasks/cacheBust.js',
+                tasks: 'nodeunit'
+            }
         }
 
     });
@@ -68,6 +75,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
+    grunt.registerTask('bust', ['clean', 'copy', 'cacheBust']);
     grunt.registerTask('test', ['clean', 'copy', 'cacheBust', 'nodeunit']);
 };
