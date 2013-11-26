@@ -1,8 +1,9 @@
 var grunt = require('grunt');
 
 exports.cachebust = {
+
     scripts: function(test) {
-        test.expect(7);
+        test.expect(8);
 
         var scripts = grunt.file.read('tmp/scripts.html');
         test.ok(scripts.match(/script1\.js\?[a-z0-9]{16}/), 'testing script1');
@@ -13,6 +14,8 @@ exports.cachebust = {
         test.ok(scripts.match(/src="\/\/ajax.googleapis.com\/ajax\/libs\/angularjs\/1.0.6\/angular.min.js"/), 'remotely hosted // syntax should remain untouched');
         test.ok(scripts.match(/src="https:\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.10.2\/jquery.min.js"/), 'remotely hosted https:// syntax should remain untouched');
         test.ok(scripts.match(/src="http:\/\/code.jquery.com\/qunit\/qunit-1.12.0.js"/), 'remotely hosted http:// syntax should remain untouched');
+
+        test.ok(scripts.match(/defer src="assets\/script1.js\?[a-z0-9]{16}/), 'testing script1 again to see if duplicates are busted');
 
         test.done();
     },

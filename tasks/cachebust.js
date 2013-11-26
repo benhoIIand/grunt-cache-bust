@@ -9,6 +9,10 @@ module.exports = function(grunt) {
 
     var remoteRegex = /http:|https:|\/\/|data:image/;
 
+    var regexEscape = function(str) {
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    };
+
     var cheerioOptions = {
         ignoreWhitespace: true,
         lowerCaseTags: true
@@ -77,6 +81,7 @@ module.exports = function(grunt) {
                     var hash = opts.hash || crypto.createHash(opts.algorithm).update(fileData, opts.encoding).digest('hex').substring(0, opts.length);
 
                     if(opts.rename) {
+
                         // Remove duplicate hashes
                         reference = reference.replace(new RegExp('_'+ opts.hash+'|[a-zA-Z0-9]{'+ opts.length +'}', 'ig'), '');
 
@@ -93,7 +98,7 @@ module.exports = function(grunt) {
                         newFilename = filePath + reference.replace(extension, '') +'_'+ hash + extension;
 
                         // Update the reference in the markup
-                        markup = markup.replace(reference, reference.replace(extension, '') +'_'+ hash + extension);
+                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), reference.replace(extension, '') +'_'+ hash + extension);
 
                         // Create our new file
                         grunt.file.copy(filename, newFilename);
@@ -104,7 +109,7 @@ module.exports = function(grunt) {
                         }
                     } else {
                         newFilename = reference.split('?')[0] + '?' + hash;
-                        markup = markup.replace(reference, newFilename);
+                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
                 });
 
