@@ -7,7 +7,8 @@ module.exports = function(grunt) {
     var crypto  = require('crypto');
     var cheerio = require('cheerio');
 
-    var remoteRegex = /http:|https:|\/\/|data:image/;
+    var remoteRegex    = /http:|https:|\/\/|data:image/;
+    var extensionRegex = /(\.[a-zA-Z]{2,4})(|\?.*)$/;
 
     var regexEscape = function(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -28,8 +29,16 @@ module.exports = function(grunt) {
         rename: false
     };
 
-    var checkIfRemoteFile = function() {
-        return !remoteRegex.test(this.attr('src')) && !remoteRegex.test(this.attr('href'));
+    var checkIfRemote = function() {
+        return remoteRegex.test(this.attr('src')) || remoteRegex.test(this.attr('href'));
+    };
+
+    var checkIfHasExtension = function() {
+        return extensionRegex.test(this.attr('src')) || extensionRegex.test(this.attr('href'));
+    };
+
+    var checkIfValidFile = function() {
+        return !checkIfRemote.call(this) && checkIfHasExtension.call(this);
     };
 
     var findStaticAssets = function(data) {
@@ -46,10 +55,10 @@ module.exports = function(grunt) {
 
         $('body').append(assets);
 
-        var scripts     = $('script').filter(checkIfRemoteFile).map(function() { return this.attr('src'); });
-        var stylesheets = $('link[rel="stylesheet"]').filter(checkIfRemoteFile).map(function() { return this.attr('href'); });
-        var images      = $('img').filter(checkIfRemoteFile).map(function() { return this.attr('src'); });
-        var favicons    = $('link[rel="icon"], link[rel="shortcut icon"]').filter(checkIfRemoteFile).map(function() { return this.attr('href'); });
+        var scripts     = $('script').filter(checkIfValidFile).map(function() { return this.attr('src'); });
+        var stylesheets = $('link[rel="stylesheet"]').filter(checkIfValidFile).map(function() { return this.attr('href'); });
+        var images      = $('img').filter(checkIfValidFile).map(function() { return this.attr('src'); });
+        var favicons    = $('link[rel="icon"], link[rel="shortcut icon"]').filter(checkIfValidFile).map(function() { return this.attr('href'); });
 
         return [].concat(scripts, stylesheets, images, favicons);
     };
