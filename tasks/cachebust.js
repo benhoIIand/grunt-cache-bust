@@ -89,7 +89,7 @@ module.exports = function(grunt) {
                         });
                     }
 
-                    if(!grunt.file.exists(filename)) {
+                    if(opts.rename && !grunt.file.exists(filename)) {
                         grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
                         return false;
                     }
