@@ -35,6 +35,17 @@ module.exports = function(grunt) {
     var findStaticAssets = function(data) {
         var $ = cheerio.load(data, cheerioOptions);
 
+        // Add any conditional statements or assets in comments to the DOM
+        var assets = '';
+
+        $('head, body').contents().filter(function(){
+            return this[0].type === 'comment';
+        }).each(function(i, e) {
+            assets += e.data.replace(/\[.*\]>|<!\[endif\]/g, '').trim();
+        });
+
+        $('body').append(assets);
+
         var scripts     = $('script').filter(checkIfRemoteFile).map(function() { return this.attr('src'); });
         var stylesheets = $('link[rel="stylesheet"]').filter(checkIfRemoteFile).map(function() { return this.attr('href'); });
         var images      = $('img').filter(checkIfRemoteFile).map(function() { return this.attr('src'); });
@@ -62,12 +73,21 @@ module.exports = function(grunt) {
                 var markup = grunt.file.read(filepath);
 
                 findStaticAssets(markup).forEach(function(reference) {
-
                     var filePath  = opts.baseDir + '/';
                     var filename  = path.normalize((filePath + reference).split('?')[0]);
                     var extension = path.extname(filename);
 
                     var newFilename;
+
+                    // Replacing specific terms in the import path so renaming files
+                    if(opts.replaceTerms && opts.replaceTerms.length > 0) {
+                        opts.replaceTerms.forEach(function(obj) {
+                            grunt.util._.each(obj, function(replacement, term) {
+                                filename  = filename.replace(term, replacement);
+                                reference = reference.replace(term, replacement);
+                            });
+                        });
+                    }
 
                     if(!grunt.file.exists(filename)) {
                         grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
@@ -81,19 +101,6 @@ module.exports = function(grunt) {
                     var hash = opts.hash || crypto.createHash(opts.algorithm).update(fileData, opts.encoding).digest('hex').substring(0, opts.length);
 
                     if(opts.rename) {
-
-                        // Remove duplicate hashes
-                        reference = reference.replace(new RegExp('_'+ opts.hash+'|[a-zA-Z0-9]{'+ opts.length +'}', 'ig'), '');
-
-                        // Replacing specific terms in the import path so renaming files
-                        if(opts.replaceTerms && opts.replaceTerms.length > 0) {
-                            opts.replaceTerms.forEach(function(obj) {
-                                grunt.util._.each(obj, function(replacement, term) {
-                                    reference = reference.replace(term, replacement);
-                                });
-                            });
-                        }
-
                         // Create our new filename
                         newFilename = filePath + reference.replace(extension, '') +'_'+ hash + extension;
 
