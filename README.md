@@ -91,7 +91,7 @@ The number of characters of the file content hash to prefix the file name with.
 Type: `Boolean`
 Default value: `false`
 
-When true, `cachbust` will rename the refernce to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
+When true, `cachbust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
 
 ### Usage Examples
 
