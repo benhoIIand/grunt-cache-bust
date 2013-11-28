@@ -40,16 +40,19 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'tmp/',
-                    src: ['*.html', '!replace.html']
+                    src: ['*.html', '!replace*.html']
                 }]
             },
             replace: {
                 options: {
                     baseDir: './tmp',
-                    rename: true
+                    rename: true,
+                    replaceTerms: [{
+                        '${Html.GetAppSetting(ThemeId)}': 'com'
+                    }]
                 },
                 files: [{
-                    src: 'tmp/replace.html'
+                    src: 'tmp/replace*.html'
                 }]
             }
         },
