@@ -1,7 +1,7 @@
 {
   "name": "grunt-cache-bust",
   "description": "Bust static assets from the cache using content hashing",
-  "version": "0.0.10",
+  "version": "0.1.0",
   "author": "Ben Holland <hi@benholland.me>",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
     "grunt-contrib-watch": "~0.5.3"
   },
   "peerDependencies": {
-    "grunt": "~0.4.2"
+    "grunt": "~0.4.0"
   },
   "dependencies": {
     "cheerio": "~0.12.4"
