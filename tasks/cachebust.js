@@ -73,6 +73,8 @@ module.exports = function(grunt) {
             return opts.hash || crypto.createHash(opts.algorithm).update(fileData, opts.encoding).digest('hex').substring(0, opts.length);
         };
 
+        var processedFiles = {};
+
         this.files.forEach(function(f) {
             var src = f.src.filter(function(filepath) {
                 // Warn on and remove invalid source files (if nonull was set).
@@ -126,14 +128,13 @@ module.exports = function(grunt) {
                         // Create our new file
                         grunt.file.copy(filename, newFilename);
 
-                        // Delete the original file if the setting is true
-                        if(opts.deleteOriginals) {
-                            grunt.file.delete(filename);
-                        }
                     } else {
                         newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
                         markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
+
+                    // Add to lookup of processed files
+                    processedFiles[filename] = true;
                 });
 
                 grunt.file.write(filepath, markup);
@@ -141,6 +142,14 @@ module.exports = function(grunt) {
                 grunt.log.writeln(filepath + ' was busted!');
             });
         });
+        
+        // Delete the original file if the setting is true
+        if(opts.rename && opts.deleteOriginals) {
+            for (var filename in processedFiles) {
+                grunt.file.delete(filename);
+            }
+        }
+
     });
 
 };
