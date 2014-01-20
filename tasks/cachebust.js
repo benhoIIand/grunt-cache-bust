@@ -26,7 +26,15 @@ module.exports = function(grunt) {
         encoding: 'utf8',
         length: 16,
         replaceTerms:[],
-        rename: false
+        rename: false,
+        filters : {}
+    };
+
+    var defaultFilters = {
+        'script' : function() { return this.attr('src'); },
+        'link[rel="stylesheet"]' : function() { return this.attr('href'); },
+        'img' : function() { return this.attr('src'); },
+        'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attr('href'); }
     };
 
     var checkIfRemote = function() {
@@ -41,7 +49,7 @@ module.exports = function(grunt) {
         return !checkIfRemote.call(this) && checkIfHasExtension.call(this);
     };
 
-    var findStaticAssets = function(data) {
+    var findStaticAssets = function(data, filters) {
         var $ = cheerio.load(data, cheerioOptions);
 
         // Add any conditional statements or assets in comments to the DOM
@@ -55,12 +63,19 @@ module.exports = function(grunt) {
 
         $('body').append(assets);
 
-        var scripts     = $('script').filter(checkIfValidFile).map(function() { return this.attr('src'); });
-        var stylesheets = $('link[rel="stylesheet"]').filter(checkIfValidFile).map(function() { return this.attr('href'); });
-        var images      = $('img').filter(checkIfValidFile).map(function() { return this.attr('src'); });
-        var favicons    = $('link[rel="icon"], link[rel="shortcut icon"]').filter(checkIfValidFile).map(function() { return this.attr('href'); });
+        var paths = [];
+        Object.keys(filters).forEach(function(key){
+            var mappers = filters[key];
+            if (grunt.util.kindOf(mappers) === "array"){
+                mappers.forEach(function(mapper){
+                    paths = paths.concat($(key).filter(checkIfValidFile).map(mapper));
+                });
+            } else {
+                paths = paths.concat($(key).filter(checkIfValidFile).map(mappers));
+            }
+        });
 
-        return [].concat(scripts, stylesheets, images, favicons);
+        return paths;
     };
 
     grunt.file.defaultEncoding = options.encoding;
@@ -68,6 +83,7 @@ module.exports = function(grunt) {
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
 
         var opts = grunt.util._.defaults(this.options(), options);
+        var filters = grunt.util._.defaults(opts.filters, defaultFilters);
 
         var generateHash = function(fileData) {
             return opts.hash || crypto.createHash(opts.algorithm).update(fileData, opts.encoding).digest('hex').substring(0, opts.length);
@@ -85,7 +101,7 @@ module.exports = function(grunt) {
             }).map(function(filepath) {
                 var markup = grunt.file.read(filepath);
 
-                findStaticAssets(markup).forEach(function(reference) {
+                findStaticAssets(markup, filters).forEach(function(reference) {
                     var _reference = reference;
                     var filePath   = opts.baseDir + '/';
                     var filename   = path.normalize((filePath + reference).split('?')[0]);
