@@ -109,6 +109,10 @@ module.exports = function(grunt) {
 
                     var newFilename;
 
+                    if(opts.dir){
+                        filename = opts.dir + filename;
+                    }
+
                     if(opts.rename) {
                         var hashReplaceRegex = new RegExp('_('+ opts.hash +'|[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
 
