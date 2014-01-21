@@ -121,7 +121,7 @@ grunt.initConfig({
     options: {
       algorithm: 'sha1',
       length: 32,
-      dir : '.tmp/public/'
+      baseDir : '.tmp/public/'
     },
     files: [{
       expand: true,
