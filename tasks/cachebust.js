@@ -66,12 +66,21 @@ module.exports = function(grunt) {
         var paths = [];
         Object.keys(filters).forEach(function(key){
             var mappers = filters[key];
+            var addPaths = function(mapper){
+                var foundPaths = $(key)
+                    .filter(checkIfValidFile)
+                    .map(mapper)
+                    .filter(function(path){
+                        return (!!path);
+                    });
+
+                paths = paths.concat(foundPaths);
+            };
+
             if (grunt.util.kindOf(mappers) === "array"){
-                mappers.forEach(function(mapper){
-                    paths = paths.concat($(key).filter(checkIfValidFile).map(mapper));
-                });
+                mappers.forEach(addPaths);
             } else {
-                paths = paths.concat($(key).filter(checkIfValidFile).map(mappers));
+                addPaths(mappers);
             }
         });
 
