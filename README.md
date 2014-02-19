@@ -101,12 +101,15 @@ When set, `cachbust` will try to find the asset files using the dir as base path
 
 #### options.filters
 Type : `Object`
-Default value: `{
+Default value:
+```js
+{
     'script' : function() { return this.attr('src'); },
     'link[rel="stylesheet"]' : function() { return this.attr('href'); },
     'img' : function() { return this.attr('src'); },
     'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attr('href'); }
-}`
+}
+```
 
 When set, `filters` will be merged with the default (above).  These filters are 'selector' : `Function` mapper | `Function` mapper[].
 Where the mapper function or array of functions returns the `String` file paths.
