@@ -93,6 +93,12 @@ Default value: `false`
 
 When true, `cachbust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
 
+#### options.dir
+Type: `String`
+Default value: `false`
+
+When set, `cachbust` will try to find the asset files using the dir as base path.
+
 ### Usage Examples
 
 #### Basic Asset Cache Busting
@@ -114,7 +120,8 @@ grunt.initConfig({
   cacheBust: {
     options: {
       algorithm: 'sha1',
-      length: 32
+      length: 32,
+      baseDir : '.tmp/public/'
     },
     files: [{
       expand: true,
