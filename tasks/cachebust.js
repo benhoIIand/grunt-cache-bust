@@ -21,7 +21,6 @@ module.exports = function(grunt) {
 
     var options = {
         algorithm: 'md5',
-        baseDir: './',
         deleteOriginals: false,
         encoding: 'utf8',
         length: 16,
@@ -103,7 +102,7 @@ module.exports = function(grunt) {
 
                 findStaticAssets(markup, filters).forEach(function(reference) {
                     var _reference = reference;
-                    var filePath   = opts.baseDir + '/';
+                    var filePath   = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
                     var filename   = path.normalize((filePath + reference).split('?')[0]);
                     var extension  = path.extname(filename);
 
