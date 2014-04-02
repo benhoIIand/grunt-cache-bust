@@ -153,8 +153,6 @@ module.exports = function(grunt) {
                         //Generate a JSON with the swapped file names if requested
                         if(opts.jsonOutput){
                             filenameSwaps[filename] = newFilename;
-
-                            grunt.file.write(opts.dir + opts.jsonOutputFilename, JSON.stringify(filenameSwaps));
                         }
 
                         // Delete the original file if the setting is true
@@ -169,7 +167,8 @@ module.exports = function(grunt) {
 
                 //Generate a JSON with the swapped file names if requested
                 if(opts.jsonOutput){
-                    grunt.file.write(opts.dir + 'filenameSwaps.json', JSON.stringify(filenameSwaps));
+                    grunt.log.writeln(opts.dir + opts.jsonOutputFilename + ' created!')
+                    grunt.file.write(opts.dir + opts.jsonOutputFilename, JSON.stringify(filenameSwaps));
                 }
 
                 grunt.file.write(filepath, markup);
