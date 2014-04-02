@@ -10,6 +10,8 @@ module.exports = function(grunt) {
     var remoteRegex    = /http:|https:|\/\/|data:image/;
     var extensionRegex = /(\.[a-zA-Z]{2,4})(|\?.*)$/;
 
+    var filenameSwaps = {};
+
     var regexEscape = function(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     };
@@ -27,7 +29,9 @@ module.exports = function(grunt) {
         length: 16,
         replaceTerms:[],
         rename: false,
-        filters : {}
+        filters : {},
+        jsonOutput: false,
+        jsonOutputFilename: 'cachebuster.json'
     };
 
     var defaultFilters = {
@@ -146,6 +150,13 @@ module.exports = function(grunt) {
                         // Create our new file
                         grunt.file.copy(filename, newFilename);
 
+                        //Generate a JSON with the swapped file names if requested
+                        if(opts.jsonOutput){
+                            filenameSwaps[filename] = newFilename;
+
+                            grunt.file.write(opts.dir + opts.jsonOutputFilename, JSON.stringify(filenameSwaps));
+                        }
+
                         // Delete the original file if the setting is true
                         if(opts.deleteOriginals) {
                             grunt.file.delete(filename);
@@ -155,6 +166,11 @@ module.exports = function(grunt) {
                         markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
                 });
+
+                //Generate a JSON with the swapped file names if requested
+                if(opts.jsonOutput){
+                    grunt.file.write(opts.dir + 'filenameSwaps.json', JSON.stringify(filenameSwaps));
+                }
 
                 grunt.file.write(filepath, markup);
 
