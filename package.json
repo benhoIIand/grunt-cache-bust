@@ -30,7 +30,7 @@
     "grunt": "~0.4.0"
   },
   "dependencies": {
-    "cheerio": "~0.12.4"
+    "cheerio": "~0.14.0"
   },
   "keywords": [
     "grunt",

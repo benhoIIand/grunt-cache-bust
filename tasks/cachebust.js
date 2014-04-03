@@ -12,6 +12,8 @@ module.exports = function(grunt) {
 
     var filenameSwaps = {};
 
+    var that;
+
     var regexEscape = function(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     };
@@ -35,10 +37,18 @@ module.exports = function(grunt) {
     };
 
     var defaultFilters = {
-        'script' : function() { return this.attr('src'); },
-        'link[rel="stylesheet"]' : function() { return this.attr('href'); },
-        'img' : function() { return this.attr('src'); },
-        'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attr('href'); }
+        'script' : function() { 
+            return this.attribs['src']; 
+        },
+        'link[rel="stylesheet"]' : function() { 
+            return this.attribs['href']; 
+        },
+        'img' : function() { 
+            return this.attribs['src']; 
+        },
+        'link[rel="icon"], link[rel="shortcut icon"]' : function() { 
+            return this.attribs['href']; 
+        }
     };
 
     var checkIfRemote = function() {
@@ -68,6 +78,7 @@ module.exports = function(grunt) {
         $('body').append(assets);
 
         var paths = [];
+
         Object.keys(filters).forEach(function(key){
             var mappers = filters[key];
             if (grunt.util.kindOf(mappers) === "array"){
@@ -75,7 +86,9 @@ module.exports = function(grunt) {
                     paths = paths.concat($(key).filter(checkIfValidFile).map(mapper));
                 });
             } else {
-                paths = paths.concat($(key).filter(checkIfValidFile).map(mappers));
+                if(typeof $(key).filter(checkIfValidFile).map(mappers)[0] !== 'undefined'){
+                    paths = paths.concat($(key).filter(checkIfValidFile).map(mappers)[0]);
+                }
             }
         });
 
@@ -85,7 +98,6 @@ module.exports = function(grunt) {
     grunt.file.defaultEncoding = options.encoding;
 
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
-
         var opts = grunt.util._.defaults(this.options(), options);
         var filters = grunt.util._.defaults(opts.filters, defaultFilters);
 
@@ -160,14 +172,14 @@ module.exports = function(grunt) {
                             grunt.file.delete(filename);
                         }
                     } else {
-                        newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
+                        newFilename = reference.split('?') + '?' + generateHash(grunt.file.read(filename));
                         markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
                 });
 
                 //Generate a JSON with the swapped file names if requested
                 if(opts.jsonOutput){
-                    grunt.log.writeln(opts.dir + opts.jsonOutputFilename + ' created!')
+                    grunt.log.writeln(opts.dir + opts.jsonOutputFilename + ' created!');
                     grunt.file.write(opts.dir + opts.jsonOutputFilename, JSON.stringify(filenameSwaps));
                 }
 
