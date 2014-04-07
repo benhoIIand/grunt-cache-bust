@@ -62,7 +62,7 @@ module.exports = function(grunt) {
         // Add any conditional statements or assets in comments to the DOM
         var assets = '';
 
-        $('head, body').contents().filter(function(){
+        $('head, body').contents().filter(function() {
             return this[0].type === 'comment';
         }).each(function(i, e) {
             assets += e.data.replace(/\[.*\]>|<!\[endif\]/g, '').trim();
@@ -71,10 +71,11 @@ module.exports = function(grunt) {
         $('body').append(assets);
 
         var paths = [];
-        Object.keys(filters).forEach(function(key){
+
+        Object.keys(filters).forEach(function(key) {
             var mappers = filters[key];
-            if (grunt.util.kindOf(mappers) === "array"){
-                mappers.forEach(function(mapper){
+            if (grunt.util.kindOf(mappers) === "array") {
+                mappers.forEach(function(mapper) {
                     paths = paths.concat($(key).filter(checkIfElemSrcValidFile).map(mapper));
                 });
             } else {
@@ -83,14 +84,14 @@ module.exports = function(grunt) {
         });
 
         if(enableUrlFragmentHint) {
-            var match,
-                potentialPath;
+            var match, potentialPath;
 
             while((match = urlFragHintRegex.exec(data)) != null) {
                 potentialPath = match[2] || match[4];
 
-                if(checkIfValidFile(potentialPath))
+                if(checkIfValidFile(potentialPath)) {
                     paths.push(potentialPath);
+                }
             }
         }
 
@@ -108,8 +109,8 @@ module.exports = function(grunt) {
             return opts.hash || crypto.createHash(opts.algorithm).update(fileData, opts.encoding).digest('hex').substring(0, opts.length);
         };
 
-        this.files.forEach(function(f) {
-            var src = f.src.filter(function(filepath) {
+        this.files.forEach(function(file) {
+            var src = file.src.filter(function(filepath) {
                 // Warn on and remove invalid source files (if nonull was set).
                 if (!grunt.file.exists(filepath)) {
                     grunt.log.warn('Source file "' + filepath + '" not found.');
@@ -128,7 +129,7 @@ module.exports = function(grunt) {
 
                     var newFilename;
 
-                    if(opts.dir){
+                    if(opts.dir) {
                         filename = opts.dir + filename;
                     }
 
