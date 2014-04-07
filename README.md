@@ -104,6 +104,21 @@ Default value: `false`
 When true, `cachebust` will search single- and double-quoted strings in scripting languages such as PHP for asset paths.
 Asset paths must have the "#grunt-cache-bust" URL fragment appended. See Usage Examples section below.
 
+#### options.filters
+Type : `Object`
+Default value:
+```js
+{
+    'script' : function() { return this.attr('src'); },
+    'link[rel="stylesheet"]' : function() { return this.attr('href'); },
+    'img' : function() { return this.attr('src'); },
+    'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attr('href'); }
+}
+```
+
+When set, `filters` will be merged with the default (above).  These filters are 'selector' : `Function` mapper | `Function` mapper[].
+Where the mapper function or array of functions returns the `String` file paths.
+
 ### Usage Examples
 
 #### Basic Asset Cache Busting
@@ -126,7 +141,13 @@ grunt.initConfig({
     options: {
       algorithm: 'sha1',
       length: 32,
-      baseDir : '.tmp/public/'
+      baseDir: '.tmp/public/',
+      filters: {
+        'script' : [
+            function() { return this.attr('data-main');} // for requirejs mains.js
+            function() { return this.attr('src'); }, // keep default 'src' mapper
+        ]
+      }
     },
     files: [{
       expand: true,

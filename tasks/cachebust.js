@@ -74,12 +74,22 @@ module.exports = function(grunt) {
 
         Object.keys(filters).forEach(function(key) {
             var mappers = filters[key];
-            if (grunt.util.kindOf(mappers) === "array") {
-                mappers.forEach(function(mapper) {
-                    paths = paths.concat($(key).filter(checkIfElemSrcValidFile).map(mapper));
-                });
+
+            var addPaths = function(mapper) {
+                var foundPaths = $(key)
+                    .filter(checkIfElemSrcValidFile)
+                    .map(mapper)
+                    .filter(function(path){
+                        return (!!path);
+                    });
+
+                paths = paths.concat(foundPaths);
+            };
+
+            if (grunt.util.kindOf(mappers) === 'array') {
+                mappers.forEach(addPaths);
             } else {
-                paths = paths.concat($(key).filter(checkIfElemSrcValidFile).map(mappers));
+                addPaths(mappers);
             }
         });
 
