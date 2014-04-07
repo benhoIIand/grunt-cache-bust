@@ -7,8 +7,8 @@ module.exports = function(grunt) {
     var crypto  = require('crypto');
     var cheerio = require('cheerio');
 
-    var remoteRegex      = /http:|https:|\/\/|data:image/;
-    var extensionRegex   = /(\.[a-zA-Z]{2,4})(|\?.*)$/;
+    var remoteRegex    = /http:|https:|\/\/|data:image/;
+    var extensionRegex = /(\.[a-zA-Z0-9]{2,4})(|\?.*)$/;
     var urlFragHintRegex = /'(([^']+)#grunt-cache-bust)'|"(([^"]+)#grunt-cache-bust)"/g;
 
     var regexEscape = function(str) {
@@ -22,7 +22,6 @@ module.exports = function(grunt) {
 
     var options = {
         algorithm: 'md5',
-        baseDir: './',
         deleteOriginals: false,
         encoding: 'utf8',
         length: 16,
@@ -133,7 +132,7 @@ module.exports = function(grunt) {
 
                 findStaticAssets(markup, filters, opts.enableUrlFragmentHint).forEach(function(reference) {
                     var _reference = reference;
-                    var filePath   = opts.baseDir + '/';
+                    var filePath   = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
                     var filename   = path.normalize((filePath + reference).split('?')[0]);
                     var extension  = path.extname(filename);
 
