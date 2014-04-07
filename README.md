@@ -29,14 +29,12 @@ If the plugin has been installed correctly, running `grunt --help` at the comman
 
 ## The "cacheBust" task
 
-Use the **cacheBust** task for cache busting static files in your application. This allows them to be cached forever by the browser, justp oint the task towards any file that contains references to static assets.
+Use the **cacheBust** task for cache busting static files in your application. This allows them to be cached forever by the browser, just point the task towards any file that contains references to static assets.
 
 _Currently supported static assets: **CSS**, **JavaScript**, **images** and **favicons**_
 
 _Note:_ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust.  This assumes that remote URLs for these assets will
-be CDN hosted content, typically for well known libraries like jQuery or Bootstrap.  These URLs typically include a version
-identifier in the URL to deal with browser caching, and it is in the best interest of your app to use the standard URL as-is
-to ensure browser cache hits for popular libraries.  For example, all of below URLs will be ignored:
+be CDN hosted content, typically for well known libraries like jQuery or Bootstrap. For example, all of below URLs will be ignored:
 
 ```html
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
