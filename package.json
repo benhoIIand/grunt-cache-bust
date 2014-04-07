@@ -21,16 +21,16 @@
   },
   "devDependencies": {
     "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-copy": "~0.4.1",
-    "grunt-contrib-jshint": "~0.7.2",
-    "grunt-contrib-nodeunit": "~0.2.2",
-    "grunt-contrib-watch": "~0.5.3"
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-nodeunit": "~0.3.3",
+    "grunt-contrib-watch": "~0.6.1"
   },
   "peerDependencies": {
     "grunt": "~0.4.0"
   },
   "dependencies": {
-    "cheerio": "~0.12.4"
+    "cheerio": "~0.14.0"
   },
   "keywords": [
     "grunt",
