@@ -1,8 +1,6 @@
 # grunt-cache-bust
 
 [![Build Status](https://travis-ci.org/hollandben/grunt-cache-bust.png?branch=master)](https://travis-ci.org/hollandben/grunt-cache-bust)
-[![Dependency Status](https://david-dm.org/hollandben/grunt-cache-bust.png)](https://david-dm.org/hollandben/grunt-cache-bust)
-[![devDependency Status](https://david-dm.org/hollandben/grunt-cache-bust/dev-status.png)](https://david-dm.org/hollandben/grunt-cache-bust#info=devDependencies)
 
 > Bust static assets from the cache using content hashing
 
