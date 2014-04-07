@@ -188,5 +188,16 @@ exports.cachebust = {
         test.ok(comments.match(/standard\.js\?[a-z0-9]{16}/), 'testing javascript');
 
         test.done();
+    },
+
+    enableUrlFragmentHint: function(test) {
+        test.expect(2);
+
+        var phpFile = grunt.file.read('tmp/enableUrlFragmentHint.php');
+
+        test.ok(phpFile.match(/'assets\/standard\.css\?[a-z0-9]{16}#grunt-cache-bust'/), 'cache bust asset path in single-quoted PHP str');
+        test.ok(phpFile.match(/"assets\/image2\.jpg\?[a-z0-9]{16}#grunt-cache-bust"/), 'cache bust asset path in double-quoted PHP str');
+
+        test.done();
     }
 };

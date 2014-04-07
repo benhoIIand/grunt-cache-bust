@@ -91,13 +91,20 @@ The number of characters of the file content hash to prefix the file name with.
 Type: `Boolean`
 Default value: `false`
 
-When true, `cachbust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
+When true, `cachebust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
 
 #### options.dir
 Type: `String`
 Default value: `false`
 
-When set, `cachbust` will try to find the asset files using the dir as base path.
+When set, `cachebust` will try to find the asset files using the dir as base path.
+
+#### options.enableUrlFragmentHint
+Type: `Boolean`
+Default value: `false`
+
+When true, `cachebust` will search single- and double-quoted strings in scripting languages such as PHP for asset paths.
+Asset paths must have the "#grunt-cache-bust" URL fragment appended. See Usage Examples section below.
 
 ### Usage Examples
 
@@ -110,7 +117,7 @@ grunt.initConfig({
       src: ['index.html', 'contact.html']
     }
   }
-})
+});
 ```
 
 #### Custom Options
@@ -130,5 +137,34 @@ grunt.initConfig({
       dest: 'dest/'
     }]
   }
-})
+});
+```
+
+#### URL-Fragment Hints
+
+```js
+grunt.initConfig({
+  cacheBust: {
+    options: {
+      enableUrlFragmentHint: true
+    },
+    files: ['example.php']
+  }
+});
+```
+
+Before cache bust:
+
+```php
+// example.php
+$foo = '/some/asset/path.jpg#grunt-cache-bust';
+$other = '/wont/be/busted.jpg';
+```
+
+After cache bust:
+
+```php
+// example.php
+$foo = '/some/asset/path.jpg?fa59cbed61b15262#grunt-cache-bust';
+$other = '/wont/be/busted.jpg';
 ```

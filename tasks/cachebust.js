@@ -7,8 +7,9 @@ module.exports = function(grunt) {
     var crypto  = require('crypto');
     var cheerio = require('cheerio');
 
-    var remoteRegex    = /http:|https:|\/\/|data:image/;
-    var extensionRegex = /(\.[a-zA-Z]{2,4})(|\?.*)$/;
+    var remoteRegex      = /http:|https:|\/\/|data:image/;
+    var extensionRegex   = /(\.[a-zA-Z]{2,4})(|\?.*)$/;
+    var urlFragHintRegex = /'(([^']+)#grunt-cache-bust)'|"(([^"]+)#grunt-cache-bust)"/g;
 
     var regexEscape = function(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -27,6 +28,7 @@ module.exports = function(grunt) {
         length: 16,
         replaceTerms:[],
         rename: false,
+        enableUrlFragmentHint: false,
         filters : {}
     };
 
@@ -37,19 +39,24 @@ module.exports = function(grunt) {
         'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attr('href'); }
     };
 
-    var checkIfRemote = function() {
-        return remoteRegex.test(this.attr('src')) || remoteRegex.test(this.attr('href'));
+    var checkIfRemote = function(href) {
+        return remoteRegex.test(href);
     };
 
-    var checkIfHasExtension = function() {
-        return extensionRegex.test(this.attr('src')) || extensionRegex.test(this.attr('href'));
+    var checkIfHasExtension = function(href) {
+        return extensionRegex.test(href);
     };
 
-    var checkIfValidFile = function() {
-        return !checkIfRemote.call(this) && checkIfHasExtension.call(this);
+    var checkIfValidFile = function(href) {
+        return !checkIfRemote(href) && checkIfHasExtension(href);
     };
 
-    var findStaticAssets = function(data, filters) {
+    /** @this Object An elem on which attr() may be called for src or href. */
+    var checkIfElemSrcValidFile = function() {
+        return checkIfValidFile(this.attr('src') || this.attr('href'));
+    };
+
+    var findStaticAssets = function(data, filters, enableUrlFragmentHint) {
         var $ = cheerio.load(data, cheerioOptions);
 
         // Add any conditional statements or assets in comments to the DOM
@@ -68,12 +75,24 @@ module.exports = function(grunt) {
             var mappers = filters[key];
             if (grunt.util.kindOf(mappers) === "array"){
                 mappers.forEach(function(mapper){
-                    paths = paths.concat($(key).filter(checkIfValidFile).map(mapper));
+                    paths = paths.concat($(key).filter(checkIfElemSrcValidFile).map(mapper));
                 });
             } else {
-                paths = paths.concat($(key).filter(checkIfValidFile).map(mappers));
+                paths = paths.concat($(key).filter(checkIfElemSrcValidFile).map(mappers));
             }
         });
+
+        if(enableUrlFragmentHint) {
+            var match,
+                potentialPath;
+
+            while((match = urlFragHintRegex.exec(data)) != null) {
+                potentialPath = match[2] || match[4];
+
+                if(checkIfValidFile(potentialPath))
+                    paths.push(potentialPath);
+            }
+        }
 
         return paths;
     };
@@ -101,7 +120,7 @@ module.exports = function(grunt) {
             }).map(function(filepath) {
                 var markup = grunt.file.read(filepath);
 
-                findStaticAssets(markup, filters).forEach(function(reference) {
+                findStaticAssets(markup, filters, opts.enableUrlFragmentHint).forEach(function(reference) {
                     var _reference = reference;
                     var filePath   = opts.baseDir + '/';
                     var filename   = path.normalize((filePath + reference).split('?')[0]);
