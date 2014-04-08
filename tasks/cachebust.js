@@ -80,14 +80,21 @@ module.exports = function(grunt) {
         var paths = [];
 
         Object.keys(filters).forEach(function(key){
-            var mappers = filters[key];
+            var mappers = filters[key]
+                , i
+                , item;
+
             if (grunt.util.kindOf(mappers) === "array"){
                 mappers.forEach(function(mapper){
                     paths = paths.concat($(key).filter(checkIfValidFile).map(mapper));
                 });
             } else {
-                if(typeof $(key).filter(checkIfValidFile).map(mappers)[0] !== 'undefined'){
-                    paths = paths.concat($(key).filter(checkIfValidFile).map(mappers)[0]);
+                item = $(key).filter(checkIfValidFile).map(mappers);
+
+                for(i = 0; i < item.length; i ++){
+                    if(typeof item[i] !== 'undefined'){
+                        paths = paths.concat(item[i]);
+                    }
                 }
             }
         });
@@ -172,7 +179,7 @@ module.exports = function(grunt) {
                             grunt.file.delete(filename);
                         }
                     } else {
-                        newFilename = reference.split('?') + '?' + generateHash(grunt.file.read(filename));
+                        newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
                         markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
                 });
