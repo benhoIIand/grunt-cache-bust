@@ -8,7 +8,7 @@ module.exports = function(grunt) {
     var cheerio = require('cheerio');
 
     var remoteRegex      = /http:|https:|\/\/|data:image/;
-    var extensionRegex   = /(\.[a-zA-Z]{2,4})(|\?.*)$/;
+    var extensionRegex   = /(\.[a-zA-Z]{2,6})(|\?.*)$/;
     var urlFragHintRegex = /'(([^']+)#grunt-cache-bust)'|"(([^"]+)#grunt-cache-bust)"/g;
 
     var regexEscape = function(str) {
