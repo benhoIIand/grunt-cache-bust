@@ -104,7 +104,9 @@ module.exports = function(grunt) {
             }
         }
 
-        return paths;
+        return paths.filter(function(path, index) {
+            return paths.indexOf(path) === index;
+        });
     };
 
     grunt.file.defaultEncoding = options.encoding;
