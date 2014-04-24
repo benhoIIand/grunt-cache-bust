@@ -46,7 +46,7 @@ module.exports = function(grunt) {
             },
             replace: {
                 options: {
-                    baseDir: './tmp',
+                    baseDir: 'tmp/',
                     rename: true,
                     replaceTerms: [{
                         '${Html.GetAppSetting(ThemeId)}': 'com'
