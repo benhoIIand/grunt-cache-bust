@@ -1,8 +1,6 @@
 # grunt-cache-bust
 
 [![Build Status](https://travis-ci.org/hollandben/grunt-cache-bust.png?branch=master)](https://travis-ci.org/hollandben/grunt-cache-bust)
-[![Dependency Status](https://david-dm.org/hollandben/grunt-cache-bust.png)](https://david-dm.org/hollandben/grunt-cache-bust)
-[![devDependency Status](https://david-dm.org/hollandben/grunt-cache-bust/dev-status.png)](https://david-dm.org/hollandben/grunt-cache-bust#info=devDependencies)
 
 > Bust static assets from the cache using content hashing
 
@@ -29,14 +27,12 @@ If the plugin has been installed correctly, running `grunt --help` at the comman
 
 ## The "cacheBust" task
 
-Use the **cacheBust** task for cache busting static files in your application. This allows them to be cached forever by the browser, justp oint the task towards any file that contains references to static assets.
+Use the **cacheBust** task for cache busting static files in your application. This allows them to be cached forever by the browser, just point the task towards any file that contains references to static assets.
 
 _Currently supported static assets: **CSS**, **JavaScript**, **images** and **favicons**_
 
 _Note:_ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust.  This assumes that remote URLs for these assets will
-be CDN hosted content, typically for well known libraries like jQuery or Bootstrap.  These URLs typically include a version
-identifier in the URL to deal with browser caching, and it is in the best interest of your app to use the standard URL as-is
-to ensure browser cache hits for popular libraries.  For example, all of below URLs will be ignored:
+be CDN hosted content, typically for well known libraries like jQuery or Bootstrap. For example, all of below URLs will be ignored:
 
 ```html
 <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
@@ -91,13 +87,35 @@ The number of characters of the file content hash to prefix the file name with.
 Type: `Boolean`
 Default value: `false`
 
-When true, `cachbust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
+When true, `cachebust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
 
 #### options.dir
 Type: `String`
 Default value: `false`
 
-When set, `cachbust` will try to find the asset files using the dir as base path.
+When set, `cachebust` will try to find the asset files using the dir as base path.
+
+#### options.enableUrlFragmentHint
+Type: `Boolean`
+Default value: `false`
+
+When true, `cachebust` will search single- and double-quoted strings in scripting languages such as PHP for asset paths.
+Asset paths must have the "#grunt-cache-bust" URL fragment appended. See Usage Examples section below.
+
+#### options.filters
+Type : `Object`
+Default value:
+```js
+{
+    'script' : function() { return this.attr('src'); },
+    'link[rel="stylesheet"]' : function() { return this.attr('href'); },
+    'img' : function() { return this.attr('src'); },
+    'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attr('href'); }
+}
+```
+
+When set, `filters` will be merged with the default (above).  These filters are 'selector' : `Function` mapper | `Function` mapper[].
+Where the mapper function or array of functions returns the `String` file paths.
 
 #### options.jsonOutput
 Type: `Boolean`
@@ -127,7 +145,7 @@ grunt.initConfig({
       src: ['index.html', 'contact.html']
     }
   }
-})
+});
 ```
 
 #### Custom Options
@@ -138,7 +156,13 @@ grunt.initConfig({
     options: {
       algorithm: 'sha1',
       length: 32,
-      baseDir : '.tmp/public/'
+      baseDir: '.tmp/public/',
+      filters: {
+        'script' : [
+            function() { return this.attr('data-main');} // for requirejs mains.js
+            function() { return this.attr('src'); }, // keep default 'src' mapper
+        ]
+      }
     },
     files: [{
       expand: true,
@@ -147,5 +171,34 @@ grunt.initConfig({
       dest: 'dest/'
     }]
   }
-})
+});
+```
+
+#### URL-Fragment Hints
+
+```js
+grunt.initConfig({
+  cacheBust: {
+    options: {
+      enableUrlFragmentHint: true
+    },
+    files: ['example.php']
+  }
+});
+```
+
+Before cache bust:
+
+```php
+// example.php
+$foo = '/some/asset/path.jpg#grunt-cache-bust';
+$other = '/wont/be/busted.jpg';
+```
+
+After cache bust:
+
+```php
+// example.php
+$foo = '/some/asset/path.jpg?fa59cbed61b15262#grunt-cache-bust';
+$other = '/wont/be/busted.jpg';
 ```
