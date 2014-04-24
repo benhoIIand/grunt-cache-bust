@@ -199,5 +199,13 @@ exports.cachebust = {
         test.ok(phpFile.match(/"assets\/image2\.jpg\?[a-z0-9]{16}#grunt-cache-bust"/), 'cache bust asset path in double-quoted PHP str');
 
         test.done();
+    },
+
+    testJSONOutput: function(test) {
+        test.expect(1);
+
+        test.ok(grunt.file.exists('tmp/cachebuster.json'));
+
+        test.done();
     }
 };

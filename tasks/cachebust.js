@@ -220,8 +220,8 @@ module.exports = function(grunt) {
 
                 //Generate a JSON with the swapped file names if requested
                 if(opts.jsonOutput){
-                    grunt.log.writeln(opts.dir + opts.jsonOutputFilename + ' created!');
-                    grunt.file.write(opts.dir + opts.jsonOutputFilename, JSON.stringify(filenameSwaps));
+                    grunt.log.writeln(opts.baseDir + opts.jsonOutputFilename + ' created!');
+                    grunt.file.write(opts.baseDir + opts.jsonOutputFilename, JSON.stringify(filenameSwaps));
                 }
 
                 grunt.file.write(filepath, markup);
