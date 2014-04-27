@@ -11,6 +11,10 @@ module.exports = function(grunt) {
     var extensionRegex = /(\.[a-zA-Z0-9]{2,4})(|\?.*)$/;
     var urlFragHintRegex = /'(([^']+)#grunt-cache-bust)'|"(([^"]+)#grunt-cache-bust)"/g;
 
+    var filenameSwaps = {};
+
+    var that;
+
     var regexEscape = function(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     };
@@ -28,14 +32,24 @@ module.exports = function(grunt) {
         replaceTerms:[],
         rename: false,
         enableUrlFragmentHint: false,
-        filters : {}
+        filters : {},
+        jsonOutput: false,
+        jsonOutputFilename: 'cachebuster.json'
     };
 
     var defaultFilters = {
-        'script' : function() { return this.attr('src'); },
-        'link[rel="stylesheet"]' : function() { return this.attr('href'); },
-        'img' : function() { return this.attr('src'); },
-        'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attr('href'); }
+        'script' : function() { 
+            return this.attribs['src']; 
+        },
+        'link[rel="stylesheet"]' : function() { 
+            return this.attribs['href']; 
+        },
+        'img' : function() { 
+            return this.attribs['src']; 
+        },
+        'link[rel="icon"], link[rel="shortcut icon"]' : function() { 
+            return this.attribs['href']; 
+        }
     };
 
     var checkIfRemote = function(href) {
@@ -72,17 +86,30 @@ module.exports = function(grunt) {
         var paths = [];
 
         Object.keys(filters).forEach(function(key) {
-            var mappers = filters[key];
+            var mappers = filters[key],
+                i,
+                item;
 
             var addPaths = function(mapper) {
-                var foundPaths = $(key)
+                var i,
+                    item,
+
+                    foundPaths = $(key)
                     .filter(checkIfElemSrcValidFile)
                     .map(mapper)
-                    .filter(function(path){
-                        return (!!path);
-                    });
+                    .filter(function(path, el){
+                        var rtn = false;
 
-                paths = paths.concat(foundPaths);
+                        if(el){
+                            rtn = true;
+                        }
+
+                        return rtn;
+                    });
+                
+                for(i = 0; i < foundPaths.length; i++){
+                    paths = paths.concat(foundPaths[i]);
+                }
             };
 
             if (grunt.util.kindOf(mappers) === 'array') {
@@ -112,7 +139,6 @@ module.exports = function(grunt) {
     grunt.file.defaultEncoding = options.encoding;
 
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
-
         var opts = grunt.util._.defaults(this.options(), options);
         var filters = grunt.util._.defaults(opts.filters, defaultFilters);
 
@@ -135,7 +161,7 @@ module.exports = function(grunt) {
                 findStaticAssets(markup, filters, opts.enableUrlFragmentHint).forEach(function(reference) {
                     var _reference = reference;
                     var filePath   = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
-                    var filename   = path.normalize((filePath + reference).split('?')[0]);
+                    var filename   = path.normalize((filePath + _reference).split('?')[0]);
                     var extension  = path.extname(filename);
 
                     var newFilename;
@@ -172,20 +198,31 @@ module.exports = function(grunt) {
                         newFilename = filename.replace(extension, '') +'_'+ hash + extension;
 
                         // Update the reference in the markup
-                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), _reference.replace(extension, '') +'_'+ hash + extension);
+                        markup = markup.replace(new RegExp(regexEscape(_reference), 'g'), _reference.replace(extension, '') +'_'+ hash + extension);
 
                         // Create our new file
                         grunt.file.copy(filename, newFilename);
+
+                        //Generate a JSON with the swapped file names if requested
+                        if(opts.jsonOutput){
+                            filenameSwaps[filename] = newFilename;
+                        }
 
                         // Delete the original file if the setting is true
                         if(opts.deleteOriginals) {
                             grunt.file.delete(filename);
                         }
                     } else {
-                        newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
-                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
+                        newFilename = _reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
+                        markup = markup.replace(new RegExp(regexEscape(_reference), 'g'), newFilename);
                     }
                 });
+
+                //Generate a JSON with the swapped file names if requested
+                if(opts.jsonOutput){
+                    grunt.log.writeln(opts.baseDir + opts.jsonOutputFilename + ' created!');
+                    grunt.file.write(opts.baseDir + opts.jsonOutputFilename, JSON.stringify(filenameSwaps));
+                }
 
                 grunt.file.write(filepath, markup);
 

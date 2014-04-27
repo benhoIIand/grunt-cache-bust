@@ -117,6 +117,23 @@ Default value:
 When set, `filters` will be merged with the default (above).  These filters are 'selector' : `Function` mapper | `Function` mapper[].
 Where the mapper function or array of functions returns the `String` file paths.
 
+#### options.jsonOutput
+Type: `Boolean`
+Default value: `false`
+
+When true, `cachbust` will create a json file with an object inside that contains key value pairs of the original file name, and the renamed md5 hash name for each file.
+
+The format looks like this:
+`{`
+  `'app.js' : 'app_23E6F7AC5623E96F7AC56293E6F7AC56.js'` 
+`}`
+
+#### options.jsonOutputFilename
+Type: `String`
+Default value: `'cachebuster.json'`
+
+Allows you to specify the filename for your cachebuster JSON file.
+
 ### Usage Examples
 
 #### Basic Asset Cache Busting
