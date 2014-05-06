@@ -115,8 +115,6 @@ module.exports = function(grunt) {
             }
         });
 
-        console.log(paths);
-
         if(enableUrlFragmentHint) {
             var match, potentialPath;
 
@@ -157,9 +155,8 @@ module.exports = function(grunt) {
                 var markup = grunt.file.read(filepath);
 
                 findStaticAssets(markup, filters, opts.enableUrlFragmentHint).forEach(function(reference) {
-                    var _reference = reference;
                     var filePath   = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
-                    var filename   = path.normalize((filePath + _reference).split('?')[0]);
+                    var filename   = path.normalize((filePath + reference).split('?')[0]);
                     var extension  = path.extname(filename);
 
                     var newFilename;
@@ -172,9 +169,8 @@ module.exports = function(grunt) {
                         var hashReplaceRegex = new RegExp('_('+ opts.hash +'|[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
 
                         // Remove previous busts
-                        filename   = filename.replace(hashReplaceRegex, '');
-                        _reference = _reference.replace(hashReplaceRegex, '');
-
+                        filename = filename.replace(hashReplaceRegex, '');
+                        // reference = reference.replace(hashReplaceRegex, '');
 
                         // Replacing specific terms in the import path so renaming files
                         if(opts.replaceTerms && opts.replaceTerms.length > 0) {
@@ -196,7 +192,7 @@ module.exports = function(grunt) {
                         newFilename = filename.replace(extension, '') +'_'+ hash + extension;
 
                         // Update the reference in the markup
-                        markup = markup.replace(new RegExp(regexEscape(_reference), 'g'), _reference.replace(extension, '') +'_'+ hash + extension);
+                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), (reference.replace(hashReplaceRegex, '').replace(extension, '')) +'_'+ hash + extension);
 
                         // Create our new file
                         grunt.file.copy(filename, newFilename);
@@ -211,12 +207,12 @@ module.exports = function(grunt) {
                             grunt.file.delete(filename);
                         }
                     } else {
-                        newFilename = _reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
-                        markup = markup.replace(new RegExp(regexEscape(_reference), 'g'), newFilename);
+                        newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
+                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
                 });
 
-                //Generate a JSON with the swapped file names if requested
+                // Generate a JSON with the swapped file names if requested
                 if(opts.jsonOutput){
                     grunt.log.writeln(opts.baseDir + opts.jsonOutputFilename + ' created!');
                     grunt.file.write(opts.baseDir + opts.jsonOutputFilename, JSON.stringify(filenameSwaps));
