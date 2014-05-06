@@ -142,6 +142,10 @@ module.exports = function(grunt) {
             return opts.hash || crypto.createHash(opts.algorithm).update(fileData, opts.encoding).digest('hex').substring(0, opts.length);
         };
 
+        var addHash = function(str, hash, extension) {
+            return str.replace(extension, '') +'_'+ hash + extension;
+        };
+
         this.files.forEach(function(file) {
             var src = file.src.filter(function(filepath) {
                 // Warn on and remove invalid source files (if nonull was set).
@@ -155,11 +159,12 @@ module.exports = function(grunt) {
                 var markup = grunt.file.read(filepath);
 
                 findStaticAssets(markup, filters, opts.enableUrlFragmentHint).forEach(function(reference) {
+                    var newFilename;
+                    var newFilePath;
+
                     var filePath   = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
                     var filename   = path.normalize((filePath + reference).split('?')[0]);
                     var extension  = path.extname(filename);
-
-                    var newFilename;
 
                     if(opts.dir) {
                         filename = opts.dir + filename;
@@ -168,9 +173,8 @@ module.exports = function(grunt) {
                     if(opts.rename) {
                         var hashReplaceRegex = new RegExp('_('+ opts.hash +'|[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
 
-                        // Remove previous busts
+                        // Get the original filename
                         filename = filename.replace(hashReplaceRegex, '');
-                        // reference = reference.replace(hashReplaceRegex, '');
 
                         // Replacing specific terms in the import path so renaming files
                         if(opts.replaceTerms && opts.replaceTerms.length > 0) {
@@ -189,15 +193,15 @@ module.exports = function(grunt) {
                         var hash = generateHash(grunt.file.read(filename));
 
                         // Create our new filename
-                        newFilename = filename.replace(extension, '') +'_'+ hash + extension;
+                        newFilename = addHash(filename, hash, extension);
 
                         // Update the reference in the markup
-                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), (reference.replace(hashReplaceRegex, '').replace(extension, '')) +'_'+ hash + extension);
+                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), addHash(reference.replace(hashReplaceRegex, ''), hash, extension));
 
                         // Create our new file
                         grunt.file.copy(filename, newFilename);
 
-                        //Generate a JSON with the swapped file names if requested
+                        // Generate a JSON with the swapped file names if requested
                         if(opts.jsonOutput){
                             filenameSwaps[filename] = newFilename;
                         }
