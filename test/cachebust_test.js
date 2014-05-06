@@ -4,6 +4,17 @@ var grunt = require('grunt');
 
 exports.cachebust = {
 
+    ignore: function(test) {
+        test.expect(3);
+
+        var scripts = grunt.file.read('tmp/ignorePattern.html');
+        test.ok(scripts.match(/assets\/toBeIgnoredCSS\.css"/), 'testing toBeIgnoredCSS');
+        test.ok(scripts.match(/assets\/toBeIgnoredJPG\.jpg"/), 'testing toBeIgnoredJPG');
+        test.ok(scripts.match(/assets\/toBeIgnoredJS\.js"/), 'testing toBeIgnoredJS');
+
+        test.done();
+    },
+
     scripts: function(test) {
         test.expect(8);
 

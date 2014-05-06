@@ -38,6 +38,9 @@ module.exports = function(grunt) {
                 jsonOutput: true
             },
             main: {
+                options: {
+                    ignorePatterns: ['toBeIgnoredCSS', 'toBeIgnoredJS', 'toBeIgnoredJPG']
+                },
                 files: [{
                     expand: true,
                     cwd: 'tmp/',
