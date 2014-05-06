@@ -65,29 +65,11 @@ grunt.initConfig({
 
 ### Options
 
-#### options.encoding
-Type: `String`
-Default value: `'utf8'`
-
-The encoding of the file contents.
-
 #### options.algorithm
 Type: `String`
 Default value: `'md5'`
 
 `algorithm` is dependent on the available algorithms supported by the version of OpenSSL on the platform. Examples are `'sha1'`, `'md5'`, `'sha256'`, `'sha512'`
-
-#### options.length
-Type: `Number`
-Default value: `16`
-
-The number of characters of the file content hash to prefix the file name with.
-
-#### options.rename
-Type: `Boolean`
-Default value: `false`
-
-When true, `cachebust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
 
 #### options.dir
 Type: `String`
@@ -101,6 +83,10 @@ Default value: `false`
 
 When true, `cachebust` will search single- and double-quoted strings in scripting languages such as PHP for asset paths.
 Asset paths must have the "#grunt-cache-bust" URL fragment appended. See Usage Examples section below.
+
+#### options.encoding
+Type: `String`
+Default value: `'utf8'`
 
 #### options.filters
 Type : `Object`
@@ -117,6 +103,8 @@ Default value:
 When set, `filters` will be merged with the default (above).  These filters are 'selector' : `Function` mapper | `Function` mapper[].
 Where the mapper function or array of functions returns the `String` file paths.
 
+The encoding of the file contents.
+
 #### options.jsonOutput
 Type: `Boolean`
 Default value: `false`
@@ -125,7 +113,7 @@ When true, `cachbust` will create a json file with an object inside that contain
 
 The format looks like this:
 `{`
-  `'app.js' : 'app_23E6F7AC5623E96F7AC56293E6F7AC56.js'` 
+  `'app.js' : 'app_23E6F7AC5623E96F7AC56293E6F7AC56.js'`
 `}`
 
 #### options.jsonOutputFilename
@@ -133,6 +121,18 @@ Type: `String`
 Default value: `'cachebuster.json'`
 
 Allows you to specify the filename for your cachebuster JSON file.
+
+#### options.length
+Type: `Number`
+Default value: `16`
+
+The number of characters of the file content hash to prefix the file name with.
+
+#### options.rename
+Type: `Boolean`
+Default value: `false`
+
+When true, `cachebust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
 
 ### Usage Examples
 
@@ -156,7 +156,7 @@ grunt.initConfig({
     options: {
       algorithm: 'sha1',
       length: 32,
-      baseDir: '.tmp/public/',
+      dir: '.tmp/public/',
       filters: {
         'script' : [
             function() { return this.attr('data-main');} // for requirejs mains.js

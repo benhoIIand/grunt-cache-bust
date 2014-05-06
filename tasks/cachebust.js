@@ -13,8 +13,6 @@ module.exports = function(grunt) {
 
     var filenameSwaps = {};
 
-    var that;
-
     var regexEscape = function(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     };
@@ -38,17 +36,17 @@ module.exports = function(grunt) {
     };
 
     var defaultFilters = {
-        'script' : function() { 
-            return this.attribs['src']; 
+        'script' : function() {
+            return this.attribs['src'];
         },
-        'link[rel="stylesheet"]' : function() { 
-            return this.attribs['href']; 
+        'link[rel="stylesheet"]' : function() {
+            return this.attribs['href'];
         },
-        'img' : function() { 
-            return this.attribs['src']; 
+        'img' : function() {
+            return this.attribs['src'];
         },
-        'link[rel="icon"], link[rel="shortcut icon"]' : function() { 
-            return this.attribs['href']; 
+        'link[rel="icon"], link[rel="shortcut icon"]' : function() {
+            return this.attribs['href'];
         }
     };
 
@@ -86,9 +84,7 @@ module.exports = function(grunt) {
         var paths = [];
 
         Object.keys(filters).forEach(function(key) {
-            var mappers = filters[key],
-                i,
-                item;
+            var mappers = filters[key];
 
             var addPaths = function(mapper) {
                 var i,
@@ -106,7 +102,7 @@ module.exports = function(grunt) {
 
                         return rtn;
                     });
-                
+
                 for(i = 0; i < foundPaths.length; i++){
                     paths = paths.concat(foundPaths[i]);
                 }
@@ -118,6 +114,8 @@ module.exports = function(grunt) {
                 addPaths(mappers);
             }
         });
+
+        console.log(paths);
 
         if(enableUrlFragmentHint) {
             var match, potentialPath;
