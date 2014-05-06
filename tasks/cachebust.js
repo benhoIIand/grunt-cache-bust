@@ -13,8 +13,6 @@ module.exports = function(grunt) {
 
     var filenameSwaps = {};
 
-    var that;
-
     var regexEscape = function(str) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     };
@@ -38,17 +36,17 @@ module.exports = function(grunt) {
     };
 
     var defaultFilters = {
-        'script' : function() { 
-            return this.attribs['src']; 
+        'script' : function() {
+            return this.attribs['src'];
         },
-        'link[rel="stylesheet"]' : function() { 
-            return this.attribs['href']; 
+        'link[rel="stylesheet"]' : function() {
+            return this.attribs['href'];
         },
-        'img' : function() { 
-            return this.attribs['src']; 
+        'img' : function() {
+            return this.attribs['src'];
         },
-        'link[rel="icon"], link[rel="shortcut icon"]' : function() { 
-            return this.attribs['href']; 
+        'link[rel="icon"], link[rel="shortcut icon"]' : function() {
+            return this.attribs['href'];
         }
     };
 
@@ -86,9 +84,7 @@ module.exports = function(grunt) {
         var paths = [];
 
         Object.keys(filters).forEach(function(key) {
-            var mappers = filters[key],
-                i,
-                item;
+            var mappers = filters[key];
 
             var addPaths = function(mapper) {
                 var i,
@@ -106,7 +102,7 @@ module.exports = function(grunt) {
 
                         return rtn;
                     });
-                
+
                 for(i = 0; i < foundPaths.length; i++){
                     paths = paths.concat(foundPaths[i]);
                 }
@@ -146,6 +142,10 @@ module.exports = function(grunt) {
             return opts.hash || crypto.createHash(opts.algorithm).update(fileData, opts.encoding).digest('hex').substring(0, opts.length);
         };
 
+        var addHash = function(str, hash, extension) {
+            return str.replace(extension, '') +'_'+ hash + extension;
+        };
+
         this.files.forEach(function(file) {
             var src = file.src.filter(function(filepath) {
                 // Warn on and remove invalid source files (if nonull was set).
@@ -159,12 +159,12 @@ module.exports = function(grunt) {
                 var markup = grunt.file.read(filepath);
 
                 findStaticAssets(markup, filters, opts.enableUrlFragmentHint).forEach(function(reference) {
-                    var _reference = reference;
-                    var filePath   = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
-                    var filename   = path.normalize((filePath + _reference).split('?')[0]);
-                    var extension  = path.extname(filename);
-
                     var newFilename;
+                    var newFilePath;
+
+                    var filePath   = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
+                    var filename   = path.normalize((filePath + reference).split('?')[0]);
+                    var extension  = path.extname(filename);
 
                     if(opts.dir) {
                         filename = opts.dir + filename;
@@ -173,10 +173,8 @@ module.exports = function(grunt) {
                     if(opts.rename) {
                         var hashReplaceRegex = new RegExp('_('+ opts.hash +'|[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
 
-                        // Remove previous busts
-                        filename   = filename.replace(hashReplaceRegex, '');
-                        _reference = _reference.replace(hashReplaceRegex, '');
-
+                        // Get the original filename
+                        filename = filename.replace(hashReplaceRegex, '');
 
                         // Replacing specific terms in the import path so renaming files
                         if(opts.replaceTerms && opts.replaceTerms.length > 0) {
@@ -195,15 +193,15 @@ module.exports = function(grunt) {
                         var hash = generateHash(grunt.file.read(filename));
 
                         // Create our new filename
-                        newFilename = filename.replace(extension, '') +'_'+ hash + extension;
+                        newFilename = addHash(filename, hash, extension);
 
                         // Update the reference in the markup
-                        markup = markup.replace(new RegExp(regexEscape(_reference), 'g'), _reference.replace(extension, '') +'_'+ hash + extension);
+                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), addHash(reference.replace(hashReplaceRegex, ''), hash, extension));
 
                         // Create our new file
                         grunt.file.copy(filename, newFilename);
 
-                        //Generate a JSON with the swapped file names if requested
+                        // Generate a JSON with the swapped file names if requested
                         if(opts.jsonOutput){
                             filenameSwaps[filename] = newFilename;
                         }
@@ -213,12 +211,12 @@ module.exports = function(grunt) {
                             grunt.file.delete(filename);
                         }
                     } else {
-                        newFilename = _reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
-                        markup = markup.replace(new RegExp(regexEscape(_reference), 'g'), newFilename);
+                        newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
+                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
                 });
 
-                //Generate a JSON with the swapped file names if requested
+                // Generate a JSON with the swapped file names if requested
                 if(opts.jsonOutput){
                     grunt.log.writeln(opts.baseDir + opts.jsonOutputFilename + ' created!');
                     grunt.file.write(opts.baseDir + opts.jsonOutputFilename, JSON.stringify(filenameSwaps));

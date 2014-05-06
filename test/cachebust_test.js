@@ -105,11 +105,6 @@ exports.cachebust = {
         test.expect(6);
 
         var standard = grunt.file.read('tmp/replaceAlreadyBusted.html');
-        console.log('\r\n');
-        console.log('tmp/assets/'+ standard.match(/replaceAlreadyBusted_[a-z0-9]{16}\.js/)[0]);
-        console.log('tmp/assets/'+ standard.match(/replaceAlreadyBusted_[a-z0-9]{16}\.css/)[0]);
-        console.log('tmp/assets/'+ standard.match(/replaceAlreadyBusted_[a-z0-9]{16}\.jpg/)[0]);
-        console.log('\r\n');
 
         test.ok(standard.match(/replaceAlreadyBusted_[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceNameAlreadyBusted');
         test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replaceAlreadyBusted_[a-z0-9]{16}\.js/)[0]));
