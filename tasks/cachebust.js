@@ -30,6 +30,7 @@ module.exports = function(grunt) {
         replaceTerms:[],
         rename: false,
         enableUrlFragmentHint: false,
+        ignorePatterns: [],
         filters : {},
         jsonOutput: false,
         jsonOutputFilename: 'cachebuster.json'
@@ -96,7 +97,7 @@ module.exports = function(grunt) {
                     .filter(function(path, el){
                         var rtn = false;
 
-                        if(el){
+                        if(el) {
                             rtn = true;
                         }
 
@@ -168,6 +169,16 @@ module.exports = function(grunt) {
 
                     if(opts.dir) {
                         filename = opts.dir + filename;
+                    }
+
+                    if(opts.ignorePatterns) {
+                        var matched = opts.ignorePatterns.some(function(pattern) {
+                            return new RegExp(pattern, 'ig').test(filename);
+                        });
+
+                        if(matched) {
+                            return false;
+                        }
                     }
 
                     if(opts.rename) {

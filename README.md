@@ -105,6 +105,14 @@ Where the mapper function or array of functions returns the `String` file paths.
 
 The encoding of the file contents.
 
+#### options.ignorePatterns
+Type: `Array`
+Default value: `[]`
+This is a regex test against a file reference. If returned true for patterns in the array, then that file will be ignored.
+```js
+ignorePatterns: ['test', 'requirejs']
+```
+
 #### options.jsonOutput
 Type: `Boolean`
 Default value: `false`
