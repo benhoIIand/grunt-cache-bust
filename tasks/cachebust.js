@@ -222,7 +222,12 @@ module.exports = function(grunt) {
                             grunt.file.delete(filename);
                         }
                     } else {
-                        newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
+                        if(/\?/.test(reference)) {
+                            newFilename = reference + '&amp;';
+                        } else {
+                            newFilename = reference + '?';
+                        }
+                        newFilename = newFilename + '__cachebust_string__=' + generateHash(grunt.file.read(filename));
                         markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
                 });
