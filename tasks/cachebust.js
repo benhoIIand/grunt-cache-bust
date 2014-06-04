@@ -151,6 +151,7 @@ module.exports = function(grunt) {
 
         this.files.forEach(function(file) {
             var src = file.src.filter(function(filepath) {
+
                 // Warn on and remove invalid source files (if nonull was set).
                 if (!grunt.file.exists(filepath)) {
                     grunt.log.warn('Source file "' + filepath + '" not found.');
@@ -158,6 +159,7 @@ module.exports = function(grunt) {
                 } else {
                     return true;
                 }
+
             }).map(function(filepath) {
                 var markup = grunt.file.read(filepath);
 
@@ -165,9 +167,9 @@ module.exports = function(grunt) {
                     var newFilename;
                     var newFilePath;
 
-                    var filePath   = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
-                    var filename   = path.normalize((filePath + reference).split('?')[0]);
-                    var extension  = path.extname(filename);
+                    var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
+                    var filename = path.normalize((filePath + reference).split('?')[0]);
+                    var extension = path.extname(filename);
 
                     if(opts.dir) {
                         filename = opts.dir + filename;
@@ -185,12 +187,10 @@ module.exports = function(grunt) {
 
                     if(opts.rename) {
 
-                        console.log(filename, processedFileMap[filename]);
+                        // If the file has already been cached, use that
                         if(processedFileMap[filename]) {
-                            // Update the reference in the markup
                             markup = markup.replace(new RegExp(regexEscape(reference), 'g'), processedFileMap[filename]);
                         } else {
-
                             var hashReplaceRegex = new RegExp('_('+ opts.hash +'|[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
 
                             // Get the original filename
