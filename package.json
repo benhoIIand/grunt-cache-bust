@@ -1,7 +1,7 @@
 {
   "name": "grunt-cache-bust",
   "description": "Bust static assets from the cache using content hashing",
-  "version": "0.3.6",
+  "version": "0.3.9",
   "author": "Ben Holland <hi@benholland.me>",
   "repository": {
     "type": "git",
@@ -17,7 +17,6 @@
     "node": ">= 0.8.0"
   },
   "scripts": {
-    "postinstall": "npm test",
     "test": "grunt test"
   },
   "devDependencies": {
