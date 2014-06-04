@@ -93,10 +93,10 @@ Type : `Object`
 Default value:
 ```js
 {
-    'script' : function() { return this.attr('src'); },
-    'link[rel="stylesheet"]' : function() { return this.attr('href'); },
-    'img' : function() { return this.attr('src'); },
-    'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attr('href'); }
+    'script' : function() { return this.attribs('src'); },
+    'link[rel="stylesheet"]' : function() { return this.attribs('href'); },
+    'img' : function() { return this.attribs('src'); },
+    'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attribs('href'); }
 }
 ```
 
@@ -167,8 +167,8 @@ grunt.initConfig({
       dir: '.tmp/public/',
       filters: {
         'script' : [
-            function() { return this.attr('data-main');} // for requirejs mains.js
-            function() { return this.attr('src'); }, // keep default 'src' mapper
+            function() { return this.attribs('data-main'); } // for requirejs mains.js
+            function() { return this.attribs('src'); }, // keep default 'src' mapper
         ]
       }
     },
