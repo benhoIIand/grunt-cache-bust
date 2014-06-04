@@ -167,8 +167,8 @@ grunt.initConfig({
       dir: '.tmp/public/',
       filters: {
         'script' : [
-            function() { return this.attr('data-main');} // for requirejs mains.js
-            function() { return this.attr('src'); }, // keep default 'src' mapper
+            function() { return this.attribs('data-main'); } // for requirejs mains.js
+            function() { return this.attribs('src'); }, // keep default 'src' mapper
         ]
       }
     },
