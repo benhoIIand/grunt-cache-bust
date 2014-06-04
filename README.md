@@ -93,17 +93,14 @@ Type : `Object`
 Default value:
 ```js
 {
-    'script' : function() { return this.attribs('src'); },
-    'link[rel="stylesheet"]' : function() { return this.attribs('href'); },
-    'img' : function() { return this.attribs('src'); },
-    'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attribs('href'); }
+    'script' : function() { return this.attribs['src']; },
+    'link[rel="stylesheet"]' : function() { return this.attribs['href']; },
+    'img' : function() { return this.attribs['src']; },
+    'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attribs['href']; }
 }
 ```
 
-When set, `filters` will be merged with the default (above).  These filters are 'selector' : `Function` mapper | `Function` mapper[].
-Where the mapper function or array of functions returns the `String` file paths.
-
-The encoding of the file contents.
+The key in the object is the `selector`, and the value provided is the filter. Filters will be merged with the defaults above.
 
 #### options.ignorePatterns
 Type: `Array`
@@ -167,8 +164,8 @@ grunt.initConfig({
       dir: '.tmp/public/',
       filters: {
         'script' : [
-            function() { return this.attribs('data-main'); } // for requirejs mains.js
-            function() { return this.attribs('src'); }, // keep default 'src' mapper
+            function() { return this.attribs['data-main']; } // for requirejs mains.js
+            function() { return this.attribs['src']; }, // keep default 'src' mapper
         ]
       }
     },
