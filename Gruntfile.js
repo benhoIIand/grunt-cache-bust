@@ -51,6 +51,7 @@ module.exports = function(grunt) {
                 options: {
                     baseDir: 'tmp/',
                     rename: true,
+                    deleteOriginals: true,
                     replaceTerms: [{
                         '${Html.GetAppSetting(ThemeId)}': 'com'
                     }]
@@ -75,8 +76,8 @@ module.exports = function(grunt) {
 
         watch: {
             task: {
-                files: 'tasks/cacheBust.js',
-                tasks: 'nodeunit'
+                files: ['tasks/cacheBust.js', 'test/cachebust_test.js'],
+                tasks: 'test'
             }
         }
 
