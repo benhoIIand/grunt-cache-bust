@@ -220,11 +220,6 @@ module.exports = function(grunt) {
 
                             // Create our new file
                             grunt.file.copy(filename, newFilename);
-
-                            // Generate a JSON with the swapped file names if requested
-                            if(opts.jsonOutput){
-                                filenameSwaps[filename] = newFilename;
-                            }
                         }
                     } else {
                         newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
@@ -234,17 +229,19 @@ module.exports = function(grunt) {
                     processedFileMap[filename] = newFilename;
                 });
 
-                // Delete the original file if the setting is true
+                // Delete the original files, if enabled
                 if(opts.deleteOriginals) {
                     for(var file in processedFileMap) {
-                        grunt.file.delete(file);
+                        if(grunt.file.exists(file)) {
+                            grunt.file.delete(file);
+                        }
                     }
                 }
 
                 // Generate a JSON with the swapped file names if requested
                 if(opts.jsonOutput){
                     grunt.log.writeln(opts.baseDir + opts.jsonOutputFilename + ' created!');
-                    grunt.file.write(opts.baseDir + opts.jsonOutputFilename, JSON.stringify(filenameSwaps));
+                    grunt.file.write(opts.baseDir + opts.jsonOutputFilename, JSON.stringify(processedFileMap));
                 }
 
                 grunt.file.write(filepath, markup);
