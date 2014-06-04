@@ -147,6 +147,8 @@ module.exports = function(grunt) {
             return str.replace(extension, '') +'_'+ hash + extension;
         };
 
+        var processedFileMap = {};
+
         this.files.forEach(function(file) {
             var src = file.src.filter(function(filepath) {
                 // Warn on and remove invalid source files (if nonull was set).
@@ -182,50 +184,62 @@ module.exports = function(grunt) {
                     }
 
                     if(opts.rename) {
-                        var hashReplaceRegex = new RegExp('_('+ opts.hash +'|[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
 
-                        // Get the original filename
-                        filename = filename.replace(hashReplaceRegex, '');
+                        console.log(filename, processedFileMap[filename]);
+                        if(processedFileMap[filename]) {
+                            // Update the reference in the markup
+                            markup = markup.replace(new RegExp(regexEscape(reference), 'g'), processedFileMap[filename]);
+                        } else {
 
-                        // Replacing specific terms in the import path so renaming files
-                        if(opts.replaceTerms && opts.replaceTerms.length > 0) {
-                            opts.replaceTerms.forEach(function(obj) {
-                                grunt.util._.each(obj, function(replacement, term) {
-                                    filename = filename.replace(term, replacement);
+                            var hashReplaceRegex = new RegExp('_('+ opts.hash +'|[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
+
+                            // Get the original filename
+                            filename = filename.replace(hashReplaceRegex, '');
+
+                            // Replacing specific terms in the import path so renaming files
+                            if(opts.replaceTerms && opts.replaceTerms.length > 0) {
+                                opts.replaceTerms.forEach(function(obj) {
+                                    grunt.util._.each(obj, function(replacement, term) {
+                                        filename = filename.replace(term, replacement);
+                                    });
                                 });
-                            });
-                        }
+                            }
 
-                        if(!grunt.file.exists(filename)) {
-                            grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
-                            return false;
-                        }
+                            if(!grunt.file.exists(filename)) {
+                                grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
+                                return false;
+                            }
 
-                        var hash = generateHash(grunt.file.read(filename));
+                            var hash = generateHash(grunt.file.read(filename));
 
-                        // Create our new filename
-                        newFilename = addHash(filename, hash, extension);
+                            // Create our new filename
+                            newFilename = addHash(filename, hash, extension);
 
-                        // Update the reference in the markup
-                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), addHash(reference.replace(hashReplaceRegex, ''), hash, extension));
+                            // Update the reference in the markup
+                            markup = markup.replace(new RegExp(regexEscape(reference), 'g'), addHash(reference.replace(hashReplaceRegex, ''), hash, extension));
 
-                        // Create our new file
-                        grunt.file.copy(filename, newFilename);
+                            // Create our new file
+                            grunt.file.copy(filename, newFilename);
 
-                        // Generate a JSON with the swapped file names if requested
-                        if(opts.jsonOutput){
-                            filenameSwaps[filename] = newFilename;
-                        }
-
-                        // Delete the original file if the setting is true
-                        if(opts.deleteOriginals) {
-                            grunt.file.delete(filename);
+                            // Generate a JSON with the swapped file names if requested
+                            if(opts.jsonOutput){
+                                filenameSwaps[filename] = newFilename;
+                            }
                         }
                     } else {
                         newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
                         markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
+
+                    processedFileMap[filename] = newFilename;
                 });
+
+                // Delete the original file if the setting is true
+                if(opts.deleteOriginals) {
+                    for(var file in processedFileMap) {
+                        grunt.file.delete(file);
+                    }
+                }
 
                 // Generate a JSON with the swapped file names if requested
                 if(opts.jsonOutput){
