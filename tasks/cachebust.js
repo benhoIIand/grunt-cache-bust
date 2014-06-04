@@ -230,7 +230,7 @@ module.exports = function(grunt) {
                 });
 
                 // Delete the original files, if enabled
-                if(opts.deleteOriginals) {
+                if(opts.rename && opts.deleteOriginals) {
                     for(var file in processedFileMap) {
                         if(grunt.file.exists(file)) {
                             grunt.file.delete(file);
