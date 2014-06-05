@@ -117,6 +117,7 @@ module.exports = function(grunt) {
 
         var match, potentialPath;
 
+        // Find any strings containing the hash `#grunt-cache-bust`
         while((match = urlFragHintRegex.exec(data)) != null) {
             potentialPath = match[2] || match[4];
 
