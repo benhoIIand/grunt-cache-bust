@@ -124,21 +124,22 @@ ignorePatterns: ['test', 'requirejs']
 ```
 
 #### options.jsonOutput
-Type: `Boolean`
+Type: `Boolean|String`
 Default value: `false`
 
-When true, `cachbust` will create a json file with an object inside that contains key value pairs of the original file name, and the renamed md5 hash name for each file.
+When set as `true`, `cachbust` will create a json file with an object inside that contains key value pairs of the original file name, and the renamed md5 hash name for each file.
 
-The format looks like this:
-`{`
-  `'app.js' : 'app_23E6F7AC5623E96F7AC56293E6F7AC56.js'`
-`}`
+The default output file will be named `cachebuster.json` and is relative to the root of the project, or the `baseDir` option if set.
 
-#### options.jsonOutputFilename
-Type: `String`
-Default value: `'cachebuster.json'`
+Alternatively, you can set this option as a string i.e. `example-file-name.json`, and this will be used.
 
-Allows you to specify the filename for your cachebuster JSON file.
+Output format looks like this:
+```
+{
+  'app.js' : 'app_23E6F7AC5623E96F7AC56293E6F7AC56.js',
+  'vendor.js': 'vendor_KJJKNB1FHjh421fwaj124bfaf52jwWAA.js'
+}
+```
 
 #### options.length
 Type: `Number`

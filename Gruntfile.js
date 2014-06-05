@@ -34,11 +34,11 @@ module.exports = function(grunt) {
                 encoding: 'utf8',
                 length: 16,
                 algorithm: 'md5',
-                baseDir: 'tmp/',
-                jsonOutput: true
+                baseDir: 'tmp/'
             },
             main: {
                 options: {
+                    jsonOutput: true,
                     ignorePatterns: ['toBeIgnoredCSS', 'toBeIgnoredJS', 'toBeIgnoredJPG']
                 },
                 files: [{
@@ -50,8 +50,9 @@ module.exports = function(grunt) {
             replace: {
                 options: {
                     baseDir: 'tmp/',
-                    rename: true,
                     deleteOriginals: true,
+                    jsonOutput: 'output/replace-cachebuster-map.json',
+                    rename: true,
                     replaceTerms: [{
                         '${Html.GetAppSetting(ThemeId)}': 'com'
                     }]

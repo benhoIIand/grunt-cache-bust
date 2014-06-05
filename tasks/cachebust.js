@@ -227,26 +227,28 @@ module.exports = function(grunt) {
                     processedFileMap[filename] = newFilename;
                 });
 
-                // Delete the original files, if enabled
-                if(opts.rename && opts.deleteOriginals) {
-                    for(var file in processedFileMap) {
-                        if(grunt.file.exists(file)) {
-                            grunt.file.delete(file);
-                        }
-                    }
-                }
-
-                // Generate a JSON with the swapped file names if requested
-                if(opts.jsonOutput){
-                    grunt.log.writeln(opts.baseDir + opts.jsonOutputFilename + ' created!');
-                    grunt.file.write(opts.baseDir + opts.jsonOutputFilename, JSON.stringify(processedFileMap));
-                }
-
                 grunt.file.write(filepath, markup);
 
-                grunt.log.writeln(filepath + ' was busted!');
+                grunt.log.writeln(['The file ', filepath, ' was busted!'].join(''));
             });
         });
+
+        // Delete the original files, if enabled
+        if(opts.rename && opts.deleteOriginals) {
+            for(var file in processedFileMap) {
+                if(grunt.file.exists(file)) {
+                    grunt.file.delete(file);
+                }
+            }
+        }
+
+        // Generate a JSON with the swapped file names if requested
+        if(opts.jsonOutput){
+            var name = typeof opts.jsonOutput === 'string' ? opts.jsonOutput : opts.jsonOutputFilename;
+
+            grunt.log.writeln(['File map has been exported to ', opts.baseDir+name, '!'].join(''));
+            grunt.file.write(opts.baseDir + name, JSON.stringify(processedFileMap));
+        }
     });
 
 };
