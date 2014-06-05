@@ -29,7 +29,6 @@ module.exports = function(grunt) {
         length: 16,
         replaceTerms:[],
         rename: false,
-        enableUrlFragmentHint: false,
         ignorePatterns: [],
         filters : {},
         jsonOutput: false,
@@ -68,7 +67,7 @@ module.exports = function(grunt) {
         return checkIfValidFile(this.attr('src') || this.attr('href'));
     };
 
-    var findStaticAssets = function(data, filters, enableUrlFragmentHint) {
+    var findStaticAssets = function(data, filters) {
         var $ = cheerio.load(data, cheerioOptions);
 
         // Add any conditional statements or assets in comments to the DOM
@@ -116,15 +115,13 @@ module.exports = function(grunt) {
             }
         });
 
-        if(enableUrlFragmentHint) {
-            var match, potentialPath;
+        var match, potentialPath;
 
-            while((match = urlFragHintRegex.exec(data)) != null) {
-                potentialPath = match[2] || match[4];
+        while((match = urlFragHintRegex.exec(data)) != null) {
+            potentialPath = match[2] || match[4];
 
-                if(checkIfValidFile(potentialPath)) {
-                    paths.push(potentialPath);
-                }
+            if(checkIfValidFile(potentialPath)) {
+                paths.push(potentialPath);
             }
         }
 
@@ -163,7 +160,7 @@ module.exports = function(grunt) {
             }).map(function(filepath) {
                 var markup = grunt.file.read(filepath);
 
-                findStaticAssets(markup, filters, opts.enableUrlFragmentHint).forEach(function(reference) {
+                findStaticAssets(markup, filters).forEach(function(reference) {
                     var newFilename;
                     var newFilePath;
 

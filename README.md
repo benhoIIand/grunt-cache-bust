@@ -63,6 +63,22 @@ grunt.initConfig({
 })
 ```
 
+```html
+<!doctype html>
+<html>
+<head>
+    <title>This is a test page</title>
+    <link rel="stylesheet" href="assets/standard.css" />
+</head>
+<body>
+    <img src="assets/standard.jpg" alt="bird">
+    <script defer src="assets/standard.js" type="text/javascript"></script>
+</body>
+</html>
+```
+
+All single and double-quoted strings in the target files with "#grunt-cache-bust" appended to the URL will be cache busted.
+
 ### Options
 
 #### options.algorithm
@@ -76,13 +92,6 @@ Type: `String`
 Default value: `false`
 
 When set, `cachebust` will try to find the asset files using the dir as base path.
-
-#### options.enableUrlFragmentHint
-Type: `Boolean`
-Default value: `false`
-
-When true, `cachebust` will search single- and double-quoted strings in scripting languages such as PHP for asset paths.
-Asset paths must have the "#grunt-cache-bust" URL fragment appended. See Usage Examples section below.
 
 #### options.encoding
 Type: `String`
@@ -107,7 +116,9 @@ The encoding of the file contents.
 #### options.ignorePatterns
 Type: `Array`
 Default value: `[]`
+
 This is a regex test against a file reference. If returned true for patterns in the array, then that file will be ignored.
+
 ```js
 ignorePatterns: ['test', 'requirejs']
 ```
@@ -179,33 +190,4 @@ grunt.initConfig({
     }]
   }
 });
-```
-
-#### URL-Fragment Hints
-
-```js
-grunt.initConfig({
-  cacheBust: {
-    options: {
-      enableUrlFragmentHint: true
-    },
-    files: ['example.php']
-  }
-});
-```
-
-Before cache bust:
-
-```php
-// example.php
-$foo = '/some/asset/path.jpg#grunt-cache-bust';
-$other = '/wont/be/busted.jpg';
-```
-
-After cache bust:
-
-```php
-// example.php
-$foo = '/some/asset/path.jpg?fa59cbed61b15262#grunt-cache-bust';
-$other = '/wont/be/busted.jpg';
 ```
