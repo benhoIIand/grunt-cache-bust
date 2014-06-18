@@ -245,5 +245,29 @@ exports.cachebust = {
         test.ok(grunt.file.exists('tmp/output/replace-cachebuster-map.json'));
 
         test.done();
+    },
+
+    srcSet: function(test) {
+        test.expect(3);
+
+        var srcset = grunt.file.read('tmp/srcset.html');
+
+        test.ok(srcset.match(/srcset\.jpeg\?[a-z0-9]{16}/), 'testing the srcset image');
+        test.ok(srcset.match(/srcset@2x\.jpeg\?[a-z0-9]{16}/), 'testing the srcset@2x image');
+        test.ok(srcset.match(/srcset-mobile\.jpeg\?[a-z0-9]{16}/), 'testing the srcset-mobile image');
+
+        test.done();
+    },
+
+    replaceSrcSet: function(test) {
+        test.expect(3);
+
+        var srcset = grunt.file.read('tmp/replaceSrcset.html');
+
+        test.ok(srcset.match(/srcset_[a-z0-9]{16}\.jpeg/), 'testing the replacement of srcset image');
+        test.ok(srcset.match(/srcset@2x_[a-z0-9]{16}\.jpeg/), 'testing the replacement of srcset@2x image');
+        test.ok(srcset.match(/srcset-mobile_[a-z0-9]{16}\.jpeg/), 'testing the replacement of srcset-mobile image');
+
+        test.done();
     }
 };
