@@ -8,6 +8,12 @@ body {
     background: #FFFFFF url('assets/css-image.jpg') center center no-repeat;
 }
 
+.image-quotes {
+    width: auto;
+    max-height: 120px;
+    background: #FFFFFF url("assets/css-image-quotes.jpg") center center no-repeat;
+}
+
 .large-image {
     width: 100%;
     background-image: url(assets/css-image-large.jpg);

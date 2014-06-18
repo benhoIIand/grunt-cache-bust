@@ -272,22 +272,24 @@ exports.cachebust = {
     },
 
     cssFile: function(test) {
-        test.expect(2);
+        test.expect(3);
 
         var srcset = grunt.file.read('tmp/stylesheet.css');
 
         test.ok(srcset.match(/css-image\.jpg\?[a-z0-9]{16}/), 'testing an image in a CSS file');
+        test.ok(srcset.match(/css-image-quotes.jpg\?[a-z0-9]{16}/), 'testing an image in a CSS file');
         test.ok(srcset.match(/css-image-large\.jpg\?[a-z0-9]{16}/), 'testing an image in a CSS file');
 
         test.done();
     },
 
     replaceCssFile: function(test) {
-        test.expect(2);
+        test.expect(3);
 
         var srcset = grunt.file.read('tmp/replaceStylesheet.css');
 
         test.ok(srcset.match(/css-image_[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
+        test.ok(srcset.match(/css-image-quotes_[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
         test.ok(srcset.match(/css-image-large_[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
 
         test.done();
