@@ -6,6 +6,7 @@ module.exports = function(grunt) {
     var path    = require('path');
     var crypto  = require('crypto');
     var cheerio = require('cheerio');
+    var css     = require('css');
 
     var remoteRegex    = /http:|https:|\/\/|data:image/;
     var extensionRegex = /(\.[a-zA-Z0-9]{2,4})(|\?.*)$/;
@@ -78,21 +79,38 @@ module.exports = function(grunt) {
         return checkIfValidFile(this.attr('src') || this.attr('href'));
     };
 
-    var findStaticAssets = function(data, filters) {
+    var findStaticAssets = function(data, filters, isCSS) {
         var $ = cheerio.load(data, cheerioOptions);
 
-        // Add any conditional statements or assets in comments to the DOM
-        var assets = '';
-
-        $('head, body').contents().filter(function() {
-            return this[0].type === 'comment';
-        }).each(function(i, e) {
-            assets += e.data.replace(/\[.*\]>|<!\[endif\]/g, '').trim();
-        });
-
-        $('body').append(assets);
-
         var paths = [];
+
+        if(isCSS) {
+            var cssObj = css.parse(data);
+
+            // Loop through each stylesheet rules
+            cssObj.stylesheet.rules.forEach(function(rule) {
+
+                // Loop through all declarations
+                rule.declarations.forEach(function(declaration) {
+
+                    // Check if it has a background property, and if so, checkt that it contains a URL
+                    if((/background/).test(declaration.property) && (/url/).test(declaration.value)) {
+                        paths.push(declaration.value.match(/url\(["|']?(.*?)['|"]?\)/)[1]);
+                    }
+                });
+            });
+        } else {
+            // Add any conditional statements or assets in comments to the DOM
+            var assets = '';
+
+            $('head, body').contents().filter(function() {
+                return this[0].type === 'comment';
+            }).each(function(i, e) {
+                assets += e.data.replace(/\[.*\]>|<!\[endif\]/g, '').trim();
+            });
+
+            $('body').append(assets);
+        }
 
         Object.keys(filters).forEach(function(key) {
             var mappers = filters[key];
@@ -172,7 +190,9 @@ module.exports = function(grunt) {
             }).map(function(filepath) {
                 var markup = grunt.file.read(filepath);
 
-                findStaticAssets(markup, filters).forEach(function(reference) {
+                var isCSS = (/\.css$/).test(filepath);
+
+                findStaticAssets(markup, filters, isCSS).forEach(function(reference) {
                     var newFilename;
                     var newFilePath;
 
