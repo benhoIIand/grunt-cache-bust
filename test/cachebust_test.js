@@ -288,9 +288,9 @@ exports.cachebust = {
 
         var srcset = grunt.file.read('tmp/replaceStylesheet.css');
 
-        test.ok(srcset.match(/css-image_[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
-        test.ok(srcset.match(/css-image-quotes_[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
-        test.ok(srcset.match(/css-image-large_[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
+        test.ok(srcset.match(/css-image.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
+        test.ok(srcset.match(/css-image-quotes.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
+        test.ok(srcset.match(/css-image-large.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
 
         test.done();
     }
