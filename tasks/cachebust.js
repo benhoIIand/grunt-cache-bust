@@ -29,7 +29,7 @@ module.exports = function(grunt) {
         encoding: 'utf8',
         length: 16,
         replaceTerms:[],
-        rename: false,
+        rename: true,
         separator: '.',
         ignorePatterns: [],
         filters : {},
