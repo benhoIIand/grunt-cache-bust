@@ -30,6 +30,7 @@ module.exports = function(grunt) {
         length: 16,
         replaceTerms:[],
         rename: false,
+        separator: '.',
         ignorePatterns: [],
         filters : {},
         jsonOutput: false,
@@ -171,7 +172,7 @@ module.exports = function(grunt) {
         };
 
         var addHash = function(str, hash, extension) {
-            return str.replace(extension, '') +'_'+ hash + extension;
+            return str.replace(extension, '') + opts.separator + hash + extension;
         };
 
         var processedFileMap = {};
@@ -220,7 +221,7 @@ module.exports = function(grunt) {
                         if(processedFileMap[filename]) {
                             markup = markup.replace(new RegExp(regexEscape(reference), 'g'), processedFileMap[filename]);
                         } else {
-                            var hashReplaceRegex = new RegExp('_('+ opts.hash +'|[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
+                            var hashReplaceRegex = new RegExp(regexEscape(opts.separator) +'('+ (opts.hash ? opts.hash +'|' : '') +'[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
 
                             // Get the original filename
                             filename = filename.replace(hashReplaceRegex, '');
