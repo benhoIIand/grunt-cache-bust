@@ -44,7 +44,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'tmp/',
-                    src: ['*.html', '!replace*.html', '!*.php']
+                    src: ['*.html', '*.css', '!replace*.*', '!*.php']
                 }]
             },
             replace: {
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
                     }]
                 },
                 files: [{
-                    src: ['tmp/replace*.html']
+                    src: ['tmp/replace*.*']
                 }]
             },
             enableUrlFragmentHint: {
