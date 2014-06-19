@@ -36,9 +36,10 @@ module.exports = function(grunt) {
                 algorithm: 'md5',
                 baseDir: 'tmp/'
             },
-            main: {
+            queryString: {
                 options: {
                     jsonOutput: true,
+                    rename: false,
                     ignorePatterns: ['toBeIgnoredCSS', 'toBeIgnoredJS', 'toBeIgnoredJPG']
                 },
                 files: [{
@@ -47,12 +48,11 @@ module.exports = function(grunt) {
                     src: ['*.html', '*.css', '!replace*.*', '!*.php']
                 }]
             },
-            replace: {
+            rename: {
                 options: {
                     baseDir: 'tmp/',
                     deleteOriginals: true,
                     jsonOutput: 'output/replace-cachebuster-map.json',
-                    rename: true,
                     replaceTerms: [{
                         '${Html.GetAppSetting(ThemeId)}': 'com'
                     }]
