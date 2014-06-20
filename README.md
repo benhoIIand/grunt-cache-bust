@@ -21,6 +21,7 @@ npm install grunt-cache-bust --save-dev
 
 Once that's done, add this line to your project's Gruntfile:
 
+```js
 grunt.loadNpmTasks('grunt-cache-bust');
 ```
 
