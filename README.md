@@ -10,7 +10,6 @@
 * [Options](#options)
 * [Usage Examples](#usage-examples)
 
-```js
 ## Getting Started
 _If you haven't used [grunt][] before, be sure to check out the [Getting Started][] guide._
 
