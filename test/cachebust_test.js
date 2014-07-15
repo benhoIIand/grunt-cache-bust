@@ -102,12 +102,12 @@ exports.cachebust = {
         test.expect(6);
 
         var standard = grunt.file.read('tmp/replace.html');
-        test.ok(standard.match(/replace_[a-z0-9]{16}\.js/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace_[a-z0-9]{16}\.js/)[0]));
-        test.ok(standard.match(/replace_[a-z0-9]{16}\.css/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace_[a-z0-9]{16}\.css/)[0]));
-        test.ok(standard.match(/replace_[a-z0-9]{16}\.png/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace_[a-z0-9]{16}\.png/)[0]));
+        test.ok(standard.match(/replace\.[a-z0-9]{16}\.js/), 'testing replaceName combination of CSS, JS and images');
+        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace\.[a-z0-9]{16}\.js/)[0]));
+        test.ok(standard.match(/replace\.[a-z0-9]{16}\.css/), 'testing replaceName combination of CSS, JS and images');
+        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace\.[a-z0-9]{16}\.css/)[0]));
+        test.ok(standard.match(/replace\.[a-z0-9]{16}\.png/), 'testing replaceName combination of CSS, JS and images');
+        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace\.[a-z0-9]{16}\.png/)[0]));
 
         test.done();
     },
@@ -116,12 +116,12 @@ exports.cachebust = {
         test.expect(6);
 
         var standard = grunt.file.read('tmp/replaceSameAssetsAcrossFiles.html');
-        test.ok(standard.match(/replace_[a-z0-9]{16}\.js/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace_[a-z0-9]{16}\.js/)[0]));
-        test.ok(standard.match(/replace_[a-z0-9]{16}\.css/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace_[a-z0-9]{16}\.css/)[0]));
-        test.ok(standard.match(/replace_[a-z0-9]{16}\.png/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace_[a-z0-9]{16}\.png/)[0]));
+        test.ok(standard.match(/replace\.[a-z0-9]{16}\.js/), 'testing replaceName combination of CSS, JS and images');
+        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace\.[a-z0-9]{16}\.js/)[0]));
+        test.ok(standard.match(/replace\.[a-z0-9]{16}\.css/), 'testing replaceName combination of CSS, JS and images');
+        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace\.[a-z0-9]{16}\.css/)[0]));
+        test.ok(standard.match(/replace\.[a-z0-9]{16}\.png/), 'testing replaceName combination of CSS, JS and images');
+        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replace\.[a-z0-9]{16}\.png/)[0]));
 
         test.done();
     },
@@ -141,12 +141,12 @@ exports.cachebust = {
 
         var standard = grunt.file.read('tmp/replaceAlreadyBusted.html');
 
-        test.ok(standard.match(/replaceAlreadyBusted_[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replaceAlreadyBusted_[a-z0-9]{16}\.js/)[0]));
-        test.ok(standard.match(/replaceAlreadyBusted_[a-z0-9]{16}\.css/), 'testing already busted CSS assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replaceAlreadyBusted_[a-z0-9]{16}\.css/)[0]));
-        test.ok(standard.match(/replaceAlreadyBusted_[a-z0-9]{16}\.jpg/), 'testing already busted image assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replaceAlreadyBusted_[a-z0-9]{16}\.jpg/)[0]));
+        test.ok(standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceNameAlreadyBusted');
+        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.js/)[0]));
+        test.ok(standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.css/), 'testing already busted CSS assets in replaceNameAlreadyBusted');
+        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.css/)[0]));
+        test.ok(standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.jpg/), 'testing already busted image assets in replaceNameAlreadyBusted');
+        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.jpg/)[0]));
 
         test.done();
     },
@@ -155,12 +155,12 @@ exports.cachebust = {
         test.expect(6);
 
         var standard = grunt.file.read('tmp/replaceTerm.html');
-        test.ok(standard.match(/replaceTerm_[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceTerm');
-        test.ok(grunt.file.exists('tmp/assets/com/'+ standard.match(/replaceTerm_[a-z0-9]{16}\.js/)[0]));
-        test.ok(standard.match(/replaceTerm_[a-z0-9]{16}\.css/), 'testing already busted CSS assets in replaceTerm');
-        test.ok(grunt.file.exists('tmp/assets/com/'+ standard.match(/replaceTerm_[a-z0-9]{16}\.css/)[0]));
-        test.ok(standard.match(/replaceTerm_[a-z0-9]{16}\.jpg/), 'testing already busted image assets in replaceTerm');
-        test.ok(grunt.file.exists('tmp/assets/com/'+ standard.match(/replaceTerm_[a-z0-9]{16}\.jpg/)[0]));
+        test.ok(standard.match(/replaceTerm\.[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceTerm');
+        test.ok(grunt.file.exists('tmp/assets/com/'+ standard.match(/replaceTerm\.[a-z0-9]{16}\.js/)[0]));
+        test.ok(standard.match(/replaceTerm\.[a-z0-9]{16}\.css/), 'testing already busted CSS assets in replaceTerm');
+        test.ok(grunt.file.exists('tmp/assets/com/'+ standard.match(/replaceTerm\.[a-z0-9]{16}\.css/)[0]));
+        test.ok(standard.match(/replaceTerm\.[a-z0-9]{16}\.jpg/), 'testing already busted image assets in replaceTerm');
+        test.ok(grunt.file.exists('tmp/assets/com/'+ standard.match(/replaceTerm\.[a-z0-9]{16}\.jpg/)[0]));
 
         test.done();
     },
@@ -227,20 +227,70 @@ exports.cachebust = {
     },
 
     enableUrlFragmentHint: function(test) {
-        test.expect(2);
+        test.expect(3);
 
         var phpFile = grunt.file.read('tmp/enableUrlFragmentHint.php');
 
-        test.ok(phpFile.match(/'assets\/standard\.css\?[a-z0-9]{16}#grunt-cache-bust'/), 'cache bust asset path in single-quoted PHP str');
-        test.ok(phpFile.match(/"assets\/image2\.jpg\?[a-z0-9]{16}#grunt-cache-bust"/), 'cache bust asset path in double-quoted PHP str');
+        test.ok(phpFile.match(/'assets\/standard\.[a-z0-9]{16}\.css\#grunt-cache-bust'/), 'cache bust asset path in single-quoted PHP str');
+        test.ok(phpFile.match(/"assets\/image2\.[a-z0-9]{16}\.jpg\#grunt-cache-bust"/), 'cache bust asset path in double-quoted PHP str');
+        test.ok(phpFile.match(/"assets\/standard\.[a-z0-9]{16}\.js\#grunt-cache-bust"/), 'cache bust asset path in double-quoted PHP str');
 
         test.done();
     },
 
     testJSONOutput: function(test) {
-        test.expect(1);
+        test.expect(2);
 
         test.ok(grunt.file.exists('tmp/cachebuster.json'));
+        test.ok(grunt.file.exists('tmp/output/replace-cachebuster-map.json'));
+
+        test.done();
+    },
+
+    srcSet: function(test) {
+        test.expect(3);
+
+        var srcset = grunt.file.read('tmp/srcset.html');
+
+        test.ok(srcset.match(/srcset\.jpeg\?[a-z0-9]{16}/), 'testing the srcset image');
+        test.ok(srcset.match(/srcset@2x\.jpeg\?[a-z0-9]{16}/), 'testing the srcset@2x image');
+        test.ok(srcset.match(/srcset-mobile\.jpeg\?[a-z0-9]{16}/), 'testing the srcset-mobile image');
+
+        test.done();
+    },
+
+    replaceSrcSet: function(test) {
+        test.expect(3);
+
+        var srcset = grunt.file.read('tmp/replaceSrcset.html');
+
+        test.ok(srcset.match(/srcset\.[a-z0-9]{16}\.jpeg/), 'testing the replacement of srcset image');
+        test.ok(srcset.match(/srcset@2x\.[a-z0-9]{16}\.jpeg/), 'testing the replacement of srcset@2x image');
+        test.ok(srcset.match(/srcset-mobile\.[a-z0-9]{16}\.jpeg/), 'testing the replacement of srcset-mobile image');
+
+        test.done();
+    },
+
+    cssFile: function(test) {
+        test.expect(3);
+
+        var srcset = grunt.file.read('tmp/stylesheet.css');
+
+        test.ok(srcset.match(/css-image\.jpg\?[a-z0-9]{16}/), 'testing an image in a CSS file');
+        test.ok(srcset.match(/css-image-quotes.jpg\?[a-z0-9]{16}/), 'testing an image in a CSS file');
+        test.ok(srcset.match(/css-image-large\.jpg\?[a-z0-9]{16}/), 'testing an image in a CSS file');
+
+        test.done();
+    },
+
+    replaceCssFile: function(test) {
+        test.expect(3);
+
+        var srcset = grunt.file.read('tmp/replaceStylesheet.css');
+
+        test.ok(srcset.match(/css-image.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
+        test.ok(srcset.match(/css-image-quotes.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
+        test.ok(srcset.match(/css-image-large.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
 
         test.done();
     }

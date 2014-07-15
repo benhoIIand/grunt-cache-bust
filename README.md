@@ -4,6 +4,12 @@
 
 > Bust static assets from the cache using content hashing
 
+* [Getting Started](#getting-started)
+* [Introduction](#the-cachebust-task)
+* [Overview](#overview)
+* [Options](#options)
+* [Usage Examples](#usage-examples)
+
 ## Getting Started
 _If you haven't used [grunt][] before, be sure to check out the [Getting Started][] guide._
 
@@ -63,6 +69,22 @@ grunt.initConfig({
 })
 ```
 
+```html
+<!doctype html>
+<html>
+<head>
+    <title>This is a test page</title>
+    <link rel="stylesheet" href="assets/standard.css" />
+</head>
+<body>
+    <img src="assets/standard.jpg" alt="bird">
+    <script defer src="assets/standard.js" type="text/javascript"></script>
+</body>
+</html>
+```
+
+All single and double-quoted strings in the target files with "#grunt-cache-bust" appended to the URL will be cache busted.
+
 ### Options
 
 #### options.algorithm
@@ -78,11 +100,11 @@ Default value: `false`
 When set, `cachebust` will try to find the asset files using the dir as base path.
 
 #### options.enableUrlFragmentHint
+
 Type: `Boolean`
 Default value: `false`
 
-When true, `cachebust` will search single- and double-quoted strings in scripting languages such as PHP for asset paths.
-Asset paths must have the "#grunt-cache-bust" URL fragment appended. See Usage Examples section below.
+When true, cachebust will search single and double-quoted strings in scripting languages such as PHP for asset paths. Asset paths must have the `#grunt-cache-bust` URL fragment appended. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/test/fixtures/enableUrlFragmentHint.php) for more details.
 
 #### options.encoding
 Type: `String`
@@ -93,41 +115,41 @@ Type : `Object`
 Default value:
 ```js
 {
-    'script' : function() { return this.attribs['src']; },
-    'link[rel="stylesheet"]' : function() { return this.attribs['href']; },
-    'img' : function() { return this.attribs['src']; },
-    'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attribs['href']; }
+    'SELECTOR' : function() { return this.attribs['ATTR']; }
 }
 ```
 
-The key in the object is the `selector`, and the value provided is the filter. Filters will be merged with the defaults above.
+The key in the object is the `selector`, and the value provided is the filter. Filters will be merged with the defaults above. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/tasks/cachebust.js#L39) for more details.
 
 The encoding of the file contents.
 
 #### options.ignorePatterns
 Type: `Array`
 Default value: `[]`
+
 This is a regex test against a file reference. If returned true for patterns in the array, then that file will be ignored.
+
 ```js
 ignorePatterns: ['test', 'requirejs']
 ```
 
 #### options.jsonOutput
-Type: `Boolean`
+Type: `Boolean|String`
 Default value: `false`
 
-When true, `cachbust` will create a json file with an object inside that contains key value pairs of the original file name, and the renamed md5 hash name for each file.
+When set as `true`, `cachbust` will create a json file with an object inside that contains key value pairs of the original file name, and the renamed md5 hash name for each file.
 
-The format looks like this:
-`{`
-  `'app.js' : 'app_23E6F7AC5623E96F7AC56293E6F7AC56.js'`
-`}`
+The default output file will be named `cachebuster.json` and is relative to the root of the project, or the `baseDir` option if set.
 
-#### options.jsonOutputFilename
-Type: `String`
-Default value: `'cachebuster.json'`
+Alternatively, you can set this option as a string i.e. `example-file-name.json`, and this will be used.
 
-Allows you to specify the filename for your cachebuster JSON file.
+Output format looks like this:
+```
+{
+  'app.js' : 'app_23E6F7AC5623E96F7AC56293E6F7AC56.js',
+  'vendor.js': 'vendor_KJJKNB1FHjh421fwaj124bfaf52jwWAA.js'
+}
+```
 
 #### options.length
 Type: `Number`
@@ -179,33 +201,4 @@ grunt.initConfig({
     }]
   }
 });
-```
-
-#### URL-Fragment Hints
-
-```js
-grunt.initConfig({
-  cacheBust: {
-    options: {
-      enableUrlFragmentHint: true
-    },
-    files: ['example.php']
-  }
-});
-```
-
-Before cache bust:
-
-```php
-// example.php
-$foo = '/some/asset/path.jpg#grunt-cache-bust';
-$other = '/wont/be/busted.jpg';
-```
-
-After cache bust:
-
-```php
-// example.php
-$foo = '/some/asset/path.jpg?fa59cbed61b15262#grunt-cache-bust';
-$other = '/wont/be/busted.jpg';
 ```

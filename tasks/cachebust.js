@@ -6,6 +6,7 @@ module.exports = function(grunt) {
     var path    = require('path');
     var crypto  = require('crypto');
     var cheerio = require('cheerio');
+    var css     = require('css');
 
     var remoteRegex    = /http:|https:|\/\/|data:image/;
     var extensionRegex = /(\.[a-zA-Z0-9]{2,4})(|\?.*)$/;
@@ -28,8 +29,8 @@ module.exports = function(grunt) {
         encoding: 'utf8',
         length: 16,
         replaceTerms:[],
-        rename: false,
-        enableUrlFragmentHint: false,
+        rename: true,
+        separator: '.',
         ignorePatterns: [],
         filters : {},
         jsonOutput: false,
@@ -43,9 +44,20 @@ module.exports = function(grunt) {
         'link[rel="stylesheet"]' : function() {
             return this.attribs['href'];
         },
-        'img' : function() {
-            return this.attribs['src'];
-        },
+        'img' : [
+            function() { return this.attribs['src']; },
+            function() {
+                var srcset = this.attribs['srcset'];
+
+                if(!srcset) {
+                    return false;
+                }
+
+                return srcset.split(',').map(function(src) {
+                    return src.trim().split(' ')[0];
+                });
+            }
+        ],
         'link[rel="icon"], link[rel="shortcut icon"]' : function() {
             return this.attribs['href'];
         }
@@ -68,21 +80,38 @@ module.exports = function(grunt) {
         return checkIfValidFile(this.attr('src') || this.attr('href'));
     };
 
-    var findStaticAssets = function(data, filters, enableUrlFragmentHint) {
+    var findStaticAssets = function(data, filters, isCSS) {
         var $ = cheerio.load(data, cheerioOptions);
 
-        // Add any conditional statements or assets in comments to the DOM
-        var assets = '';
-
-        $('head, body').contents().filter(function() {
-            return this[0].type === 'comment';
-        }).each(function(i, e) {
-            assets += e.data.replace(/\[.*\]>|<!\[endif\]/g, '').trim();
-        });
-
-        $('body').append(assets);
-
         var paths = [];
+
+        if(isCSS) {
+            var cssObj = css.parse(data);
+
+            // Loop through each stylesheet rules
+            cssObj.stylesheet.rules.forEach(function(rule) {
+
+                // Loop through all declarations
+                rule.declarations.forEach(function(declaration) {
+
+                    // Check if it has a background property, and if so, checkt that it contains a URL
+                    if((/background/).test(declaration.property) && (/url/).test(declaration.value)) {
+                        paths.push(declaration.value.match(/url\(["|']?(.*?)['|"]?\)/)[1]);
+                    }
+                });
+            });
+        } else {
+            // Add any conditional statements or assets in comments to the DOM
+            var assets = '';
+
+            $('head, body').contents().filter(function() {
+                return this[0].type === 'comment';
+            }).each(function(i, e) {
+                assets += e.data.replace(/\[.*\]>|<!\[endif\]/g, '').trim();
+            });
+
+            $('body').append(assets);
+        }
 
         Object.keys(filters).forEach(function(key) {
             var mappers = filters[key];
@@ -116,15 +145,14 @@ module.exports = function(grunt) {
             }
         });
 
-        if(enableUrlFragmentHint) {
-            var match, potentialPath;
+        var match, potentialPath;
 
-            while((match = urlFragHintRegex.exec(data)) != null) {
-                potentialPath = match[2] || match[4];
+        // Find any strings containing the hash `#grunt-cache-bust`
+        while((match = urlFragHintRegex.exec(data)) != null) {
+            potentialPath = match[2] || match[4];
 
-                if(checkIfValidFile(potentialPath)) {
-                    paths.push(potentialPath);
-                }
+            if(checkIfValidFile(potentialPath)) {
+                paths.push(potentialPath);
             }
         }
 
@@ -144,7 +172,7 @@ module.exports = function(grunt) {
         };
 
         var addHash = function(str, hash, extension) {
-            return str.replace(extension, '') +'_'+ hash + extension;
+            return str.replace(extension, '') + opts.separator + hash + extension;
         };
 
         var processedFileMap = {};
@@ -163,7 +191,9 @@ module.exports = function(grunt) {
             }).map(function(filepath) {
                 var markup = grunt.file.read(filepath);
 
-                findStaticAssets(markup, filters, opts.enableUrlFragmentHint).forEach(function(reference) {
+                var isCSS = (/\.css$/).test(filepath);
+
+                findStaticAssets(markup, filters, isCSS).forEach(function(reference) {
                     var newFilename;
                     var newFilePath;
 
@@ -191,7 +221,7 @@ module.exports = function(grunt) {
                         if(processedFileMap[filename]) {
                             markup = markup.replace(new RegExp(regexEscape(reference), 'g'), processedFileMap[filename]);
                         } else {
-                            var hashReplaceRegex = new RegExp('_('+ opts.hash +'|[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
+                            var hashReplaceRegex = new RegExp(regexEscape(opts.separator) +'('+ (opts.hash ? opts.hash +'|' : '') +'[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
 
                             // Get the original filename
                             filename = filename.replace(hashReplaceRegex, '');
@@ -229,26 +259,28 @@ module.exports = function(grunt) {
                     processedFileMap[filename] = newFilename;
                 });
 
-                // Delete the original files, if enabled
-                if(opts.rename && opts.deleteOriginals) {
-                    for(var file in processedFileMap) {
-                        if(grunt.file.exists(file)) {
-                            grunt.file.delete(file);
-                        }
-                    }
-                }
-
-                // Generate a JSON with the swapped file names if requested
-                if(opts.jsonOutput){
-                    grunt.log.writeln(opts.baseDir + opts.jsonOutputFilename + ' created!');
-                    grunt.file.write(opts.baseDir + opts.jsonOutputFilename, JSON.stringify(processedFileMap));
-                }
-
                 grunt.file.write(filepath, markup);
 
-                grunt.log.writeln(filepath + ' was busted!');
+                grunt.log.writeln(['The file ', filepath, ' was busted!'].join(''));
             });
         });
+
+        // Delete the original files, if enabled
+        if(opts.rename && opts.deleteOriginals) {
+            for(var file in processedFileMap) {
+                if(grunt.file.exists(file)) {
+                    grunt.file.delete(file);
+                }
+            }
+        }
+
+        // Generate a JSON with the swapped file names if requested
+        if(opts.jsonOutput){
+            var name = typeof opts.jsonOutput === 'string' ? opts.jsonOutput : opts.jsonOutputFilename;
+
+            grunt.log.writeln(['File map has been exported to ', opts.baseDir+name, '!'].join(''));
+            grunt.file.write(opts.baseDir + name, JSON.stringify(processedFileMap));
+        }
     });
 
 };
