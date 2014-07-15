@@ -4,6 +4,12 @@
 
 > Bust static assets from the cache using content hashing
 
+* [Getting Started](#getting-started)
+* [Introduction](#the-cachebust-task)
+* [Overview](#overview)
+* [Options](#options)
+* [Usage Examples](#usage-examples)
+
 ## Getting Started
 _If you haven't used [grunt][] before, be sure to check out the [Getting Started][] guide._
 
@@ -93,6 +99,13 @@ Default value: `false`
 
 When set, `cachebust` will try to find the asset files using the dir as base path.
 
+#### options.enableUrlFragmentHint
+
+Type: `Boolean`
+Default value: `false`
+
+When true, cachebust will search single and double-quoted strings in scripting languages such as PHP for asset paths. Asset paths must have the `#grunt-cache-bust` URL fragment appended. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/test/fixtures/enableUrlFragmentHint.php) for more details.
+
 #### options.encoding
 Type: `String`
 Default value: `'utf8'`
@@ -102,14 +115,11 @@ Type : `Object`
 Default value:
 ```js
 {
-    'script' : function() { return this.attribs['src']; },
-    'link[rel="stylesheet"]' : function() { return this.attribs['href']; },
-    'img' : function() { return this.attribs['src']; },
-    'link[rel="icon"], link[rel="shortcut icon"]' : function() { return this.attribs['href']; }
+    'SELECTOR' : function() { return this.attribs['ATTR']; }
 }
 ```
 
-The key in the object is the `selector`, and the value provided is the filter. Filters will be merged with the defaults above.
+The key in the object is the `selector`, and the value provided is the filter. Filters will be merged with the defaults above. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/tasks/cachebust.js#L39) for more details.
 
 The encoding of the file contents.
 
