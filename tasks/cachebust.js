@@ -256,7 +256,9 @@ module.exports = function(grunt) {
                         markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
 
-                    processedFileMap[filename] = newFilename;
+                    if(newFilename) {
+                        processedFileMap[filename] = newFilename.replace(opts.baseDir, '');
+                    }
                 });
 
                 grunt.file.write(filepath, markup);
