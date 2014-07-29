@@ -50,7 +50,7 @@ module.exports = function(grunt) {
             },
             rename: {
                 options: {
-                    baseDir: 'tmp/',
+                    baseDir: './tmp',
                     deleteOriginals: true,
                     jsonOutput: 'output/replace-cachebuster-map.json',
                     replaceTerms: [{

@@ -196,14 +196,11 @@ module.exports = function(grunt) {
                 findStaticAssets(markup, filters, isCSS).forEach(function(reference) {
                     var newFilename;
                     var newFilePath;
+                    var newReference;
 
                     var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
                     var filename = path.normalize((filePath + reference).split('?')[0]);
                     var extension = path.extname(filename);
-
-                    if(opts.dir) {
-                        filename = opts.dir + filename;
-                    }
 
                     if(opts.ignorePatterns) {
                         var matched = opts.ignorePatterns.some(function(pattern) {
@@ -245,19 +242,23 @@ module.exports = function(grunt) {
                             // Create our new filename
                             newFilename = addHash(filename, hash, extension);
 
+                            // Create the new reference
+                            newReference = addHash(reference.replace(hashReplaceRegex, ''), hash, extension);
+
                             // Update the reference in the markup
-                            markup = markup.replace(new RegExp(regexEscape(reference), 'g'), addHash(reference.replace(hashReplaceRegex, ''), hash, extension));
+                            markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newReference);
 
                             // Create our new file
                             grunt.file.copy(filename, newFilename);
                         }
                     } else {
                         newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
+                        newReference = newFilename;
                         markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
 
                     if(newFilename) {
-                        processedFileMap[filename] = newFilename.replace(opts.baseDir, '');
+                        processedFileMap[filename] = newReference;
                     }
                 });
 
@@ -281,7 +282,7 @@ module.exports = function(grunt) {
             var name = typeof opts.jsonOutput === 'string' ? opts.jsonOutput : opts.jsonOutputFilename;
 
             grunt.log.writeln(['File map has been exported to ', opts.baseDir+name, '!'].join(''));
-            grunt.file.write(opts.baseDir + name, JSON.stringify(processedFileMap));
+            grunt.file.write(path.normalize(opts.baseDir +'/'+ name), JSON.stringify(processedFileMap));
         }
     });
 
