@@ -89,17 +89,21 @@ module.exports = function(grunt) {
             var cssObj = css.parse(data);
 
             // Loop through each stylesheet rules
-            cssObj.stylesheet.rules.forEach(function(rule) {
+            if(cssObj.stylesheet) {
+                cssObj.stylesheet.rules.forEach(function(rule) {
 
-                // Loop through all declarations
-                rule.declarations.forEach(function(declaration) {
+                    // Loop through all declarations
+                    if(rule.declarations) {
+                        rule.declarations.forEach(function(declaration) {
 
-                    // Check if it has a background property, and if so, checkt that it contains a URL
-                    if((/background/).test(declaration.property) && (/url/).test(declaration.value)) {
-                        paths.push(declaration.value.match(/url\(["|']?(.*?)['|"]?\)/)[1]);
+                            // Check if it has a background property, and if so, checkt that it contains a URL
+                            if((/background/).test(declaration.property) && (/url/).test(declaration.value)) {
+                                paths.push(declaration.value.match(/url\(["|']?(.*?)['|"]?\)/)[1]);
+                            }
+                        });
                     }
                 });
-            });
+            }
         } else {
             // Add any conditional statements or assets in comments to the DOM
             var assets = '';
