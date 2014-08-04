@@ -93,11 +93,11 @@ Default value: `'md5'`
 
 `algorithm` is dependent on the available algorithms supported by the version of OpenSSL on the platform. Examples are `'sha1'`, `'md5'`, `'sha256'`, `'sha512'`
 
-#### options.dir
+#### options.baseDir
 Type: `String`
 Default value: `false`
 
-When set, `cachebust` will try to find the asset files using the dir as base path.
+When set, `cachebust` will try to find the asset files using the baseDir as base path.
 
 #### options.enableUrlFragmentHint
 
@@ -185,7 +185,7 @@ grunt.initConfig({
     options: {
       algorithm: 'sha1',
       length: 32,
-      dir: '.tmp/public/',
+      baseDir: '.tmp/public/',
       filters: {
         'script' : [
             function() { return this.attribs['data-main']; } // for requirejs mains.js
