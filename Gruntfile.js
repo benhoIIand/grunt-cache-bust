@@ -55,7 +55,13 @@ module.exports = function(grunt) {
                     jsonOutput: 'output/replace-cachebuster-map.json',
                     replaceTerms: [{
                         '${Html.GetAppSetting(ThemeId)}': 'com'
-                    }]
+                    }],
+                    filters: {
+                        script : [
+                            function() { return this.attribs['data-main'] +'.js'; },
+                            function() { return this.attribs['src']; }
+                        ]
+                    }
                 },
                 files: [{
                     src: ['tmp/replace*.*']

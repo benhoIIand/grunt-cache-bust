@@ -2,13 +2,13 @@
 
 module.exports = function(grunt) {
 
-    var fs      = require('fs');
-    var path    = require('path');
-    var crypto  = require('crypto');
+    var fs = require('fs');
+    var path = require('path');
+    var crypto = require('crypto');
     var cheerio = require('cheerio');
-    var css     = require('css');
+    var css = require('css');
 
-    var remoteRegex    = /http:|https:|\/\/|data:image/;
+    var remoteRegex = /http:|https:|\/\/|data:image/;
     var extensionRegex = /(\.[a-zA-Z0-9]{2,4})(|\?.*)$/;
     var urlFragHintRegex = /'(([^']+)#grunt-cache-bust)'|"(([^"]+)#grunt-cache-bust)"/g;
 
@@ -28,28 +28,30 @@ module.exports = function(grunt) {
         deleteOriginals: false,
         encoding: 'utf8',
         length: 16,
-        replaceTerms:[],
+        replaceTerms: [],
         rename: true,
         separator: '.',
         ignorePatterns: [],
-        filters : {},
+        filters: {},
         jsonOutput: false,
         jsonOutputFilename: 'cachebuster.json'
     };
 
     var defaultFilters = {
-        'script' : function() {
+        'script': function() {
             return this.attribs['src'];
         },
-        'link[rel="stylesheet"]' : function() {
+        'link[rel="stylesheet"]': function() {
             return this.attribs['href'];
         },
-        'img' : [
-            function() { return this.attribs['src']; },
+        'img': [
+            function() {
+                return this.attribs['src'];
+            },
             function() {
                 var srcset = this.attribs['srcset'];
 
-                if(!srcset) {
+                if (!srcset) {
                     return false;
                 }
 
@@ -58,26 +60,26 @@ module.exports = function(grunt) {
                 });
             }
         ],
-        'link[rel="icon"], link[rel="shortcut icon"]' : function() {
+        'link[rel="icon"], link[rel="shortcut icon"]': function() {
             return this.attribs['href'];
         }
     };
 
-    var checkIfRemote = function(href) {
-        return remoteRegex.test(href);
+    var checkIfRemote = function(path) {
+        return remoteRegex.test(path);
     };
 
-    var checkIfHasExtension = function(href) {
-        return extensionRegex.test(href);
+    var checkIfHasExtension = function(path) {
+        return extensionRegex.test(path);
     };
 
-    var checkIfValidFile = function(href) {
-        return !checkIfRemote(href) && checkIfHasExtension(href);
+    var checkIfValidFile = function(path) {
+        return path !== 'undefined' && path !== undefined && !checkIfRemote(path) && checkIfHasExtension(path);
     };
 
     /** @this Object An elem on which attr() may be called for src or href. */
     var checkIfElemSrcValidFile = function() {
-        return checkIfValidFile(this.attr('src') || this.attr('href'));
+        return checkIfValidFile(this.attr('src')) || checkIfValidFile(this.attr('href'));
     };
 
     var findStaticAssets = function(data, filters, isCSS) {
@@ -85,25 +87,23 @@ module.exports = function(grunt) {
 
         var paths = [];
 
-        if(isCSS) {
+        if (isCSS) {
             var cssObj = css.parse(data);
 
             // Loop through each stylesheet rules
-            if(cssObj.stylesheet) {
-                cssObj.stylesheet.rules.forEach(function(rule) {
+            cssObj.stylesheet.rules.forEach(function(rule) {
 
-                    // Loop through all declarations
-                    if(rule.declarations) {
-                        rule.declarations.forEach(function(declaration) {
+                // Loop through all declarations
+                if (rule.declarations) {
+                    rule.declarations.forEach(function(declaration) {
 
-                            // Check if it has a background property, and if so, checkt that it contains a URL
-                            if((/background/).test(declaration.property) && (/url/).test(declaration.value)) {
-                                paths.push(declaration.value.match(/url\(["|']?(.*?)['|"]?\)/)[1]);
-                            }
-                        });
-                    }
-                });
-            }
+                        // Check if it has a background property, and if so, checkt that it contains a URL
+                        if ((/background/).test(declaration.property) && (/url/).test(declaration.value)) {
+                            paths.push(declaration.value.match(/url\(["|']?(.*?)['|"]?\)/)[1]);
+                        }
+                    });
+                }
+            });
         } else {
             // Add any conditional statements or assets in comments to the DOM
             var assets = '';
@@ -127,17 +127,17 @@ module.exports = function(grunt) {
                     foundPaths = $(key)
                     .filter(checkIfElemSrcValidFile)
                     .map(mapper)
-                    .filter(function(path, el){
+                    .filter(function(path, el) {
                         var rtn = false;
 
-                        if(el) {
+                        if (el) {
                             rtn = true;
                         }
 
                         return rtn;
                     });
 
-                for(i = 0; i < foundPaths.length; i++){
+                for (i = 0; i < foundPaths.length; i++) {
                     paths = paths.concat(foundPaths[i]);
                 }
             };
@@ -152,10 +152,10 @@ module.exports = function(grunt) {
         var match, potentialPath;
 
         // Find any strings containing the hash `#grunt-cache-bust`
-        while((match = urlFragHintRegex.exec(data)) != null) {
+        while ((match = urlFragHintRegex.exec(data)) != null) {
             potentialPath = match[2] || match[4];
 
-            if(checkIfValidFile(potentialPath)) {
+            if (checkIfValidFile(potentialPath)) {
                 paths.push(potentialPath);
             }
         }
@@ -204,39 +204,41 @@ module.exports = function(grunt) {
 
                     var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
                     var filename = path.normalize((filePath + reference).split('?')[0]);
-                    var extension = path.extname(filename);
+                    var originalFilename = filename;
+                    var originalReference = reference;
 
-                    if(opts.ignorePatterns) {
+                    if (opts.ignorePatterns) {
                         var matched = opts.ignorePatterns.some(function(pattern) {
                             return new RegExp(pattern, 'ig').test(filename);
                         });
 
-                        if(matched) {
+                        if (matched) {
                             return false;
                         }
                     }
 
-                    if(opts.rename) {
+                    if (opts.rename) {
 
                         // If the file has already been cached, use that
-                        if(processedFileMap[filename]) {
+                        if (processedFileMap[filename]) {
                             markup = markup.replace(new RegExp(regexEscape(reference), 'g'), processedFileMap[filename]);
                         } else {
-                            var hashReplaceRegex = new RegExp(regexEscape(opts.separator) +'('+ (opts.hash ? opts.hash +'|' : '') +'[a-zA-Z0-9]{'+ opts.length +'})', 'ig');
+                            var hashReplaceRegex = new RegExp(regexEscape(opts.separator) + '(' + (opts.hash ? opts.hash + '|' : '') + '[a-zA-Z0-9]{' + opts.length + '})', 'ig');
 
                             // Get the original filename
                             filename = filename.replace(hashReplaceRegex, '');
 
                             // Replacing specific terms in the import path so renaming files
-                            if(opts.replaceTerms && opts.replaceTerms.length > 0) {
+                            if (opts.replaceTerms && opts.replaceTerms.length > 0) {
                                 opts.replaceTerms.forEach(function(obj) {
                                     grunt.util._.each(obj, function(replacement, term) {
                                         filename = filename.replace(term, replacement);
+                                        reference = reference.replace(term, replacement);
                                     });
                                 });
                             }
 
-                            if(!grunt.file.exists(filename)) {
+                            if (!grunt.file.exists(filename)) {
                                 grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
                                 return false;
                             }
@@ -244,13 +246,13 @@ module.exports = function(grunt) {
                             var hash = generateHash(grunt.file.read(filename));
 
                             // Create our new filename
-                            newFilename = addHash(filename, hash, extension);
+                            newFilename = addHash(filename, hash, path.extname(filename));
 
                             // Create the new reference
-                            newReference = addHash(reference.replace(hashReplaceRegex, ''), hash, extension);
+                            newReference = addHash(reference.replace(hashReplaceRegex, ''), hash, path.extname(filename));
 
                             // Update the reference in the markup
-                            markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newReference);
+                            markup = markup.replace(new RegExp(regexEscape(originalReference), 'g'), newReference);
 
                             // Create our new file
                             grunt.file.copy(filename, newFilename);
@@ -261,8 +263,8 @@ module.exports = function(grunt) {
                         markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
                     }
 
-                    if(newFilename) {
-                        processedFileMap[filename] = newReference;
+                    if (newFilename) {
+                        processedFileMap[originalFilename] = newReference;
                     }
                 });
 
@@ -273,20 +275,20 @@ module.exports = function(grunt) {
         });
 
         // Delete the original files, if enabled
-        if(opts.rename && opts.deleteOriginals) {
-            for(var file in processedFileMap) {
-                if(grunt.file.exists(file)) {
+        if (opts.rename && opts.deleteOriginals) {
+            for (var file in processedFileMap) {
+                if (grunt.file.exists(file)) {
                     grunt.file.delete(file);
                 }
             }
         }
 
         // Generate a JSON with the swapped file names if requested
-        if(opts.jsonOutput){
+        if (opts.jsonOutput) {
             var name = typeof opts.jsonOutput === 'string' ? opts.jsonOutput : opts.jsonOutputFilename;
 
-            grunt.log.writeln(['File map has been exported to ', opts.baseDir+name, '!'].join(''));
-            grunt.file.write(path.normalize(opts.baseDir +'/'+ name), JSON.stringify(processedFileMap));
+            grunt.log.writeln(['File map has been exported to ', opts.baseDir + name, '!'].join(''));
+            grunt.file.write(path.normalize(opts.baseDir + '/' + name), JSON.stringify(processedFileMap));
         }
     });
 
