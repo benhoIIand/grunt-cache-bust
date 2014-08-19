@@ -258,6 +258,10 @@ module.exports = function(grunt) {
                             grunt.file.copy(filename, newFilename);
                         }
                     } else {
+                        if (!grunt.file.exists(filename)) {
+                            grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
+                            return false;
+                        }
                         newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
                         newReference = newFilename;
                         markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
