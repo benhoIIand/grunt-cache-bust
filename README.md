@@ -159,7 +159,7 @@ The number of characters of the file content hash to prefix the file name with.
 
 #### options.rename
 Type: `Boolean`
-Default value: `false`
+Default value: `true`
 
 When true, `cachebust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
 
