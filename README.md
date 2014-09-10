@@ -110,6 +110,8 @@ When true, cachebust will search single and double-quoted strings in scripting l
 Type: `String`
 Default value: `'utf8'`
 
+The encoding of the file contents.
+
 #### options.filters
 Type : `Object`
 Default value:
@@ -120,8 +122,6 @@ Default value:
 ```
 
 The key in the object is the `selector`, and the value provided is the filter. Filters will be merged with the defaults above. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/tasks/cachebust.js#L39) for more details.
-
-The encoding of the file contents.
 
 #### options.ignorePatterns
 Type: `Array`
