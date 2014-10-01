@@ -202,7 +202,7 @@ module.exports = function(grunt) {
                     var newFilePath;
                     var newReference;
 
-                    var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
+                    var filePath = (opts.baseDir && grunt.file.isPathAbsolute(filepath) ? opts.baseDir : path.dirname(filepath)) + '/';
                     var filename = path.normalize((filePath + reference).split('?')[0]);
                     var originalFilename = filename;
                     var originalReference = reference;
