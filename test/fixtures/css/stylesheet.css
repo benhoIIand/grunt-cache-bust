@@ -1,0 +1,22 @@
+body {
+    background-color: red;
+}
+
+.image {
+    width: auto;
+    max-height: 120px;
+    background: #FFFFFF url('../assets/css-relative-image.jpg') center center no-repeat;
+}
+
+.image-quotes {
+    width: auto;
+    max-height: 120px;
+    background: #FFFFFF url("../assets/css-relative-image-quotes.jpg") center center no-repeat;
+}
+
+.large-image {
+    width: 100%;
+    background-image: url(../assets/css-relative-image-large.jpg);
+    background-position: top center;
+    background-size: contain;
+}
