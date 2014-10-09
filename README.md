@@ -69,6 +69,8 @@ grunt.initConfig({
 })
 ```
 
+All single and double-quoted strings in the `src` files will be cache busted, turning this...
+
 ```html
 <!doctype html>
 <html>
@@ -83,7 +85,21 @@ grunt.initConfig({
 </html>
 ```
 
-All single and double-quoted strings in the target files with "#grunt-cache-bust" appended to the URL will be cache busted.
+Into this...
+
+```html
+<!doctype html>
+<html>
+<head>
+    <title>This is a test page</title>
+    <link rel="stylesheet" href="assets/standard.42ef84f271bc9981.css" />
+</head>
+<body>
+    <img src="assets/standard.cff5ec22b9c94445.jpg" alt="bird">
+    <script defer src="assets/standard.72ab161c7c213886.js" type="text/javascript"></script>
+</body>
+</html>
+```
 
 ### Options
 
@@ -98,6 +114,12 @@ Type: `String`
 Default value: `false`
 
 When set, `cachebust` will try to find the asset files using the baseDir as base path.
+
+#### options.deleteOriginals
+Type: `Boolean`
+Default value: `false`
+
+When true, the original asset files will be deleted once they have been busted.
 
 #### options.enableUrlFragmentHint
 
@@ -194,10 +216,7 @@ grunt.initConfig({
       }
     },
     files: [{
-      expand: true,
-      cwd: 'src',
-      src: ['*.html'],
-      dest: 'dest/'
+      src: ['*.html']
     }]
   }
 });
