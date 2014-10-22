@@ -177,8 +177,10 @@ When true, `cachebust` will rename the reference to the file and the file itself
 ```js
 grunt.initConfig({
   cacheBust: {
-    files: {
-      src: ['index.html', 'contact.html']
+    assets: {
+      files: {
+        src: ['index.html', 'contact.html']
+      }
     }
   }
 });
