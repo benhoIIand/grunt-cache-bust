@@ -6,11 +6,11 @@ module.exports = function(grunt) {
     var path = require('path');
     var crypto = require('crypto');
     var cheerio = require('cheerio');
-    var css = require('css');
 
     var remoteRegex = /http:|https:|\/\/|data:image/;
     var extensionRegex = /(\.[a-zA-Z0-9]{2,4})(|\?.*)$/;
     var urlFragHintRegex = /'(([^']+)#grunt-cache-bust)'|"(([^"]+)#grunt-cache-bust)"/g;
+    var imgRegex = /url\(['"]?(?!data:)([^)'"?]+)['"]?(?:\?v=[0-9]+)*\)/gi;
 
     var filenameSwaps = {};
 
@@ -88,22 +88,13 @@ module.exports = function(grunt) {
         var paths = [];
 
         if (isCSS) {
-            var cssObj = css.parse(data);
-
-            // Loop through each stylesheet rules
-            cssObj.stylesheet.rules.forEach(function(rule) {
-
-                // Loop through all declarations
-                if (rule.declarations) {
-                    rule.declarations.forEach(function(declaration) {
-
-                        // Check if it has a background property, and if so, checkt that it contains a URL
-                        if ((/background/).test(declaration.property) && (/url/).test(declaration.value)) {
-                            paths.push(declaration.value.match(/url\(["|']?(.*?)['|"]?\)/)[1]);
-                        }
-                    });
+            // Find any strings containing url references
+            while ((match = imgRegex.exec(data)) != null) {
+                potentialPath = match[0].slice(5, -2);
+                if (checkIfValidFile(potentialPath)) {
+                    paths.push(potentialPath);
                 }
-            });
+            }
         } else {
             // Add any conditional statements or assets in comments to the DOM
             var assets = '';
