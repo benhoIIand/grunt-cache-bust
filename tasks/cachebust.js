@@ -77,11 +77,6 @@ module.exports = function(grunt) {
         return path !== 'undefined' && path !== undefined && !checkIfRemote(path) && checkIfHasExtension(path);
     };
 
-    /** @this Object An elem on which attr() may be called for src or href. */
-    var checkIfElemSrcValidFile = function() {
-        return checkIfValidFile(this.attr('src')) || checkIfValidFile(this.attr('href'));
-    };
-
     var findStaticAssets = function(data, filters, isCSS) {
         var $ = cheerio.load(data, cheerioOptions);
 
@@ -116,7 +111,6 @@ module.exports = function(grunt) {
                     item,
 
                     foundPaths = $(key)
-                    .filter(checkIfElemSrcValidFile)
                     .map(mapper)
                     .filter(function(path, el) {
                         var rtn = false;
