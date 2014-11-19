@@ -272,13 +272,14 @@ exports.cachebust = {
     },
 
     cssFile: function(test) {
-        test.expect(3);
+        test.expect(4);
 
         var srcset = grunt.file.read('tmp/stylesheet.css');
 
         test.ok(srcset.match(/css-image\.jpg\?[a-z0-9]{16}/), 'testing an image in a CSS file');
         test.ok(srcset.match(/css-image-quotes.jpg\?[a-z0-9]{16}/), 'testing an image in a CSS file');
         test.ok(srcset.match(/css-image-large\.jpg\?[a-z0-9]{16}/), 'testing an image in a CSS file');
+        test.ok(srcset.match(/image1\.jpg\?[a-z0-9]{16}/), 'testing an image in a CSS file within a media query');
 
         test.done();
     },

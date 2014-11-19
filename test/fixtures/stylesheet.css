@@ -20,3 +20,9 @@ body {
     background-position: top center;
     background-size: contain;
 }
+
+@media only screen and (min-device-pixel-ratio: 2) and (min-resolution: 2dppx) {
+    .large-image {
+        background-image: url('assets/image1.jpg');
+    }
+}
