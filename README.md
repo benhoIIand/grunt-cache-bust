@@ -110,6 +110,8 @@ When true, cachebust will search single and double-quoted strings in scripting l
 Type: `String`
 Default value: `'utf8'`
 
+The encoding of the file contents.
+
 #### options.filters
 Type : `Object`
 Default value:
@@ -120,8 +122,6 @@ Default value:
 ```
 
 The key in the object is the `selector`, and the value provided is the filter. Filters will be merged with the defaults above. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/tasks/cachebust.js#L39) for more details.
-
-The encoding of the file contents.
 
 #### options.ignorePatterns
 Type: `Array`
@@ -159,7 +159,7 @@ The number of characters of the file content hash to prefix the file name with.
 
 #### options.rename
 Type: `Boolean`
-Default value: `false`
+Default value: `true`
 
 When true, `cachebust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
 
