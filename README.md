@@ -65,7 +65,7 @@ grunt.initConfig({
             src: ['index.html']
         }]
     }
-  },
+  }
 })
 ```
 
@@ -170,8 +170,10 @@ When true, `cachebust` will rename the reference to the file and the file itself
 ```js
 grunt.initConfig({
   cacheBust: {
-    files: {
-      src: ['index.html', 'contact.html']
+    assets: {
+      files: {
+        src: ['index.html', 'contact.html']
+      }
     }
   }
 });
@@ -187,18 +189,24 @@ grunt.initConfig({
       length: 32,
       baseDir: '.tmp/public/',
       filters: {
-        'script' : [
-            function() { return this.attribs['data-main']; }, // for requirejs mains.js
-            function() { return this.attribs['src']; } // keep default 'src' mapper
+        'script': [
+          function() {
+            return this.attribs['data-main'];
+          }, // for requirejs mains.js
+          function() {
+            return this.attribs.src;
+          } // keep default 'src' mapper
         ]
       }
     },
-    files: [{
-      expand: true,
-      cwd: 'src',
-      src: ['*.html'],
-      dest: 'dest/'
-    }]
+    assets: {
+      files: [{
+        expand: true,
+        cwd: 'src',
+        src: ['*.html'],
+        dest: 'dest/'
+      }]
+    }
   }
 });
 ```
