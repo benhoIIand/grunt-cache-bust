@@ -102,9 +102,11 @@ module.exports = function(grunt) {
                 // Loop through all declarations
                 if (declarations && declarations.length > 0) {
                     declarations.forEach(function(declaration) {
+                        var hasBackgroundUrl = (/background/).test(declaration.property) && (/url/).test(declaration.value),
+                            hasContentUrl = (/content/).test(declaration.property) && (/url/).test(declaration.value);
 
                         // Check if it has a background property, and if so, check that it contains a URL
-                        if ((/background/).test(declaration.property) && (/url/).test(declaration.value)) {
+                        if (hasBackgroundUrl || hasContentUrl) {
                             paths.push(declaration.value.match(/url\(["|']?(.*?)['|"]?\)/)[1]);
                         }
                     });
