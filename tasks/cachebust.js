@@ -93,12 +93,20 @@ module.exports = function(grunt) {
             // Loop through each stylesheet rules
             cssObj.stylesheet.rules.forEach(function(rule) {
 
-                // Loop through all declarations
-                if (rule.declarations) {
-                    rule.declarations.forEach(function(declaration) {
+                var mediaQueryDeclarations = rule.type !== 'media' ? [] : rule.rules.reduce(function(acc, rule) {
+                    return acc.concat(rule.declarations);
+                }, []);
 
-                        // Check if it has a background property, and if so, checkt that it contains a URL
-                        if ((/background/).test(declaration.property) && (/url/).test(declaration.value)) {
+                var declarations = (rule.declarations || []).concat(mediaQueryDeclarations);
+
+                // Loop through all declarations
+                if (declarations && declarations.length > 0) {
+                    declarations.forEach(function(declaration) {
+                        var hasBackgroundUrl = (/background/).test(declaration.property) && (/url/).test(declaration.value),
+                            hasContentUrl = (/content/).test(declaration.property) && (/url/).test(declaration.value);
+
+                        // Check if it has a background property, and if so, check that it contains a URL
+                        if (hasBackgroundUrl || hasContentUrl) {
                             paths.push(declaration.value.match(/url\(["|']?(.*?)['|"]?\)/)[1]);
                         }
                     });
@@ -291,7 +299,7 @@ module.exports = function(grunt) {
         if (opts.jsonOutput) {
             var name = typeof opts.jsonOutput === 'string' ? opts.jsonOutput : opts.jsonOutputFilename;
 
-            grunt.log.writeln(['File map has been exported to ', opts.baseDir + name, '!'].join(''));
+            grunt.log.writeln(['File map has been exported to ', path.normalize(opts.baseDir + '/' + name), '!'].join(''));
             grunt.file.write(path.normalize(opts.baseDir + '/' + name), JSON.stringify(processedFileMap));
         }
     });
