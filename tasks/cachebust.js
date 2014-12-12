@@ -25,6 +25,7 @@ module.exports = function(grunt) {
 
     var options = {
         algorithm: 'md5',
+        cdnPath: false,
         deleteOriginals: false,
         encoding: 'utf8',
         length: 16,
@@ -65,24 +66,28 @@ module.exports = function(grunt) {
         }
     };
 
-    var checkIfRemote = function(path) {
-        return remoteRegex.test(path);
+    var checkIfRemote = function(path, cdnPath) {
+        if (cdnPath) {
+            var cdnPattern = new RegExp(cdnPath);
+            return remoteRegex.test(path) && !cdnPattern.test(path);
+        } else {
+            return remoteRegex.test(path)
+        }
     };
 
     var checkIfHasExtension = function(path) {
         return extensionRegex.test(path);
     };
 
-    var checkIfValidFile = function(path) {
-        return path !== 'undefined' && path !== undefined && !checkIfRemote(path) && checkIfHasExtension(path);
+    var checkIfValidFile = function(path, cdnPath) {
+        return path !== 'undefined' && path !== undefined && !checkIfRemote(path, cdnPath) && checkIfHasExtension(path);
     };
 
-    /** @this Object An elem on which attr() may be called for src or href. */
-    var checkIfElemSrcValidFile = function() {
-        return checkIfValidFile(this.attr('src')) || checkIfValidFile(this.attr('href'));
+    var checkIfElemSrcValidFile = function(el, cdnPath) {
+        return checkIfValidFile(el.attr('src'), cdnPath) || checkIfValidFile(el.attr('href'), cdnPath);
     };
 
-    var findStaticAssets = function(data, filters, isCSS) {
+    var findStaticAssets = function(data, filters, isCSS, cdnPath) {
         var $ = cheerio.load(data, cheerioOptions);
 
         var paths = [];
@@ -133,11 +138,12 @@ module.exports = function(grunt) {
                     item,
 
                     foundPaths = $(key)
-                    .filter(checkIfElemSrcValidFile)
+                    .filter(function(){
+                        return checkIfElemSrcValidFile($(this), cdnPath);
+                    })
                     .map(mapper)
                     .filter(function(path, el) {
                         var rtn = false;
-
                         if (el) {
                             rtn = true;
                         }
@@ -163,7 +169,7 @@ module.exports = function(grunt) {
         while ((match = urlFragHintRegex.exec(data)) != null) {
             potentialPath = match[2] || match[4];
 
-            if (checkIfValidFile(potentialPath)) {
+            if (checkIfValidFile(potentialPath, cdnPath)) {
                 paths.push(potentialPath);
             }
         }
@@ -205,13 +211,13 @@ module.exports = function(grunt) {
 
                 var isCSS = (/\.css$/).test(filepath);
 
-                findStaticAssets(markup, filters, isCSS).forEach(function(reference) {
+                findStaticAssets(markup, filters, isCSS, opts.cdnPath).forEach(function(reference) {
                     var newFilename;
                     var newFilePath;
                     var newReference;
 
                     var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
-                    var filename = path.normalize((filePath + reference).split('?')[0]);
+                    var filename = path.normalize((filePath + (opts.cdnPath ? reference.replace(opts.cdnPath, '') : reference) ).split('?')[0]);
                     var originalFilename = filename;
                     var originalReference = reference;
 
