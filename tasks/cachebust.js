@@ -247,7 +247,9 @@ module.exports = function(grunt) {
                             }
 
                             if (!grunt.file.exists(filename)) {
-                                grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
+                                if(!checkIfRemote(filename)) {
+                                    grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
+                                }
                                 return false;
                             }
 
@@ -267,7 +269,9 @@ module.exports = function(grunt) {
                         }
                     } else {
                         if (!grunt.file.exists(filename)) {
-                            grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
+                            if(!checkIfRemote(filename)) {
+                                grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
+                            }
                             return false;
                         }
                         newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
