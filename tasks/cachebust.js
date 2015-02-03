@@ -109,7 +109,7 @@ module.exports = function(grunt) {
                         // Check if it has a background property, and if so, check that it contains a URL
                         if (hasBackgroundUrl || hasContentUrl || hasSrcUrl) {
                             declaration.value.split(',').forEach(function(value){
-                                var valMatch = value.valMatch(/url\(["|']?(.*?)['|"]?\)/);
+                                var valMatch = value.match(/url\(["|']?(.*?)['|"]?\)/);
                                 if (valMatch){
                                     paths.push(valMatch[1]);
                                 }
