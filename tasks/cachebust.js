@@ -79,7 +79,9 @@ module.exports = function(grunt) {
 
     /** @this Object An elem on which attr() may be called for src or href. */
     var checkIfElemSrcValidFile = function() {
-        return checkIfValidFile(this.attr('src')) || checkIfValidFile(this.attr('href'));
+        return checkIfValidFile(this.attr('src')) || 
+               checkIfValidFile(this.attr('xlink:href') ? this.attr('xlink:href').split('#')[0] : '') || 
+               checkIfValidFile(this.attr('href'));
     };
 
     var findStaticAssets = function(data, filters, isCSS) {
