@@ -74,6 +74,16 @@ module.exports = function(grunt) {
                 files: [{
                     src: ['tmp/*.php']
                 }]
+            },
+            fileLevelBaseDirOverride: {
+                options: {
+                    baseDir: './tmp',
+                    deleteOriginals: true
+                },
+                files: [{
+                    baseDir: './tmp/assets/others',
+                    src: ['tmp/baseDirOverride.html']
+                }]
             }
         },
 
