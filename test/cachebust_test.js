@@ -295,5 +295,17 @@ exports.cachebust = {
         test.ok(srcset.match(/css-image-large.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image in a CSS file');
 
         test.done();
+    },
+
+    resolveRelativePaths: function(test) {
+      test.expect(3);
+
+      var srcset = grunt.file.read('tmp/css/stylesheet.css');
+
+      test.ok(srcset.match(/css-relative-image.[a-z0-9]{16}\.jpg/), 'testing a relative path image in a CSS file');
+      test.ok(srcset.match(/css-relative-image-quotes.[a-z0-9]{16}\.jpg/), 'testing a relative path  image in a CSS file');
+      test.ok(srcset.match(/css-relative-image-large.[a-z0-9]{16}\.jpg/),  'testing a relative path  image in a CSS file');
+
+      test.done();
     }
 };

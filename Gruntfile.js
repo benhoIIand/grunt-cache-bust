@@ -74,6 +74,11 @@ module.exports = function(grunt) {
                 files: [{
                     src: ['tmp/*.php']
                 }]
+            },
+            realiveUrls: {
+                files: [{
+                    src: ['tmp/css/*.css']
+                }]
             }
         },
 
