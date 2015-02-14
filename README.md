@@ -100,6 +100,25 @@ Default value: `false`
 
 When set, `cachebust` will try to find the asset files using the baseDir as base path.
 
+You can override this at the file level, e.g:
+
+```js
+assets: {
+  files: [
+      {   
+        expand: true,
+        cwd: 'public/',
+        baseDir: 'public/',
+        src: ['modules/**/*.html']
+      },  
+      {   
+        baseDir: '/',
+        src: ['config/config.js']
+      }   
+  ]   
+}   
+```
+
 #### options.deleteOriginals
 Type: `Boolean`
 Default value: `false`
