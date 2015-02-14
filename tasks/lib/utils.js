@@ -20,7 +20,9 @@ module.exports = {
 
     /** @this Object An elem on which attr() may be called for src or href. */
     checkIfElemSrcValidFile: function(i, element) {
-        return this.checkIfValidFile(element.attribs.src) || this.checkIfValidFile(element.attribs.href);
+        return this.checkIfValidFile(element.attribs.src) || 
+               this.checkIfValidFile(element.attribs['xlink:href'] ? element.attribs['xlink:href'].split('#')[0] : '') || 
+               this.checkIfValidFile(element.attribs.href);
     },
 
     regexEscape: function(str) {

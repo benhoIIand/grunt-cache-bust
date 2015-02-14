@@ -124,7 +124,7 @@ module.exports = function(grunt) {
                         grunt.file.copy(filename, newFilename);
                     }
                 } else {
-                    if (!grunt.file.exists(filename)) {
+                    if (!grunt.file.exists(filename) && !utils.checkIfRemote(filename)) {
                         grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
                         return false;
                     }

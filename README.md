@@ -58,12 +58,13 @@ grunt.initConfig({
     options: {
       encoding: 'utf8',
       algorithm: 'md5',
-      length: 16
+      length: 16,
+      deleteOriginals: true
     },
     assets: {
-        files: [{
-            src: ['index.html']
-        }]
+      files: [{
+        src: ['index.html']
+      }]
     }
   }
 })
@@ -98,6 +99,12 @@ Type: `String`
 Default value: `false`
 
 When set, `cachebust` will try to find the asset files using the baseDir as base path.
+
+#### options.deleteOriginals
+Type: `Boolean`
+Default value: `false`
+
+When set, `cachebust` will delete the original versions of the files that have been renamed.  For example, `style.css` will be deleted after being copied to `style.dcf1d324cb50a1f9.css`.
 
 #### options.enableUrlFragmentHint
 

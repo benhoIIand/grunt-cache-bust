@@ -8,11 +8,12 @@ module.exports = function(data) {
     var cssObj = css.parse(data);
 
     var filterDeclarations = function(declaration) {
-        var hasBackgroundUrl = (/background/).test(declaration.property) && (/url/).test(declaration.value),
-            hasContentUrl = (/content/).test(declaration.property) && (/url/).test(declaration.value);
+        var hasBackgroundUrl = (/background/).test(declaration.property) && (/url/).test(declaration.value);
+        var hasContentUrl = (/content/).test(declaration.property) && (/url/).test(declaration.value);
+        var hasSrcUrl = (/src/).test(declaration.property) && (/url/).test(declaration.value);
 
         // Check if it has a background property, and if so, check that it contains a URL
-        return hasBackgroundUrl || hasContentUrl;
+        return hasBackgroundUrl || hasContentUrl || hasSrcUrl;
     };
 
     var extractDeclaration = function(declaration) {
