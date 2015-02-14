@@ -59,12 +59,16 @@ module.exports = function(grunt) {
         var filters = grunt.util._.defaults(opts.filters, defaultFilters);
         var processedFileMap = {};
 
-        var processFile = function(filepath) {
+        var processFile = function(file, filepath) {
             var markup = grunt.file.read(filepath);
             var isCSS = (/\.css$/).test(filepath);
 
             findStaticAssets(markup, filters, isCSS).forEach(function(reference) {
                 var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
+
+                // check for file level overrides
+                filePath = file.baseDir ? (file.baseDir + '/') : filePath;
+
                 var filename = path.normalize((filePath + reference).split('?')[0]);
                 var originalFilename = filename;
                 var originalReference = reference;
@@ -158,7 +162,9 @@ module.exports = function(grunt) {
                         return true;
                     }
                 })
-                .forEach(processFile);
+                .forEach(function(filepath) {
+                    processFile(file, filepath);
+                });
         });
 
         // Delete the original files, if enabled
