@@ -218,6 +218,9 @@ module.exports = function(grunt) {
                     var newFilePath;
                     var newReference;
 
+                    // original code (doesn't handle css in a subdirectory with relative paths to assets):
+                    // var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
+                    // simpler new code. filepath already includes opts.baseDir so no need to check again:
                     var filePath = path.dirname(filepath) + '/';
 
                     // check for file level overrides
