@@ -218,7 +218,7 @@ module.exports = function(grunt) {
                     var newFilePath;
                     var newReference;
 
-                    var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
+                    var filePath = path.dirname(filepath) + '/';
 
                     // check for file level overrides
                     filePath = file.baseDir ? (file.baseDir + '/') : filePath;

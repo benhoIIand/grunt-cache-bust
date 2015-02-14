@@ -2,10 +2,6 @@ body {
     background-color: red;
 }
 
-.body:after {
-    content: url('../assets/image2.jpg');
-}
-
 .image {
     width: auto;
     max-height: 120px;
