@@ -1,3 +1,5 @@
+'use strict';
+
 var grunt = require('grunt');
 var cheerio = require('cheerio');
 var css = require('css');
@@ -12,8 +14,6 @@ var cheerioOptions = {
 };
 
 module.exports = function(data, filters, isCSS) {
-    filters = filters || {};
-
     var $ = cheerio.load(data, cheerioOptions);
     var paths = [];
     var match;
@@ -22,20 +22,18 @@ module.exports = function(data, filters, isCSS) {
     function parseConditionalStatements() {
         var assets = '';
 
-        function isComment() {
-            return this[0].type === 'comment';
-        };
-
         // Add any conditional statements or assets in comments to the DOM
         $('head, body')
             .contents()
-            .filter(isComment)
+            .filter(function() {
+                return this[0].type === 'comment';
+            })
             .each(function(i, element) {
                 assets += element.data.replace(/\[.*\]>|<!\[endif\]/g, '').trim();
             });
 
         $('body').append(assets);
-    };
+    }
 
     if (isCSS) {
         paths = paths.concat(processCssFile(data));

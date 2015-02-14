@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
     remote: /http:|https:|\/\/|data:image/,
     extension: /(\.[a-zA-Z0-9]{2,4})(|\?.*)$/,

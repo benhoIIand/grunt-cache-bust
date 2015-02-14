@@ -1,3 +1,5 @@
+'use strict';
+
 var css = require('css');
 var flatten = require('flatten');
 

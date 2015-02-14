@@ -3,24 +3,22 @@
 var fs = require('fs');
 var path = require('path');
 
-var regexs = require('./regexs');
-var utils = require('./utils');
-var findStaticAssets = require('./findStaticAssets');
-
-var filenameSwaps = {};
+var regexs = require('./lib/regexs');
+var utils = require('./lib/utils');
+var findStaticAssets = require('./lib/findStaticAssets');
 
 var options = {
     algorithm: 'md5',
     deleteOriginals: false,
     encoding: 'utf8',
+    filters: {},
+    ignorePatterns: [],
+    jsonOutput: false,
+    jsonOutputFilename: 'cachebuster.json',
     length: 16,
     replaceTerms: [],
     rename: true,
-    separator: '.',
-    ignorePatterns: [],
-    filters: {},
-    jsonOutput: false,
-    jsonOutputFilename: 'cachebuster.json'
+    separator: '.'
 };
 
 var defaultFilters = {
@@ -54,7 +52,6 @@ var defaultFilters = {
 module.exports = function(grunt) {
 
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
-
         var opts = grunt.util._.defaults(this.options(), options);
         var filters = grunt.util._.defaults(opts.filters, defaultFilters);
 
