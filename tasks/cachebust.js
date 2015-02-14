@@ -51,30 +51,27 @@ var defaultFilters = {
 
 module.exports = function(grunt) {
 
+    // Set the default encoding for all grunt utils
+    grunt.file.defaultEncoding = 'utf8';
+
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
         var opts = grunt.util._.defaults(this.options(), options);
         var filters = grunt.util._.defaults(opts.filters, defaultFilters);
-
-        // Set the default encoding for all grunt utils
-        grunt.file.defaultEncoding = options.encoding;
-
         var processedFileMap = {};
 
         var processFile = function(filepath) {
             var markup = grunt.file.read(filepath);
-
             var isCSS = (/\.css$/).test(filepath);
 
             findStaticAssets(markup, filters, isCSS).forEach(function(reference) {
-                var newFilename;
-                var newFilePath;
-                var newReference;
-
                 var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
                 var filename = path.normalize((filePath + reference).split('?')[0]);
                 var originalFilename = filename;
                 var originalReference = reference;
                 var generateHash = utils.generateHash(opts);
+                var newFilename;
+                var newFilePath;
+                var newReference;
 
                 if (opts.ignorePatterns) {
                     var matched = opts.ignorePatterns.some(function(pattern) {
@@ -131,6 +128,7 @@ module.exports = function(grunt) {
                         grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
                         return false;
                     }
+
                     newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
                     newReference = newFilename;
                     markup = markup.replace(new RegExp(utils.regexEscape(reference), 'g'), newFilename);
@@ -151,7 +149,15 @@ module.exports = function(grunt) {
         // Kick things off!
         this.files.forEach(function(file) {
             file.src
-                .filter(utils.checkFileExists)
+                .filter(function(filepath) {
+                    // Warn on and remove invalid source files (if nonull was set).
+                    if (!grunt.file.exists(filepath)) {
+                        grunt.log.warn('Source file "' + filepath + '" not found.');
+                        return false;
+                    } else {
+                        return true;
+                    }
+                })
                 .forEach(processFile);
         });
 

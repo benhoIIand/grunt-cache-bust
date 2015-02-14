@@ -6,16 +6,6 @@ var crypto = require('crypto');
 var regexs = require('./regexs');
 
 module.exports = {
-    checkFileExists: function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-            grunt.log.warn('Source file "' + filepath + '" not found.');
-            return false;
-        } else {
-            return true;
-        }
-    },
-
     checkIfRemote: function(path) {
         return regexs.remote.test(path);
     },
