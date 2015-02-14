@@ -2,7 +2,7 @@
 
 var grunt = require('grunt');
 
-exports.cachebust = {
+module.exports = {
 
     ignore: function(test) {
         test.expect(3);

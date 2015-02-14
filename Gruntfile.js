@@ -83,7 +83,7 @@ module.exports = function(grunt) {
 
         watch: {
             task: {
-                files: ['tasks/cacheBust.js', 'test/cachebust_test.js'],
+                files: ['tasks/*.js', 'test/cachebust_test.js'],
                 tasks: 'test'
             }
         }
