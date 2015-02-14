@@ -58,7 +58,7 @@ module.exports = function(grunt) {
                     }],
                     filters: {
                         script : [
-                            function() { return this.attribs['data-main'] +'.js'; },
+                            function() { return this.attribs['data-main']; },
                             function() { return this.attribs['src']; }
                         ]
                     }

@@ -41,6 +41,7 @@ module.exports = function(data, filters, isCSS) {
         parseConditionalStatements();
     }
 
+    // Loop through each filter in the filter object
     Object.keys(filters).forEach(function(key) {
         var mappers = filters[key];
 
