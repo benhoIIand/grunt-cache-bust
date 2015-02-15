@@ -9,6 +9,7 @@
 * [Overview](#overview)
 * [Options](#options)
 * [Usage Examples](#usage-examples)
+* [Change Log](#change-log)
 
 ## Getting Started
 _If you haven't used [grunt][] before, be sure to check out the [Getting Started][] guide._
@@ -249,3 +250,7 @@ grunt.initConfig({
   }
 });
 ```
+
+### Change Log
+
+2015-02-15   v0.4.6   Added options to remove frag hints and use a local CDN. Busting multiple values in CSS files. Bust SVG xlink:href path. Override `baseDir` on a per file basis.
