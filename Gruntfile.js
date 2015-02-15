@@ -76,7 +76,16 @@ module.exports = function(grunt) {
                     enableUrlFragmentHint: true
                 },
                 files: [{
-                    src: ['tmp/*.php']
+                    src: ['tmp/enableUrlFragmentHint.php']
+                }]
+            },
+            removeUrlFragmentHint: {
+                options: {
+                    enableUrlFragmentHint: true,
+                    removeUrlFragmentHint: true
+                },
+                files: [{
+                    src: ['tmp/removeUrlFragmentHint.php']
                 }]
             },
             fileLevelBaseDirOverride: {

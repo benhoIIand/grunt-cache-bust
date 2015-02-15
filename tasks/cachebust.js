@@ -7,6 +7,7 @@ var options = {
     algorithm: 'md5',
     cdnPath: false,
     deleteOriginals: false,
+    enableUrlFragmentHint: false,
     encoding: 'utf8',
     filters: {},
     ignorePatterns: [],
@@ -14,6 +15,7 @@ var options = {
     jsonOutputFilename: 'cachebuster.json',
     length: 16,
     replaceTerms: [],
+    removeUrlFragmentHint: false,
     rename: true,
     separator: '.'
 };
@@ -144,6 +146,10 @@ module.exports = function(grunt) {
                     processedFileMap[originalFilename] = newReference;
                 }
             });
+
+            if (opts.enableUrlFragmentHint && opts.removeUrlFragmentHint) {
+                markup = markup.replace(regexs.removeFragHint, '');
+            }
 
             // Write back to the source file with changes
             grunt.file.write(filepath, markup);

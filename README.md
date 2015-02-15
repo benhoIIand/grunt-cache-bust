@@ -132,6 +132,13 @@ Default value: `false`
 
 When true, cachebust will search single and double-quoted strings in scripting languages such as PHP for asset paths. Asset paths must have the `#grunt-cache-bust` URL fragment appended. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/test/fixtures/enableUrlFragmentHint.php) for more details.
 
+#### options.removeUrlFragmentHint
+
+Type: `Boolean`
+Default value: `false`
+
+Removes the URL fragment after it's been processed.
+
 #### options.encoding
 Type: `String`
 Default value: `'utf8'`
