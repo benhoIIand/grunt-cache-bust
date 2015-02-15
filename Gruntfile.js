@@ -57,9 +57,13 @@ module.exports = function(grunt) {
                         '${Html.GetAppSetting(ThemeId)}': 'com'
                     }],
                     filters: {
-                        script : [
-                            function() { return this.attribs['data-main']; },
-                            function() { return this.attribs['src']; }
+                        script: [
+                            function() {
+                                return this.attribs['data-main'];
+                            },
+                            function() {
+                                return this.attribs['src'];
+                            }
                         ]
                     }
                 },
@@ -104,7 +108,6 @@ module.exports = function(grunt) {
         }
 
     });
-
 
     // Load this plugins tasks
     grunt.loadTasks('tasks');

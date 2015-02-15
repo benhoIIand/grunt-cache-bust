@@ -91,7 +91,6 @@ module.exports = function(grunt) {
                 if (opts.rename) {
 
                     // If the file has already been cached, use that
-                    console.log(processedFileMap);
                     if (processedFileMap[filename]) {
                         markup = markup.replace(new RegExp(utils.regexEscape(reference), 'g'), processedFileMap[filename]);
                     } else {
