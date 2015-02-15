@@ -45,7 +45,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'tmp/',
-                    src: ['*.html', '*.css', '!replace*.*', '!*.php']
+                    src: ['*.html', '*.css', '!replace*.*', '!*.php', '!cdnPath.html']
                 }]
             },
             rename: {
@@ -57,9 +57,13 @@ module.exports = function(grunt) {
                         '${Html.GetAppSetting(ThemeId)}': 'com'
                     }],
                     filters: {
-                        script : [
-                            function() { return this.attribs['data-main']; },
-                            function() { return this.attribs['src']; }
+                        script: [
+                            function() {
+                                return this.attribs['data-main'];
+                            },
+                            function() {
+                                return this.attribs['src'];
+                            }
                         ]
                     }
                 },
@@ -84,6 +88,11 @@ module.exports = function(grunt) {
                     baseDir: './tmp/assets/others',
                     src: ['tmp/baseDirOverride.html']
                 }]
+            },
+            cdnPath: {
+                files: [{
+                    src: ['tmp/cdnPath.html']
+                }]
             }
         },
 
@@ -100,7 +109,6 @@ module.exports = function(grunt) {
 
     });
 
-
     // Load this plugins tasks
     grunt.loadTasks('tasks');
 
@@ -112,5 +120,5 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', 'bust');
     grunt.registerTask('test', ['bust', 'nodeunit']);
-    grunt.registerTask('bust', ['clean', 'jshint', 'copy', 'cacheBust']);
+    grunt.registerTask('bust', ['jshint', 'clean', 'copy', 'cacheBust']);
 };

@@ -9,6 +9,7 @@ var findStaticAssets = require('./lib/findStaticAssets');
 
 var options = {
     algorithm: 'md5',
+    cdnPath: false,
     deleteOriginals: false,
     encoding: 'utf8',
     filters: {},
@@ -63,13 +64,13 @@ module.exports = function(grunt) {
             var markup = grunt.file.read(filepath);
             var isCSS = (/\.css$/).test(filepath);
 
-            findStaticAssets(markup, filters, isCSS).forEach(function(reference) {
+            findStaticAssets(markup, filters, isCSS, opts.cdnPath).forEach(function(reference) {
                 var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
 
                 // check for file level overrides
                 filePath = file.baseDir ? (file.baseDir + '/') : filePath;
 
-                var filename = path.normalize((filePath + reference).split('?')[0]);
+                var filename = path.normalize((filePath + (opts.cdnPath ? reference.replace(opts.cdnPath, '') : reference)).split('?')[0]);
                 var originalFilename = filename;
                 var originalReference = reference;
                 var generateHash = utils.generateHash(opts);
@@ -126,9 +127,11 @@ module.exports = function(grunt) {
 
                         // Create our new file
                         grunt.file.copy(filename, newFilename);
+
+                        grunt.verbose.writeln(newFilename + ' was created!');
                     }
                 } else {
-                    if (!grunt.file.exists(filename) && !utils.checkIfRemote(filename)) {
+                    if (!grunt.file.exists(filename) && !utils.checkIfRemote(filename, opts.cdnPath)) {
                         grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
                         return false;
                     }
