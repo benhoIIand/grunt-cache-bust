@@ -10,7 +10,7 @@ module.exports = function(grunt) {
         jshint: {
             all: [
                 'Gruntfile.js',
-                'tasks/*.js',
+                'tasks/**/*.js',
                 '<%= nodeunit.tests %>'
             ],
             options: {
@@ -58,7 +58,7 @@ module.exports = function(grunt) {
                     }],
                     filters: {
                         script : [
-                            function() { return this.attribs['data-main'] +'.js'; },
+                            function() { return this.attribs['data-main']; },
                             function() { return this.attribs['src']; }
                         ]
                     }
@@ -93,7 +93,7 @@ module.exports = function(grunt) {
 
         watch: {
             task: {
-                files: ['tasks/cacheBust.js', 'test/cachebust_test.js'],
+                files: ['tasks/**/*.js', 'test/*_test.js'],
                 tasks: 'test'
             }
         }
@@ -111,6 +111,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('default', 'bust');
-    grunt.registerTask('bust', ['clean', 'copy', 'cacheBust']);
-    grunt.registerTask('test', ['clean', 'copy', 'cacheBust', 'nodeunit']);
+    grunt.registerTask('test', ['bust', 'nodeunit']);
+    grunt.registerTask('bust', ['clean', 'jshint', 'copy', 'cacheBust']);
 };
