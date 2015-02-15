@@ -68,7 +68,7 @@ module.exports = function(grunt) {
                     }
                 },
                 files: [{
-                    src: ['tmp/replace*.*']
+                    src: ['tmp/replace*.*', 'cdnPath.html']
                 }]
             },
             enableUrlFragmentHint: {
