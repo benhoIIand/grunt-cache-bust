@@ -4,7 +4,6 @@ var grunt = require('grunt');
 var cheerio = require('cheerio');
 var css = require('css');
 
-var utils = require('./utils');
 var regexs = require('./regexs');
 var processCssFile = require('./processCssFile');
 
@@ -13,70 +12,74 @@ var cheerioOptions = {
     lowerCaseTags: true
 };
 
-module.exports = function(data, filters, isCSS, cdnPath) {
-    var $ = cheerio.load(data, cheerioOptions);
-    var paths = [];
-    var match;
-    var potentialPath;
+module.exports = function(opts, filters) {
+    var utils = require('./utils')(opts);
 
-    function parseConditionalStatements() {
-        var assets = '';
+    return function(data, isCSS) {
+        var $ = cheerio.load(data, cheerioOptions);
+        var paths = [];
+        var match;
+        var potentialPath;
 
-        // Add any conditional statements or assets in comments to the DOM
-        $('head, body')
-            .contents()
-            .filter(function() {
-                return this[0].type === 'comment';
-            })
-            .each(function(i, element) {
-                assets += element.data.replace(/\[.*\]>|<!\[endif\]/g, '').trim();
-            });
+        function parseConditionalStatements() {
+            var assets = '';
 
-        $('body').append(assets);
-    }
-
-    if (isCSS) {
-        paths = paths.concat(processCssFile(data));
-    } else {
-        parseConditionalStatements();
-    }
-
-    // Loop through each filter in the filter object
-    Object.keys(filters).forEach(function(key) {
-        var mappers = filters[key];
-
-        var addPaths = function(mapper) {
-            var foundPaths = $(key)
-                .filter(function(i, element) {
-                    return utils.checkIfElemSrcValidFile(element, cdnPath);
+            // Add any conditional statements or assets in comments to the DOM
+            $('head, body')
+                .contents()
+                .filter(function() {
+                    return this[0].type === 'comment';
                 })
-                .map(mapper)
-                .filter(function(i, path) {
-                    return path ? true : false;
+                .each(function(i, element) {
+                    assets += element.data.replace(/\[.*\]>|<!\[endif\]/g, '').trim();
                 });
 
-            for (var i = 0; i < foundPaths.length; i++) {
-                paths = paths.concat(foundPaths[i]);
-            }
-        };
+            $('body').append(assets);
+        }
 
-        if (grunt.util.kindOf(mappers) === 'array') {
-            mappers.forEach(addPaths);
+        if (isCSS) {
+            paths = paths.concat(processCssFile(data));
         } else {
-            addPaths(mappers);
+            parseConditionalStatements();
         }
-    });
 
-    // Find any strings containing the hash `#grunt-cache-bust`
-    while ((match = regexs.urlFragHint.exec(data)) !== null) {
-        potentialPath = match[2] || match[4];
+        // Loop through each filter in the filter object
+        Object.keys(filters).forEach(function(key) {
+            var mappers = filters[key];
 
-        if (utils.checkIfValidFile(potentialPath)) {
-            paths.push(potentialPath);
+            var addPaths = function(mapper) {
+                var foundPaths = $(key)
+                    .filter(function(i, element) {
+                        return utils.checkIfElemSrcValidFile(element);
+                    })
+                    .map(mapper)
+                    .filter(function(i, path) {
+                        return path ? true : false;
+                    });
+
+                for (var i = 0; i < foundPaths.length; i++) {
+                    paths = paths.concat(foundPaths[i]);
+                }
+            };
+
+            if (grunt.util.kindOf(mappers) === 'array') {
+                mappers.forEach(addPaths);
+            } else {
+                addPaths(mappers);
+            }
+        });
+
+        // Find any strings containing the hash `#grunt-cache-bust`
+        while ((match = regexs.urlFragHint.exec(data)) !== null) {
+            potentialPath = match[2] || match[4];
+
+            if (utils.checkIfValidFile(potentialPath)) {
+                paths.push(potentialPath);
+            }
         }
-    }
 
-    return paths.filter(function(path, index) {
-        return paths.indexOf(path) === index;
-    });
+        return paths.filter(function(path, index) {
+            return paths.indexOf(path) === index;
+        });
+    };
 };
