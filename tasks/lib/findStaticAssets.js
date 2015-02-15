@@ -13,7 +13,7 @@ var cheerioOptions = {
     lowerCaseTags: true
 };
 
-module.exports = function(data, filters, isCSS) {
+module.exports = function(data, filters, isCSS, cdnPath) {
     var $ = cheerio.load(data, cheerioOptions);
     var paths = [];
     var match;
@@ -47,7 +47,9 @@ module.exports = function(data, filters, isCSS) {
 
         var addPaths = function(mapper) {
             var foundPaths = $(key)
-                .filter(utils.checkIfElemSrcValidFile.bind(utils))
+                .filter(function(i, element) {
+                    return utils.checkIfElemSrcValidFile(element, cdnPath);
+                })
                 .map(mapper)
                 .filter(function(i, path) {
                     return path ? true : false;

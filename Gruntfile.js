@@ -45,7 +45,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'tmp/',
-                    src: ['*.html', '*.css', '!replace*.*', '!*.php']
+                    src: ['*.html', '*.css', '!replace*.*', '!*.php', '!cdnPath.html']
                 }]
             },
             rename: {
@@ -84,6 +84,11 @@ module.exports = function(grunt) {
                     baseDir: './tmp/assets/others',
                     src: ['tmp/baseDirOverride.html']
                 }]
+            },
+            cdnPath: {
+                files: [{
+                    src: ['tmp/cdnPath.html']
+                }]
             }
         },
 
@@ -112,5 +117,5 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', 'bust');
     grunt.registerTask('test', ['bust', 'nodeunit']);
-    grunt.registerTask('bust', ['clean', 'jshint', 'copy', 'cacheBust']);
+    grunt.registerTask('bust', ['jshint', 'clean', 'copy', 'cacheBust']);
 };

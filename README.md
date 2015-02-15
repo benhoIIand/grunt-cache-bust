@@ -189,6 +189,12 @@ Default value: `true`
 
 When true, `cachebust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
 
+#### options.cdnPath
+Type: `String`
+Default value: `false`
+
+When set, `cachebust` test paths against this string when attempting to determine a path to be remote or not. This allows all assets to be busted locally and than uploaded to your own CDN. This string will be ignored in paths during file-handling to find files in `baseDir`.
+
 ### Usage Examples
 
 #### Basic Asset Cache Busting

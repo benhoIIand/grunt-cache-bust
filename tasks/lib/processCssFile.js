@@ -33,8 +33,8 @@ module.exports = function(data) {
         if (declarations && declarations.length > 0) {
             paths.push(
                 declarations
-                    .filter(filterDeclarations)
-                    .map(extractDeclaration)
+                .filter(filterDeclarations)
+                .map(extractDeclaration)
             );
         }
     });
