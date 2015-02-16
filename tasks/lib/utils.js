@@ -45,11 +45,9 @@ module.exports = function(opts) {
 
         removePreviousHash: function(str) {
             var findHash = new RegExp(this.regexEscape(opts.separator) + '([a-zA-Z0-9]{' + opts.length + '})(\\.\\w+)$', 'ig');
-            var s = str.replace(findHash, function(match, hash, extension) {
+            return str.replace(findHash, function(match, hash, extension) {
                 return extension;
             });
-            console.log('replacement', s);
-            return s;
         }
     };
 };
