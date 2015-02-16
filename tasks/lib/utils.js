@@ -7,6 +7,9 @@ var regexs = require('./regexs');
 
 module.exports = function(opts) {
     return {
+        isRelativePath: function(path) {
+            return (/^\.{1,2}\//).test(path);
+        },
         checkIfRemote: function(path) {
             if (opts.cdnPath) {
                 var cdnPattern = new RegExp(opts.cdnPath);

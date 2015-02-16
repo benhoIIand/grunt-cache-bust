@@ -4,12 +4,18 @@ var grunt = require('grunt');
 
 module.exports = {
 
-    deletesOriginalFiles: function(test) {
-        test.expect(3);
+    deleteOriginalsFiles: function(test) {
+        test.expect(6);
 
-        test.ok(!grunt.file.exists('tmp/assets/replace.css'));
-        test.ok(!grunt.file.exists('tmp/assets/replace.png'));
-        test.ok(!grunt.file.exists('tmp/assets/replace.js'));
+        var deleteOriginals = grunt.file.read('tmp/deleteOriginals.html');
+
+        test.ok(!grunt.file.exists('tmp/assets/delete.css'));
+        test.ok(!grunt.file.exists('tmp/assets/delete.png'));
+        test.ok(!grunt.file.exists('tmp/assets/delete.js'));
+
+        test.ok(deleteOriginals.match(/delete\.[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceNameAlreadyBusted');
+        test.ok(deleteOriginals.match(/delete\.[a-z0-9]{16}\.css/), 'testing already busted CSS assets in replaceNameAlreadyBusted');
+        test.ok(deleteOriginals.match(/delete\.[a-z0-9]{16}\.png/), 'testing already busted image assets in replaceNameAlreadyBusted');
 
         test.done();
     }

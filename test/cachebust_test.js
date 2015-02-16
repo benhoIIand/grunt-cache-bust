@@ -98,58 +98,6 @@ exports.cachebust = {
         test.done();
     },
 
-    replaceName: function(test) {
-        test.expect(6);
-
-        var standard = grunt.file.read('tmp/replace.html');
-        test.ok(standard.match(/replace\.[a-z0-9]{16}\.js/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/' + standard.match(/replace\.[a-z0-9]{16}\.js/)[0]));
-        test.ok(standard.match(/replace\.[a-z0-9]{16}\.css/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/' + standard.match(/replace\.[a-z0-9]{16}\.css/)[0]));
-        test.ok(standard.match(/replace\.[a-z0-9]{16}\.png/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/' + standard.match(/replace\.[a-z0-9]{16}\.png/)[0]));
-
-        test.done();
-    },
-
-    scriptsInDifferentFiles: function(test) {
-        test.expect(6);
-
-        var standard = grunt.file.read('tmp/replaceSameAssetsAcrossFiles.html');
-        test.ok(standard.match(/replace\.[a-z0-9]{16}\.js/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/' + standard.match(/replace\.[a-z0-9]{16}\.js/)[0]));
-        test.ok(standard.match(/replace\.[a-z0-9]{16}\.css/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/' + standard.match(/replace\.[a-z0-9]{16}\.css/)[0]));
-        test.ok(standard.match(/replace\.[a-z0-9]{16}\.png/), 'testing replaceName combination of CSS, JS and images');
-        test.ok(grunt.file.exists('tmp/assets/' + standard.match(/replace\.[a-z0-9]{16}\.png/)[0]));
-
-        test.done();
-    },
-
-    deletesOriginalFiles: function(test) {
-        test.expect(3);
-
-        test.ok(!grunt.file.exists('tmp/assets/replace.css'));
-        test.ok(!grunt.file.exists('tmp/assets/replace.png'));
-        test.ok(!grunt.file.exists('tmp/assets/replace.js'));
-
-        test.done();
-    },
-
-    replaceTerm: function(test) {
-        test.expect(6);
-
-        var standard = grunt.file.read('tmp/replaceTerm.html');
-        test.ok(standard.match(/replaceTerm\.[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceTerm');
-        test.ok(grunt.file.exists('tmp/assets/com/' + standard.match(/replaceTerm\.[a-z0-9]{16}\.js/)[0]));
-        test.ok(standard.match(/replaceTerm\.[a-z0-9]{16}\.css/), 'testing already busted CSS assets in replaceTerm');
-        test.ok(grunt.file.exists('tmp/assets/com/' + standard.match(/replaceTerm\.[a-z0-9]{16}\.css/)[0]));
-        test.ok(standard.match(/replaceTerm\.[a-z0-9]{16}\.jpg/), 'testing already busted image assets in replaceTerm');
-        test.ok(grunt.file.exists('tmp/assets/com/' + standard.match(/replaceTerm\.[a-z0-9]{16}\.jpg/)[0]));
-
-        test.done();
-    },
-
     alreadyBusted: function(test) {
         test.expect(3);
 
@@ -281,19 +229,20 @@ exports.cachebust = {
 
         test.done();
     },
+
     replaceCssInSubdir: function(test) {
         test.expect(3);
 
         var srcset = grunt.file.read('tmp/css/stylesheet.css');
 
-        test.ok(srcset.match(/assets\/css-image.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
-        test.ok(srcset.match(/assets\/css-image-quotes.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
-        test.ok(srcset.match(/assets\/css-image-large.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
+        test.ok(srcset.match(/assets\/relative-css-image.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
+        test.ok(srcset.match(/assets\/relative-css-image-quotes.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
+        test.ok(srcset.match(/assets\/relative-css-image-large.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
         //TODO: THIS TEST FAILS FOR UNKNOWN REASONS! IT PRODUCES THIS:
         //background-image: url('../assets/image1?4eee70fda47d1478.4eee70fda47d1478.jpg');
         //test.ok(srcset.match(/assets\/css-image1.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
-        
+
         test.done();
-    },
+    }
 
 };
