@@ -10,7 +10,7 @@ module.exports = function(grunt) {
         jshint: {
             all: [
                 'Gruntfile.js',
-                'tasks/*.js',
+                'tasks/**/*.js',
                 '<%= nodeunit.tests %>'
             ],
             options: {
@@ -45,7 +45,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'tmp/',
-                    src: ['*.html', '*.css', '!replace*.*', '!*.php', 'css/*.css']
+                    src: ['*.html', '*.css', '!replace*.*', '!*.php', '!cdnPath.html', 'css/*.css']
                 }]
             },
             rename: {
@@ -57,14 +57,18 @@ module.exports = function(grunt) {
                         '${Html.GetAppSetting(ThemeId)}': 'com'
                     }],
                     filters: {
-                        script : [
-                            function() { return this.attribs['data-main'] +'.js'; },
-                            function() { return this.attribs['src']; }
+                        script: [
+                            function() {
+                                return this.attribs['data-main'];
+                            },
+                            function() {
+                                return this.attribs['src'];
+                            }
                         ]
                     }
                 },
                 files: [{
-                    src: ['tmp/replace*.*', 'tmp/css/*.css']
+                    src: ['tmp/replace*.*', 'cdnPath.html', 'tmp/css/*.css']
                 }]
             },
             enableUrlFragmentHint: {
@@ -72,7 +76,16 @@ module.exports = function(grunt) {
                     enableUrlFragmentHint: true
                 },
                 files: [{
-                    src: ['tmp/*.php']
+                    src: ['tmp/enableUrlFragmentHint.php']
+                }]
+            },
+            removeUrlFragmentHint: {
+                options: {
+                    enableUrlFragmentHint: true,
+                    removeUrlFragmentHint: true
+                },
+                files: [{
+                    src: ['tmp/removeUrlFragmentHint.php']
                 }]
             },
             fileLevelBaseDirOverride: {
@@ -84,6 +97,11 @@ module.exports = function(grunt) {
                     baseDir: './tmp/assets/others',
                     src: ['tmp/baseDirOverride.html']
                 }]
+            },
+            cdnPath: {
+                files: [{
+                    src: ['tmp/cdnPath.html']
+                }]
             }
         },
 
@@ -93,13 +111,12 @@ module.exports = function(grunt) {
 
         watch: {
             task: {
-                files: ['tasks/cacheBust.js', 'test/cachebust_test.js'],
+                files: ['tasks/**/*.js', 'test/*_test.js'],
                 tasks: 'test'
             }
         }
 
     });
-
 
     // Load this plugins tasks
     grunt.loadTasks('tasks');
@@ -111,6 +128,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('default', 'bust');
-    grunt.registerTask('bust', ['clean', 'copy', 'cacheBust']);
-    grunt.registerTask('test', ['clean', 'copy', 'cacheBust', 'nodeunit']);
+    grunt.registerTask('test', ['bust', 'nodeunit']);
+    grunt.registerTask('bust', ['jshint', 'clean', 'copy', 'cacheBust']);
 };
