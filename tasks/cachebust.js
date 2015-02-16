@@ -95,7 +95,7 @@ module.exports = function(grunt) {
                     if (processedFileMap[filename]) {
                         markup = markup.replace(new RegExp(utils.regexEscape(reference), 'g'), processedFileMap[filename]);
                     } else {
-                        var hashReplaceRegex = new RegExp(utils.regexEscape(opts.separator) + '(' + (opts.hash ? opts.hash + '|' : '') + '[a-zA-Z0-9]{' + opts.length + '})', 'ig');
+                        var hashReplaceRegex = new RegExp(utils.regexEscape(opts.separator) + '(' + (opts.hash ? opts.hash + '|' : '') + '[a-zA-Z0-9]{' + opts.length + '})\.([^.]*)', 'ig');
 
                         // Get the original filename
                         filename = filename.replace(hashReplaceRegex, '');
