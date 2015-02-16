@@ -98,6 +98,14 @@ module.exports = function(grunt) {
                     src: ['tmp/baseDirOverride.html']
                 }]
             },
+            baseDir: {
+                options: {
+                    baseDir: './tmp/dummyDir'
+                },
+                files: [{
+                    src: ['tmp/baseDir.html']
+                }]
+            },
             cdnPath: {
                 files: [{
                     src: ['tmp/cdnPath.html']
