@@ -20,9 +20,9 @@ module.exports = {
 
         var alreadyBusted = grunt.file.read('tmp/replaceDetectingBustedFiles.html');
 
-        test.ok(alreadyBusted.match(/sixteenletters12\.[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceDetectingBustedFiles');
-        test.ok(alreadyBusted.match(/sixteenletters12\.[a-z0-9]{16}\.css/), 'testing already busted CSS assets in replaceDetectingBustedFiles');
-        test.ok(alreadyBusted.match(/sixteenletters12\.[a-z0-9]{16}\.png/), 'testing already busted image assets in replaceDetectingBustedFiles');
+        test.ok(alreadyBusted.match(/thisstring.issixteenletters\.c3513ff5442a7187.js/), 'testing already busted JS assets in replaceDetectingBustedFiles');
+        test.ok(alreadyBusted.match(/thisstring.issixteenletters\.cb583e512c907d11.css/), 'testing already busted CSS assets in replaceDetectingBustedFiles');
+        test.ok(alreadyBusted.match(/thisstring.issixteenletters\.9c8e96e0a125ce49.png/), 'testing already busted image assets in replaceDetectingBustedFiles');
 
         test.done();
     },

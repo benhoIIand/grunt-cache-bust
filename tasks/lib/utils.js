@@ -41,6 +41,15 @@ module.exports = function(opts) {
 
         generateHash: function(fileData) {
             return opts.hash || crypto.createHash(opts.algorithm).update(fileData, opts.encoding).digest('hex').substring(0, opts.length);
+        },
+
+        removePreviousHash: function(str) {
+            var findHash = new RegExp(this.regexEscape(opts.separator) + '([a-zA-Z0-9]{' + opts.length + '})(\\.\\w+)$', 'ig');
+            var s = str.replace(findHash, function(match, hash, extension) {
+                return extension;
+            });
+            console.log('replacement', s);
+            return s;
         }
     };
 };
