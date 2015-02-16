@@ -95,10 +95,8 @@ module.exports = function(grunt) {
                     if (processedFileMap[filename]) {
                         markup = markup.replace(new RegExp(utils.regexEscape(reference), 'g'), processedFileMap[filename]);
                     } else {
-                        var hashReplaceRegex = new RegExp(utils.regexEscape(opts.separator) + '(' + (opts.hash ? opts.hash + '|' : '') + '[a-zA-Z0-9]{' + opts.length + '})', 'ig');
-
-                        // Get the original filename
-                        filename = filename.replace(hashReplaceRegex, '');
+                        // Remove any previous hashes from the filename
+                        filename = utils.removePreviousHash(filename);
 
                         // Replacing specific terms in the import path so renaming files
                         if (opts.replaceTerms && opts.replaceTerms.length > 0) {
@@ -121,7 +119,7 @@ module.exports = function(grunt) {
                         newFilename = utils.addHash(filename, hash, path.extname(filename), opts.separator);
 
                         // Create the new reference
-                        newReference = utils.addHash(reference.replace(hashReplaceRegex, ''), hash, path.extname(filename), opts.separator);
+                        newReference = utils.addHash(utils.removePreviousHash(reference), hash, path.extname(filename));
 
                         // Update the reference in the markup
                         markup = markup.replace(new RegExp(utils.regexEscape(originalReference), 'g'), newReference);

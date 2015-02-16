@@ -15,17 +15,29 @@ module.exports = {
         test.done();
     },
 
+    detectingBustedFiles: function(test) {
+        test.expect(3);
+
+        var alreadyBusted = grunt.file.read('tmp/replaceDetectingBustedFiles.html');
+
+        test.ok(alreadyBusted.match(/thisstring\.issixteenletters\.(?!5221569fawfwa2vc)([a-z0-9]{16})\.js/), 'testing already busted JS assets in replaceDetectingBustedFiles');
+        test.ok(alreadyBusted.match(/thisstring\.issixteenletters\.(?!5221569fawfwa2vc)([a-z0-9]{16})\.css/), 'testing already busted CSS assets in replaceDetectingBustedFiles');
+        test.ok(alreadyBusted.match(/thisstring\.issixteenletters\.(?!5221569fawfwa2vc)([a-z0-9]{16})\.png/), 'testing already busted image assets in replaceDetectingBustedFiles');
+
+        test.done();
+    },
+
     replaceNameAlreadyBusted: function(test) {
         test.expect(6);
 
         var standard = grunt.file.read('tmp/replaceAlreadyBusted.html');
 
         test.ok(standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.js/)[0]));
+        test.ok(grunt.file.exists('tmp/assets/' + standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.js/)[0]));
         test.ok(standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.css/), 'testing already busted CSS assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.css/)[0]));
+        test.ok(grunt.file.exists('tmp/assets/' + standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.css/)[0]));
         test.ok(standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.jpg/), 'testing already busted image assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/'+ standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.jpg/)[0]));
+        test.ok(grunt.file.exists('tmp/assets/' + standard.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.jpg/)[0]));
 
         test.done();
     }
