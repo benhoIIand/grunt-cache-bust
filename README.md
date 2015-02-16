@@ -189,7 +189,7 @@ Output format looks like this:
 Type: `Number`
 Default value: `16`
 
-The number of characters of the file content hash to prefix the file name with.
+The number of characters of the file content hash to add to the file name.
 
 #### options.rename
 Type: `Boolean`
