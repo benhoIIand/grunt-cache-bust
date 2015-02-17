@@ -146,9 +146,7 @@ module.exports = function(grunt) {
                     markup = markup.replace(new RegExp(utils.regexEscape(reference), 'g'), newFilename);
                 }
 
-                if (newFilename) {
-                    processedFileMap[originalFilename] = newReference;
-                }
+                processedFileMap[originalReference] = newReference;
             });
 
             if (opts.enableUrlFragmentHint && opts.removeUrlFragmentHint) {

@@ -9,8 +9,8 @@ module.exports = {
 
         var markup = grunt.file.read('tmp/htmlComments/htmlComments.html');
 
-        test.ok(markup.match(/standard\.css\?[a-z0-9]{16}/), 'testing stylesheet');
-        test.ok(markup.match(/standard\.js\?[a-z0-9]{16}/), 'testing javascript');
+        test.ok(markup.match(/standard\.[a-z0-9]{16}\.css/), 'testing stylesheet');
+        test.ok(markup.match(/standard\.[a-z0-9]{16}\.js/), 'testing javascript');
 
         test.done();
     }

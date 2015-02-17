@@ -17,16 +17,13 @@ module.exports = {
     },
 
     alreadyBustedQueryString: function(test) {
-        test.expect(6);
+        test.expect(3);
 
         var markup = grunt.file.read('tmp/queryString/alreadyBustedQueryString.html');
 
-        test.ok(markup.match(/alreadyBustedQueryString\.[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/' + markup.match(/alreadyBustedQueryString\.[a-z0-9]{16}\.js/)[0]));
-        test.ok(markup.match(/alreadyBustedQueryString\.[a-z0-9]{16}\.css/), 'testing already busted CSS assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/' + markup.match(/alreadyBustedQueryString\.[a-z0-9]{16}\.css/)[0]));
-        test.ok(markup.match(/alreadyBustedQueryString\.[a-z0-9]{16}\.jpg/), 'testing already busted image assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/' + markup.match(/alreadyBustedQueryString\.[a-z0-9]{16}\.jpg/)[0]));
+        test.ok(markup.match(/alreadyBustedQueryString\.js\?(?!123abc456def789g)([a-z0-9]{16})/), 'testing already busted JS assets in alreadyBustedQueryString');
+        test.ok(markup.match(/alreadyBustedQueryString\.css\?(?!123abc456def789g)([a-z0-9]{16})/), 'testing already busted CSS assets in alreadyBustedQueryString');
+        test.ok(markup.match(/alreadyBustedQueryString\.jpg\?(?!123abc456def789g)([a-z0-9]{16})/), 'testing already busted image assets in alreadyBustedQueryString');
 
         test.done();
     },

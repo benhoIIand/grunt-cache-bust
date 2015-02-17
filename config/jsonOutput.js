@@ -1,6 +1,7 @@
 module.exports = {
     options: {
-        baseDir: 'tmp/jsonOutput'
+        baseDir: 'tmp/jsonOutput',
+        jsonOutput: 'output/cachebuster-map.json'
     },
     files: [{
         expand: true,

@@ -1,6 +1,7 @@
 module.exports = {
     options: {
-        baseDir: 'tmp/queryString'
+        baseDir: 'tmp/queryString',
+        rename: false
     },
     files: [{
         expand: true,

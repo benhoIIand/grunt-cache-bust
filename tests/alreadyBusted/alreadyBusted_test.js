@@ -7,14 +7,14 @@ module.exports = {
     alreadyBusted: function(test) {
         test.expect(6);
 
-        var markup = grunt.file.read('tmp/alreadyBusted/replaceAlreadyBusted.html');
+        var markup = grunt.file.read('tmp/alreadyBusted/alreadyBusted.html');
 
-        test.ok(markup.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/' + markup.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.js/)[0]));
-        test.ok(markup.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.css/), 'testing already busted CSS assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/' + markup.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.css/)[0]));
-        test.ok(markup.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.jpg/), 'testing already busted image assets in replaceNameAlreadyBusted');
-        test.ok(grunt.file.exists('tmp/assets/' + markup.match(/replaceAlreadyBusted\.[a-z0-9]{16}\.jpg/)[0]));
+        test.ok(markup.match(/alreadyBusted\.(?!123abc456def789g)([a-z0-9]{16})\.js/), 'testing already busted JS assets in alreadyBusted');
+        test.ok(grunt.file.exists('tmp/alreadyBusted/assets/' + markup.match(/alreadyBusted\.[a-z0-9]{16}\.js/)[0]));
+        test.ok(markup.match(/alreadyBusted\.(?!123abc456def789g)([a-z0-9]{16})\.css/), 'testing already busted CSS assets in alreadyBusted');
+        test.ok(grunt.file.exists('tmp/alreadyBusted/assets/' + markup.match(/alreadyBusted\.[a-z0-9]{16}\.css/)[0]));
+        test.ok(markup.match(/alreadyBusted\.(?!123abc456def789g)([a-z0-9]{16})\.jpg/), 'testing already busted image assets in alreadyBusted');
+        test.ok(grunt.file.exists('tmp/alreadyBusted/assets/' + markup.match(/alreadyBusted\.[a-z0-9]{16}\.jpg/)[0]));
 
         test.done();
     },
