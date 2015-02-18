@@ -253,6 +253,8 @@ grunt.initConfig({
 
 ### Change Log
 
+2015-02-18  v0.4.8  Improved detection of remote resources
+
 2015-02-18  v0.4.7  Fix for working with relative paths
 
 2015-02-15  v0.4.6  Added options to remove frag hints and use a local CDN. Busting multiple values in CSS files. Bust SVG xlink:href path. Override `baseDir` on a per file basis.
