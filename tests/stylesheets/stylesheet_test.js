@@ -21,7 +21,7 @@ module.exports = {
     },
 
     stylesheet: function(test) {
-        test.expect(5);
+        test.expect(8);
 
         var markup = grunt.file.read('tmp/stylesheets/stylesheet.css');
 
@@ -30,6 +30,9 @@ module.exports = {
         test.ok(markup.match(/css-image-large\.[a-z0-9]{16}\.jpg/), 'testing an image in a CSS file');
         test.ok(markup.match(/image1\.[a-z0-9]{16}\.jpg/), 'testing an image in a CSS file within a media query');
         test.ok(markup.match(/image2\.[a-z0-9]{16}\.jpg/), 'testing an image in a CSS file within a media query');
+        test.ok(markup.match(/'\/\/www\.external\.com\/external-image1.jpg'/), 'testing an external image in a CSS file');
+        test.ok(markup.match(/'http:\/\/www\.external\.com\/external-image2.jpg'/), 'testing an external image in a CSS file');
+        test.ok(markup.match(/'https:\/\/www\.external\.com\/external-image3.jpg'/), 'testing an external image in a CSS file');
 
         test.done();
     },
