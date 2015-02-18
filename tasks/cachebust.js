@@ -67,10 +67,16 @@ module.exports = function(grunt) {
             var isCSS = (/\.css$/).test(filepath);
 
             findStaticAssets(markup, isCSS).forEach(function(reference) {
-                var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
+                var filePath;
 
-                // check for file level overrides
-                filePath = file.baseDir ? (file.baseDir + '/') : filePath;
+                if (utils.isRelativePath(reference)) {
+                    filePath = path.dirname(filepath) + '/';
+                } else {
+                    filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
+
+                    // check for file level overrides
+                    filePath = file.baseDir ? (file.baseDir + '/') : filePath;
+                }
 
                 var filename = path.normalize((filePath + (opts.cdnPath ? reference.replace(opts.cdnPath, '') : reference)).split('?')[0]);
                 var originalFilename = filename;
@@ -130,7 +136,7 @@ module.exports = function(grunt) {
                         grunt.verbose.writeln(newFilename + ' was created!');
                     }
                 } else {
-                    if (!grunt.file.exists(filename) && !utils.checkIfRemote(filename, opts.cdnPath)) {
+                    if (!grunt.file.exists(filename) && !utils.checkIfRemote(filename)) {
                         grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
                         return false;
                     }

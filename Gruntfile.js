@@ -45,13 +45,12 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'tmp/',
-                    src: ['*.html', '*.css', '!replace*.*', '!*.php', '!cdnPath.html']
+                    src: ['*.html', '*.css', '!**/replace*.*', '!*.php', '!baseDir.html', '!baseDirOverride.html', '!cdnPath.html', '!deleteOriginals.html']
                 }]
             },
             rename: {
                 options: {
                     baseDir: './tmp',
-                    deleteOriginals: true,
                     jsonOutput: 'output/replace-cachebuster-map.json',
                     replaceTerms: [{
                         '${Html.GetAppSetting(ThemeId)}': 'com'
@@ -68,7 +67,15 @@ module.exports = function(grunt) {
                     }
                 },
                 files: [{
-                    src: ['tmp/replace*.*', 'cdnPath.html']
+                    src: ['tmp/replace*.*', 'tmp/cdnPath.html', 'tmp/css/*.css']
+                }]
+            },
+            deleteOriginals: {
+                options: {
+                    deleteOriginals: true
+                },
+                files: [{
+                    src: ['tmp/deleteOriginals.html']
                 }]
             },
             enableUrlFragmentHint: {
