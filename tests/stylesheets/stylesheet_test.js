@@ -48,6 +48,19 @@ module.exports = {
         test.ok(markup.match(/assets\/relative-image1.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
 
         test.done();
+    },
+
+    multipleUrls: function(test) {
+        test.expect(4);
+
+        var markup = grunt.file.read('tmp/stylesheets/multipleUrls.css');
+
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/), 'testing the replacement of an image when css in a different subdir than asset');
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/), 'testing the replacement of an image when css in a different subdir than asset');
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.woff/), 'testing the replacement of an image when css in a different subdir than asset');
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.ttf/), 'testing the replacement of an image when css in a different subdir than asset');
+
+        test.done();
     }
 
 };
