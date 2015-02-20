@@ -45,6 +45,18 @@ var defaultFilters = {
     ],
     'link[rel="icon"], link[rel="shortcut icon"]': function() {
         return this.attribs['href'];
+    },
+    'square70x70logo': function() {
+        return this.attribs['src'];
+    },
+    'square150x150logo': function() {
+        return this.attribs['src'];
+    },
+    'square310x310logo': function() {
+        return this.attribs['src'];
+    },
+    'wide310x150logo': function() {
+        return this.attribs['src'];
     }
 };
 
