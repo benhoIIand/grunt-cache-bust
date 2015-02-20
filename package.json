@@ -1,7 +1,7 @@
 {
     "name": "grunt-cache-bust",
     "description": "Bust static assets from the cache using content hashing",
-    "version": "0.4.8",
+    "version": "0.4.9",
     "author": "Ben Holland <hi@benholland.me>",
     "repository": {
         "type": "git",
@@ -18,19 +18,19 @@
         "test": "grunt test"
     },
     "devDependencies": {
-        "grunt-contrib-clean": "~0.5.0",
-        "grunt-contrib-copy": "~0.5.0",
-        "grunt-contrib-jshint": "~0.10.0",
-        "grunt-contrib-nodeunit": "~0.3.3",
+        "grunt-contrib-clean": "~0.6.0",
+        "grunt-contrib-copy": "~0.8.0",
+        "grunt-contrib-jshint": "~0.11.0",
+        "grunt-contrib-nodeunit": "~0.4.1",
         "grunt-contrib-watch": "~0.6.1"
     },
     "peerDependencies": {
-        "grunt": "~0.4.0"
+        "grunt": "~0.4.5"
     },
     "dependencies": {
-        "cheerio": "~0.14.0",
-        "css": "^1.6.0",
-        "flatten": "0.0.1"
+        "cheerio": "~0.18.0",
+        "css": "~2.2.0",
+        "flatten": "~0.0.1"
     },
     "keywords": [
         "grunt",

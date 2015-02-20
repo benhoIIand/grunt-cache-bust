@@ -12,7 +12,7 @@ var options = {
     filters: {},
     ignorePatterns: [],
     jsonOutput: false,
-    jsonOutputFilename: 'cachebuster.json',
+    jsonOutputFilename: 'grunt-cache-bust.json',
     length: 16,
     replaceTerms: [],
     removeUrlFragmentHint: false,
