@@ -17,7 +17,9 @@ module.exports = function(data) {
     };
 
     var extractDeclaration = function(declaration) {
-        return declaration.value.match(/url\(["|']?(.*?)['|"]?\)/)[1];
+        return declaration.value.split(',').map(function(val) {
+            return val.match(/url\(["|']?(.*?)['|"]?\)/)[1];
+        });
     };
 
     // Loop through each stylesheet rules
@@ -31,11 +33,11 @@ module.exports = function(data) {
 
         // Loop through all declarations
         if (declarations && declarations.length > 0) {
-            paths.push(
-                declarations
+            var foundDeclarations = declarations
                 .filter(filterDeclarations)
-                .map(extractDeclaration)
-            );
+                .map(extractDeclaration);
+
+            paths = paths.concat(foundDeclarations);
         }
     });
 

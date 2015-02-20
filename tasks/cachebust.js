@@ -104,6 +104,9 @@ module.exports = function(grunt) {
                         // Remove any previous hashes from the filename
                         filename = utils.removePreviousHash(filename);
 
+                        // Remove any hashes from the filename
+                        filename = utils.removeHashInUrl(filename);
+
                         // Replacing specific terms in the import path so renaming files
                         if (opts.replaceTerms && opts.replaceTerms.length > 0) {
                             opts.replaceTerms.forEach(function(obj) {
@@ -115,8 +118,9 @@ module.exports = function(grunt) {
                         }
 
                         if (utils.checkIfRemote(reference)) {
-                        	return false;	// ignore references to external files
+                        	return false;
                         }
+
                         if (!grunt.file.exists(filename)) {
                             grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found, original reference=' + reference);
                             return false;
@@ -140,8 +144,9 @@ module.exports = function(grunt) {
                     }
                 } else {
                     if (utils.checkIfRemote(reference)) {
-                    	return false;	// ignore references to external files
+                    	return false;
                     }
+
                     if (!grunt.file.exists(filename)) {
                         grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found, original reference=' + reference);
                         return false;

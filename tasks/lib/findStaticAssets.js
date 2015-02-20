@@ -69,12 +69,14 @@ module.exports = function(opts, filters) {
             }
         });
 
-        // Find any strings containing the hash `#grunt-cache-bust`
-        while ((match = regexs.urlFragHint.exec(data)) !== null) {
-            potentialPath = match[2] || match[4];
+        if(opts.enableUrlFragmentHint) {
+            // Find any strings containing the hash `#grunt-cache-bust`
+            while ((match = regexs.urlFragHint.exec(data)) !== null) {
+                potentialPath = match[2] || match[4];
 
-            if (utils.checkIfValidFile(potentialPath)) {
-                paths.push(potentialPath);
+                if (utils.checkIfValidFile(potentialPath)) {
+                    paths.push(potentialPath);
+                }
             }
         }
 

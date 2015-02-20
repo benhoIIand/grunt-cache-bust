@@ -7,9 +7,11 @@ var regexs = require('./regexs');
 
 module.exports = function(opts) {
     return {
+
         isRelativePath: function(path) {
-            return (/^\.{1,2}\//).test(path);
+            return (regexs.relativePath).test(path);
         },
+
         checkIfRemote: function(path) {
             if (opts.cdnPath) {
                 var cdnPattern = new RegExp(opts.cdnPath);
@@ -27,7 +29,6 @@ module.exports = function(opts) {
             return path !== 'undefined' && path !== undefined && !this.checkIfRemote(path, opts.cdnPath) && this.checkIfHasExtension(path);
         },
 
-        /** @this Object An elem on which attr() may be called for src or href. */
         checkIfElemSrcValidFile: function(element) {
             return this.checkIfValidFile(element.attribs.src) ||
                 this.checkIfValidFile(element.attribs['xlink:href'] ? element.attribs['xlink:href'].split('#')[0] : '') ||
@@ -38,8 +39,15 @@ module.exports = function(opts) {
             return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
         },
 
+        removeHashInUrl: function(url) {
+            return url.split('#')[0];
+        },
+
         addHash: function(str, hash, extension) {
-            return str.replace(extension, '') + opts.separator + hash + extension;
+            var splitbyUrlHash = str.split('#');
+            var hashInUrl = splitbyUrlHash[1] ? '#' + splitbyUrlHash[1] : '';
+
+            return splitbyUrlHash[0].replace(extension, '') + opts.separator + hash + extension + hashInUrl;
         },
 
         generateHash: function(fileData) {
@@ -48,9 +56,11 @@ module.exports = function(opts) {
 
         removePreviousHash: function(str) {
             var findHash = new RegExp(this.regexEscape(opts.separator) + '([a-zA-Z0-9]{' + opts.length + '})(\\.\\w+)$', 'ig');
+
             return str.replace(findHash, function(match, hash, extension) {
                 return extension;
             });
         }
+
     };
 };
