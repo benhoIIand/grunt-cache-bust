@@ -28,7 +28,7 @@ module.exports = function(opts, filters) {
             $('head, body')
                 .contents()
                 .filter(function() {
-                    return this[0].type === 'comment';
+                    return this.type === 'comment';
                 })
                 .each(function(i, element) {
                     assets += element.data.replace(/\[.*\]>|<!\[endif\]/g, '').trim();
