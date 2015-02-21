@@ -2,7 +2,6 @@
 
 var fs = require('fs');
 var path = require('path');
-var $ = require('cheerio');
 
 var options = {
     algorithm: 'md5',
