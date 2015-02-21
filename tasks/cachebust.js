@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var path = require('path');
+var $ = require('cheerio');
 
 var options = {
     algorithm: 'md5',
@@ -46,6 +47,7 @@ var defaultFilters = {
     'link[rel="icon"], link[rel="shortcut icon"]': function() {
         return this.attribs['href'];
     },
+    'script[type="text/template"]': function() {},
     'square70x70logo': function() {
         return this.attribs['src'];
     },
