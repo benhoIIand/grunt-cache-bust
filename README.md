@@ -304,10 +304,10 @@ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust. This assum
 
 2015-02-20  v0.4.10 Added support for Windows 8.1 and IE titles browser config file.
 
-2015-02-19  v0.4.9  Tidied up tests. Improved README readability.
+2015-02-19  v0.4.9   Tidied up tests. Improved README readability.
 
-2015-02-18  v0.4.8  Improved detection of remote resources
+2015-02-18  v0.4.8   Improved detection of remote resources
 
-2015-02-18  v0.4.7  Fix for working with relative paths
+2015-02-18  v0.4.7   Fix for working with relative paths
 
-2015-02-15  v0.4.6  Added options to remove frag hints and use a local CDN. Busting multiple values in CSS files. Bust SVG xlink:href path. Override `baseDir` on a per file basis.
+2015-02-15  v0.4.6   Added options to remove frag hints and use a local CDN. Busting multiple values in CSS files. Bust SVG xlink:href path. Override `baseDir` on a per file basis.
