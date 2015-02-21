@@ -1,0 +1,1 @@
+var template = 'inside-native';

@@ -44,30 +44,38 @@ module.exports = function(opts, filters) {
         }
 
         // Loop through each filter in the filter object
-        Object.keys(filters).forEach(function(key) {
-            var mappers = filters[key];
+        function findPaths($root) {
+            Object.keys(filters).forEach(function(key) {
+                var mappers = filters[key];
 
-            var addPaths = function(mapper) {
-                var foundPaths = $(key)
-                    .filter(function(i, element) {
-                        return utils.checkIfElemSrcValidFile(element);
-                    })
-                    .map(mapper)
-                    .filter(function(i, path) {
-                        return path ? true : false;
-                    });
+                var addPaths = function(mapper) {
+                    if($root(key).attr('type') === 'text/template') {
+                        findPaths(cheerio.load($root(key).html(), cheerioOptions));
+                    }
 
-                for (var i = 0; i < foundPaths.length; i++) {
-                    paths = paths.concat(foundPaths[i]);
+                    var foundPaths = $root(key)
+                        .filter(function(i, element) {
+                            return utils.checkIfElemSrcValidFile(element);
+                        })
+                        .map(mapper)
+                        .filter(function(i, path) {
+                            return path ? true : false;
+                        });
+
+                    for (var i = 0; i < foundPaths.length; i++) {
+                        paths = paths.concat(foundPaths[i]);
+                    }
+                };
+
+                if (grunt.util.kindOf(mappers) === 'array') {
+                    mappers.forEach(addPaths);
+                } else {
+                    addPaths(mappers);
                 }
-            };
+            });
+        }
 
-            if (grunt.util.kindOf(mappers) === 'array') {
-                mappers.forEach(addPaths);
-            } else {
-                addPaths(mappers);
-            }
-        });
+        findPaths($);
 
         if(opts.enableUrlFragmentHint) {
             // Find any strings containing the hash `#grunt-cache-bust`
