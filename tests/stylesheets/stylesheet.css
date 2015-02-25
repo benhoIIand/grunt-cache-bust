@@ -3,36 +3,40 @@ body {
 }
 
 .body:after {
-    content: url('assets/image2.jpg');
+    content: url('assets/image2.f75e21aac379fd75.jpg');
 }
 
 .image {
     width: auto;
     max-height: 120px;
-    background: #FFFFFF url('assets/css-image.jpg') center center no-repeat;
+    background: #FFFFFF url('assets/css-image.4eee70fda47d1478.jpg') center center no-repeat;
 }
 
 .image-quotes {
     width: auto;
     max-height: 120px;
-    background: #FFFFFF url("assets/css-image-quotes.jpg") center center no-repeat;
+    background: #FFFFFF url("assets/css-image-quotes.ee65b9759ac46c9a.jpg") center center no-repeat;
 }
 
 .large-image {
     width: 100%;
-    background-image: url(assets/css-image-large.jpg);
+    background-image: url(assets/css-image-large.f75e21aac379fd75.jpg);
     background-position: top center;
     background-size: contain;
 }
 
 .external-image {
-	background-image: url('//www.external.com/external-image1.jpg');
-	background-image: url('http://www.external.com/external-image2.jpg');
-	background-image: url('https://www.external.com/external-image3.jpg');
+    background-image: url('//www.external.com/external-image1.jpg');
+    background-image: url('http://www.external.com/external-image2.jpg');
+    background-image: url('https://www.external.com/external-image3.jpg');
+}
+
+.data-url-image {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwgAADsIBFShKgAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAmElEQVQoU33PQapBURjA8UtkwJuaWYGSgfQWYBMvczPmTCzAAGVuaA228BZhRCkDGSmE31FucuRfvzq3vr5zT/JSjSU7DsypEPXDkDVn2hSIytJhw4kWGaLCxgHh2gt/RBuLzNhz5caWPjnSqqw4EraFfwznf8qklWjwy4IRTerkiQoPGtPl40OehcEJvcfXl8LglLfBJLkDcMgbgHlHhK8AAAAASUVORK5CYII=);
 }
 
 @media only screen and (min-device-pixel-ratio: 2) and (min-resolution: 2dppx) {
     .large-image {
-        background-image: url('assets/image1.jpg');
+        background-image: url('assets/image1.360b6ee6c6deb8e8.jpg');
     }
 }
