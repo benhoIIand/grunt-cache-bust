@@ -26,9 +26,13 @@ body {
 }
 
 .external-image {
-	background-image: url('//www.external.com/external-image1.jpg');
-	background-image: url('http://www.external.com/external-image2.jpg');
-	background-image: url('https://www.external.com/external-image3.jpg');
+    background-image: url('//www.external.com/external-image1.jpg');
+    background-image: url('http://www.external.com/external-image2.jpg');
+    background-image: url('https://www.external.com/external-image3.jpg');
+}
+
+.data-url-image {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwgAADsIBFShKgAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAmElEQVQoU33PQapBURjA8UtkwJuaWYGSgfQWYBMvczPmTCzAAGVuaA228BZhRCkDGSmE31FucuRfvzq3vr5zT/JSjSU7DsypEPXDkDVn2hSIytJhw4kWGaLCxgHh2gt/RBuLzNhz5caWPjnSqqw4EraFfwznf8qklWjwy4IRTerkiQoPGtPl40OehcEJvcfXl8LglLfBJLkDcMgbgHlHhK8AAAAASUVORK5CYII=);
 }
 
 @media only screen and (min-device-pixel-ratio: 2) and (min-resolution: 2dppx) {
