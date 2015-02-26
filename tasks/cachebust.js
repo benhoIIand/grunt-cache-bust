@@ -170,14 +170,7 @@ module.exports = function(grunt) {
                     markup = markup.replace(new RegExp(utils.regexEscape(reference), 'g'), newFilename);
                 }
 
-                processedFileMap[originalReference] = newReference;
-
-                // Delete the original files, if enabled
-                if (opts.deleteOriginals) {
-                    if (grunt.file.exists(filename)) {
-                        grunt.file.delete(filename);
-                    }
-                }
+                processedFileMap[filename] = newReference;
             });
 
             if (opts.enableUrlFragmentHint && opts.removeUrlFragmentHint) {
@@ -207,6 +200,15 @@ module.exports = function(grunt) {
                     processFile(file, filepath);
                 });
         });
+
+        // Delete the original files, if enabled
+        if (opts.rename && opts.deleteOriginals) {
+            for (var file in processedFileMap) {
+                if (grunt.file.exists(file)) {
+                    grunt.file.delete(file);
+                }
+            }
+        }
 
         // Generate a JSON with the swapped file names if requested
         if (opts.jsonOutput) {
