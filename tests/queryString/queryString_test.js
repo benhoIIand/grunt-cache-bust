@@ -43,6 +43,19 @@ module.exports = {
         test.ok(markup.match(/image2\.png\?[a-z0-9]{16}/), 'testing image2');
 
         test.done();
+    },
+
+    css: function(test) {
+        test.expect(4);
+
+        var css = grunt.file.read('tmp/queryString/queryString.css');
+
+        test.ok(css.match(/\/assets\/fonts\/glyphicons-halflings-regular\.eot\?[a-z0-9]{16}/), 'testing glyphicons-halflings-regular.eot');
+        test.ok(css.match(/\/assets\/fonts\/glyphicons-halflings-regular\.woff\?[a-z0-9]{16}/), 'testing glyphicons-halflings-regular.woff');
+        test.ok(css.match(/\/assets\/fonts\/glyphicons-halflings-regular\.ttf\?[a-z0-9]{16}/), 'testing glyphicons-halflings-regular.ttf');
+        test.ok(css.match(/\/assets\/fonts\/glyphicons-halflings-regular\.svg\?[a-z0-9]{16}\#glyphicons_halflingsregular'/), 'testing glyphicons-halflings-regular.svg');
+
+        test.done();
     }
 
 };

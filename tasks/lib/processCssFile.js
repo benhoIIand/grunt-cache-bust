@@ -2,6 +2,7 @@
 
 var css = require('css');
 var flatten = require('flatten');
+var utils = require('./utils')();
 
 module.exports = function(data) {
     var paths = [];
@@ -19,7 +20,7 @@ module.exports = function(data) {
 
     var extractDeclaration = function(declaration) {
         return declaration.value.split(',').map(function(val) {
-            return val.match(/url\(["|']?(.*?)['|"]?\)/)[1];
+            return utils.removeHashInUrl(val.match(/url\(["']?(.*?)['"]?\)/)[1]);
         });
     };
 

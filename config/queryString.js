@@ -6,6 +6,6 @@ module.exports = {
     files: [{
         expand: true,
         cwd: 'tmp/queryString/',
-        src: ['*.html']
+        src: ['*.html', '*.css']
     }]
 };
