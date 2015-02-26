@@ -302,6 +302,8 @@ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust. This assum
 
 ### Change Log
 
+2015-02-26  v0.4.12 Fixed tests and implementation when deleting original files.
+
 2015-02-25  v0.4.11 Ignoring data-images when parsing CSS.
 
 2015-02-20  v0.4.10 Added support for Windows 8.1 and IE titles browser config file.
