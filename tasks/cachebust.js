@@ -70,6 +70,7 @@ module.exports = function(grunt) {
         var opts = this.options(options);
         var filters = grunt.util._.defaults(opts.filters, defaultFilters);
         var processedFileMap = {};
+        var filesToDelete = [];
 
         var regexs = require('./lib/regexs');
         var utils = require('./lib/utils')(opts);
@@ -172,11 +173,8 @@ module.exports = function(grunt) {
 
                 processedFileMap[originalReference] = newReference;
 
-                // Delete the original files, if enabled
                 if (opts.deleteOriginals) {
-                    if (grunt.file.exists(filename)) {
-                        grunt.file.delete(filename);
-                    }
+                    filesToDelete.push(filename);
                 }
             });
 
@@ -207,6 +205,15 @@ module.exports = function(grunt) {
                     processFile(file, filepath);
                 });
         });
+
+        // Delete the original files, if enabled
+        if (opts.deleteOriginals) {
+            filesToDelete.forEach(function(filename) {
+                if (grunt.file.exists(filename)) {
+                    grunt.file.delete(filename);
+                }
+            });
+        }
 
         // Generate a JSON with the swapped file names if requested
         if (opts.jsonOutput) {
