@@ -9,9 +9,9 @@ module.exports = {
 
         var markup = grunt.file.read('tmp/deleteOriginals/deleteOriginals.html');
 
-        test.ok(!grunt.file.exists('tmp/assets/delete.css'));
-        test.ok(!grunt.file.exists('tmp/assets/delete.png'));
-        test.ok(!grunt.file.exists('tmp/assets/delete.js'));
+        test.ok(!grunt.file.exists('tmp/deleteOriginals/assets/delete.css'));
+        test.ok(!grunt.file.exists('tmp/deleteOriginals/assets/delete.png'));
+        test.ok(!grunt.file.exists('tmp/deleteOriginals/assets/delete.js'));
 
         test.ok(markup.match(/delete\.[a-z0-9]{16}\.js/), 'testing already busted JS assets in replaceNameAlreadyBusted');
         test.ok(markup.match(/delete\.[a-z0-9]{16}\.css/), 'testing already busted CSS assets in replaceNameAlreadyBusted');
