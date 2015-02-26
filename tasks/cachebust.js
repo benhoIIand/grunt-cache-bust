@@ -131,7 +131,7 @@ module.exports = function(grunt) {
                         }
 
                         if (utils.checkIfRemote(reference)) {
-                        	return false;
+                            return false;
                         }
 
                         if (!grunt.file.exists(filename)) {
@@ -157,7 +157,7 @@ module.exports = function(grunt) {
                     }
                 } else {
                     if (utils.checkIfRemote(reference)) {
-                    	return false;
+                        return false;
                     }
 
                     if (!grunt.file.exists(filename)) {
