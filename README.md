@@ -303,16 +303,27 @@ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust. This assum
 
 ### Change Log
 
-2015-02-26  v0.4.12 Fixed tests and implementation when deleting original files.
+**v0.4.13** - 2015-02-27
+* Fixes issue with deleting the original files when referenced in more than one source file.
+* Fixed issue with hashe in the url of assets when referenced in CSS
 
-2015-02-25  v0.4.11 Ignoring data-images when parsing CSS.
+**v0.4.12** - 2015-02-26 
+* Fixed tests and implementation when deleting original files.
 
-2015-02-20  v0.4.10 Added support for Windows 8.1 and IE titles browser config file.
+**v0.4.12** - 2015-02-25
+* Ignoring data-images when parsing CSS.
 
-2015-02-19  v0.4.9   Tidied up tests. Improved README readability.
+**v0.4.12** - 2015-02-20
+* Added support for Windows 8.1 and IE titles browser config file.
 
-2015-02-18  v0.4.8   Improved detection of remote resources
+**v0.4.2** - 2015-02-19
+* Tidied up tests. Improved README readability.
 
-2015-02-18  v0.4.7   Fix for working with relative paths
+**v0.4.2** - 2015-02-18
+* Improved detection of remote resources
 
-2015-02-15  v0.4.6   Added options to remove frag hints and use a local CDN. Busting multiple values in CSS files. Bust SVG xlink:href path. Override `baseDir` on a per file basis.
+**v0.4.2** - 2015-02-18
+* Fix for working with relative paths
+
+**v0.4.2** - 2015-02-15
+* Added options to remove frag hints and use a local CDN. Busting multiple values in CSS files. Bust SVG xlink:href path. Override `baseDir` on a per file basis.
