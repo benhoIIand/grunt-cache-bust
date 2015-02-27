@@ -42,23 +42,24 @@ module.exports = {
 
         var markup = grunt.file.read('tmp/stylesheets/css/replaceCssInSubdir.css');
 
-        test.ok(markup.match(/assets\/relative-css-image.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
-        test.ok(markup.match(/assets\/relative-css-image-quotes.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
-        test.ok(markup.match(/assets\/relative-css-image-large.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
-        test.ok(markup.match(/assets\/relative-image1.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
+        test.ok(markup.match(/assets\/relative-css-image\.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
+        test.ok(markup.match(/assets\/relative-css-image-quotes\.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
+        test.ok(markup.match(/assets\/relative-css-image-large\.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
+        test.ok(markup.match(/assets\/relative-image1\.[a-z0-9]{16}\.jpg/), 'testing the replacement of an image when css in a different subdir than asset');
 
         test.done();
     },
 
     multipleUrls: function(test) {
-        test.expect(4);
+        test.expect(5);
 
         var markup = grunt.file.read('tmp/stylesheets/multipleUrls.css');
 
-        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/), 'testing the replacement of an image when css in a different subdir than asset');
-        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/), 'testing the replacement of an image when css in a different subdir than asset');
-        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.woff/), 'testing the replacement of an image when css in a different subdir than asset');
-        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.ttf/), 'testing the replacement of an image when css in a different subdir than asset');
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/), 'testing the that multiple urls busted');
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot\?#iefix/), 'testing the that multiple urls busted');
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/), 'testing the that multiple urls busted');
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.woff/), 'testing the that multiple urls busted');
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.ttf/), 'testing the that multiple urls busted');
 
         test.done();
     }

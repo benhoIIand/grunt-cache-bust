@@ -1,7 +1,7 @@
 @font-face {
     font-family: icons;
     src: url(/assets/fonts/icons.eot);
-    src: url(/assets/fonts/icons.eot#iefix) format(embedded-opentype),
+    src: url(/assets/fonts/icons.eot?#iefix) format(embedded-opentype),
          url(/assets/fonts/icons.woff) format(woff),
          url(/assets/fonts/icons.ttf) format(truetype);
     font-weight: 400;
