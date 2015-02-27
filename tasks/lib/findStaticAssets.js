@@ -49,7 +49,7 @@ module.exports = function(opts, filters) {
                 var mappers = filters[key];
 
                 var addPaths = function(mapper) {
-                    if($root(key).attr('type') === 'text/template') {
+                    if ($root(key).attr('type') === 'text/template') {
                         findPaths(cheerio.load($root(key).html(), cheerioOptions));
                     }
 
@@ -77,7 +77,7 @@ module.exports = function(opts, filters) {
 
         findPaths($);
 
-        if(opts.enableUrlFragmentHint) {
+        if (opts.enableUrlFragmentHint) {
             // Find any strings containing the hash `#grunt-cache-bust`
             while ((match = regexs.urlFragHint.exec(data)) !== null) {
                 potentialPath = match[2] || match[4];
