@@ -136,13 +136,13 @@ module.exports = function(grunt) {
                             return false;
                         }
 
-                        var hash = utils.generateHash(grunt.file.read(filename));
+                        var fileHash = utils.generateFileHash(grunt.file.read(filename));
 
                         // Create our new filename
-                        newFilename = utils.addHash(filename, hash, path.extname(filename), opts.separator);
+                        newFilename = utils.addFileHash(filename, fileHash, path.extname(filename), opts.separator);
 
                         // Create the new reference
-                        newReference = utils.addHash(utils.removePreviousHash(reference), hash, path.extname(filename));
+                        newReference = utils.addFileHash(utils.removePreviousHash(reference), fileHash, path.extname(filename));
 
                         // Update the reference in the markup
                         markup = markup.replace(new RegExp(utils.regexEscape(originalReference), 'g'), newReference);
@@ -153,12 +153,18 @@ module.exports = function(grunt) {
                         grunt.verbose.writeln(newFilename + ' was created!');
                     }
                 } else {
+                    filename = utils.removeHashInUrl(filename);
+                    reference = utils.removeHashInUrl(reference);
+
                     if (!grunt.file.exists(filename)) {
                         grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found, original reference=' + reference);
                         return false;
                     }
 
-                    newFilename = reference.split('?')[0] + '?' + utils.generateHash(grunt.file.read(filename));
+                    // Cater for special `?#iefix` in font face declarations - this isn't pretty
+                    reference = reference.replace('?#', '#');
+
+                    newFilename = reference.split('?')[0] + '?' + utils.generateFileHash(grunt.file.read(filename));
                     newReference = newFilename;
                     markup = markup.replace(new RegExp(utils.regexEscape(reference), 'g'), newFilename);
                 }
@@ -207,7 +213,7 @@ module.exports = function(grunt) {
             });
         }
 
-        // Generate a JSON with the swapped file names if requested
+        // Generate a JSON file with the swapped file names if requested
         if (opts.jsonOutput) {
             var name = typeof opts.jsonOutput === 'string' ? opts.jsonOutput : opts.jsonOutputFilename;
 

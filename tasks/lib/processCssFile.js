@@ -23,8 +23,10 @@ module.exports = function(opts) {
         var extractDeclaration = function(declaration) {
             return declaration.value.split(',')
                 .map(function(val) {
-                    if (val.match(/url\(["']?(.*?)['"]?\)/)) {
-                        return utils.removeHashInUrl(val.match(/url\(["']?(.*?)['"]?\)/)[1]);
+                    var matches = val.match(/url\(["']?(.*?)['"]?\)/);
+
+                    if (matches) {
+                        return matches[1];
                     }
                 });
         };

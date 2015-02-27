@@ -43,14 +43,14 @@ module.exports = function(opts) {
             return url.split('#')[0];
         },
 
-        addHash: function(str, hash, extension) {
+        addFileHash: function(str, hash, extension) {
             var splitbyUrlHash = str.split('#');
             var hashInUrl = splitbyUrlHash[1] ? '#' + splitbyUrlHash[1] : '';
 
             return splitbyUrlHash[0].replace(extension, '') + opts.separator + hash + extension + hashInUrl;
         },
 
-        generateHash: function(fileData) {
+        generateFileHash: function(fileData) {
             return opts.hash || crypto.createHash(opts.algorithm).update(fileData, opts.encoding).digest('hex').substring(0, opts.length);
         },
 
