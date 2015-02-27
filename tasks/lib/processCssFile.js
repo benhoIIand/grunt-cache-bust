@@ -2,45 +2,55 @@
 
 var css = require('css');
 var flatten = require('flatten');
-var utils = require('./utils')();
 
-module.exports = function(data) {
-    var paths = [];
-    var cssObj = css.parse(data);
+module.exports = function(opts) {
+    var utils = require('./utils')(opts);
 
-    var filterDeclarations = function(declaration) {
-        var hasBackgroundUrl = (/background/).test(declaration.property) && (/url/).test(declaration.value);
-        var hasContentUrl = (/content/).test(declaration.property) && (/url/).test(declaration.value);
-        var hasSrcUrl = (/src/).test(declaration.property) && (/url/).test(declaration.value);
-        var dataImage = (/data\:image\//).test(declaration.value);
+    return function(data) {
+        var paths = [];
+        var cssObj = css.parse(data);
 
-        // Check if it has a background property, and if so, check that it contains a URL
-        return (hasBackgroundUrl || hasContentUrl || hasSrcUrl) && !dataImage;
-    };
+        var filterDeclarations = function(declaration) {
+            var hasBackgroundUrl = (/background/).test(declaration.property) && (/url/).test(declaration.value);
+            var hasContentUrl = (/content/).test(declaration.property) && (/url/).test(declaration.value);
+            var hasSrcUrl = (/src/).test(declaration.property) && (/url/).test(declaration.value);
+            var dataImage = (/data\:image\//).test(declaration.value);
 
-    var extractDeclaration = function(declaration) {
-        return declaration.value.split(',').map(function(val) {
-            return utils.removeHashInUrl(val.match(/url\(["']?(.*?)['"]?\)/)[1]);
+            // Check if it has a background property, and if so, check that it contains a URL
+            return (hasBackgroundUrl || hasContentUrl || hasSrcUrl) && !dataImage;
+        };
+
+        var extractDeclaration = function(declaration) {
+            return declaration.value.split(',')
+                .map(function(val) {
+                    if (val.match(/url\(["']?(.*?)['"]?\)/)) {
+                        return utils.removeHashInUrl(val.match(/url\(["']?(.*?)['"]?\)/)[1]);
+                    }
+                });
+        };
+
+        // Loop through each stylesheet rules
+        cssObj.stylesheet.rules.forEach(function(rule) {
+            var mediaQueryDeclarations = rule.type !== 'media' ? [] : rule.rules.reduce(function(acc, rule) {
+                return acc.concat(rule.declarations);
+            }, []);
+
+            var declarations = (rule.declarations || []).concat(mediaQueryDeclarations);
+
+            // Loop through all declarations
+            if (declarations && declarations.length > 0) {
+                var foundDeclarations = declarations
+                    .filter(filterDeclarations)
+                    .map(extractDeclaration)
+                    .reduce(function(acc, val) {
+                        return acc.concat(val);
+                    }, [])
+                    .filter(utils.checkIfValidFile.bind(utils));
+
+                paths = paths.concat(foundDeclarations);
+            }
         });
+
+        return flatten(paths);
     };
-
-    // Loop through each stylesheet rules
-    cssObj.stylesheet.rules.forEach(function(rule) {
-        var mediaQueryDeclarations = rule.type !== 'media' ? [] : rule.rules.reduce(function(acc, rule) {
-            return acc.concat(rule.declarations);
-        }, []);
-
-        var declarations = (rule.declarations || []).concat(mediaQueryDeclarations);
-
-        // Loop through all declarations
-        if (declarations && declarations.length > 0) {
-            var foundDeclarations = declarations
-                .filter(filterDeclarations)
-                .map(extractDeclaration);
-
-            paths = paths.concat(foundDeclarations);
-        }
-    });
-
-    return flatten(paths);
 };

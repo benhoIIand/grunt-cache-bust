@@ -5,7 +5,6 @@ var cheerio = require('cheerio');
 var css = require('css');
 
 var regexs = require('./regexs');
-var processCssFile = require('./processCssFile');
 
 var cheerioOptions = {
     ignoreWhitespace: true,
@@ -14,6 +13,7 @@ var cheerioOptions = {
 
 module.exports = function(opts, filters) {
     var utils = require('./utils')(opts);
+    var processCssFile = require('./processCssFile')(opts);
 
     return function(data, isCSS) {
         var $ = cheerio.load(data, cheerioOptions);
