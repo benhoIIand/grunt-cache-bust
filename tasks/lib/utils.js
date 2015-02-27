@@ -26,7 +26,7 @@ module.exports = function(opts) {
         },
 
         checkIfValidFile: function(path) {
-            return path !== 'undefined' && path !== undefined && !this.checkIfRemote(path, opts.cdnPath) && this.checkIfHasExtension(path);
+            return path !== 'undefined' && path !== undefined && !this.checkIfRemote(path) && this.checkIfHasExtension(path);
         },
 
         checkIfElemSrcValidFile: function(element) {
