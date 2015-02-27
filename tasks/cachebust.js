@@ -131,10 +131,6 @@ module.exports = function(grunt) {
                             });
                         }
 
-                        if (utils.checkIfRemote(reference)) {
-                            return false;
-                        }
-
                         if (!grunt.file.exists(filename)) {
                             grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found, original reference=' + reference);
                             return false;
@@ -157,10 +153,6 @@ module.exports = function(grunt) {
                         grunt.verbose.writeln(newFilename + ' was created!');
                     }
                 } else {
-                    if (utils.checkIfRemote(reference)) {
-                        return false;
-                    }
-
                     if (!grunt.file.exists(filename)) {
                         grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found, original reference=' + reference);
                         return false;

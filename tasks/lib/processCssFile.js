@@ -41,11 +41,7 @@ module.exports = function(opts) {
             if (declarations && declarations.length > 0) {
                 var foundDeclarations = declarations
                     .filter(filterDeclarations)
-                    .map(extractDeclaration)
-                    .reduce(function(acc, val) {
-                        return acc.concat(val);
-                    }, [])
-                    .filter(utils.checkIfValidFile.bind(utils));
+                    .map(extractDeclaration);
 
                 paths = paths.concat(foundDeclarations);
             }

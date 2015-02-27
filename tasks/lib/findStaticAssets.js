@@ -88,8 +88,6 @@ module.exports = function(opts, filters) {
             }
         }
 
-        return paths.filter(function(path, index) {
-            return paths.indexOf(path) === index;
-        });
+        return paths.filter(utils.checkIfValidFile.bind(utils));
     };
 };
