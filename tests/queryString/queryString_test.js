@@ -46,11 +46,12 @@ module.exports = {
     },
 
     css: function(test) {
-        test.expect(4);
+        test.expect(5);
 
         var css = grunt.file.read('tmp/queryString/queryString.css');
 
         test.ok(css.match(/\/assets\/fonts\/glyphicons-halflings-regular\.eot\?[a-z0-9]{16}/), 'testing glyphicons-halflings-regular.eot');
+        test.ok(css.match(/\/assets\/fonts\/glyphicons-halflings-regular\.eot\?[a-z0-9]{16}\#iefix/), 'testing glyphicons-halflings-regular.eot with IEFix hash');
         test.ok(css.match(/\/assets\/fonts\/glyphicons-halflings-regular\.woff\?[a-z0-9]{16}/), 'testing glyphicons-halflings-regular.woff');
         test.ok(css.match(/\/assets\/fonts\/glyphicons-halflings-regular\.ttf\?[a-z0-9]{16}/), 'testing glyphicons-halflings-regular.ttf');
         test.ok(css.match(/\/assets\/fonts\/glyphicons-halflings-regular\.svg\?[a-z0-9]{16}\#glyphicons_halflingsregular'/), 'testing glyphicons-halflings-regular.svg');
