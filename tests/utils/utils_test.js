@@ -22,6 +22,27 @@ module.exports = {
         test.equal(utils.removeHashInUrl('/assets/scripts.js#4567#678'), '/assets/scripts.js');
 
         test.done();
-    }
+    },
+
+	getPhysicalPath: function(test) {
+		test.expect(6);
+
+		test.throws(function() {
+			utils.getPhysicalPath();
+		});
+		test.throws(function() {
+			utils.getPhysicalPath(123);
+		});
+		test.doesNotThrow(function() {
+			utils.getPhysicalPath('/assets/style.css', true);
+		});
+		test.doesNotThrow(function() {
+			utils.getPhysicalPath('/assets/style.css');
+		});
+		test.equal(utils.getPhysicalPath('/assets/styles.css', true), '/assets/styles.css');
+		test.equal(utils.getPhysicalPath('/assets/styles.css', [{ 'assets': 'test' }]), '/test/styles.css');
+
+		test.done();
+	}
 
 };
