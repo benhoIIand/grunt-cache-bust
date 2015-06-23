@@ -156,15 +156,18 @@ module.exports = function(grunt) {
                     filename = utils.removeHashInUrl(filename);
                     reference = utils.removeHashInUrl(reference);
 
-                    if (!grunt.file.exists(filename)) {
-                        grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found, original reference=' + reference);
+                    var physicalFilename = utils.getPhysicalPath(filename, opts.alias);
+                    var physicalReference = utils.getPhysicalPath(reference, opts.alias);
+
+                    if (!grunt.file.exists(physicalFilename)) {
+                        grunt.log.warn('Static asset "' + physicalFilename + '" skipped because it wasn\'t found, original reference=' + physicalReference);
                         return false;
                     }
 
                     // Cater for special `?#iefix` in font face declarations - this isn't pretty
                     reference = reference.replace('?#', '#');
 
-                    newFilename = reference.split('?')[0] + '?' + utils.generateFileHash(grunt.file.read(filename));
+                    newFilename = reference.split('?')[0] + '?' + utils.generateFileHash(grunt.file.read(physicalFilename));
                     newReference = newFilename;
                     markup = markup.replace(new RegExp(utils.regexEscape(reference), 'g'), newFilename);
                 }

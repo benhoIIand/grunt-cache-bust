@@ -82,6 +82,7 @@ grunt.initConfig({
 defaults. Extra details are below.
 {
     algorithm: 'md5',                    // Algoirthm used for hashing files
+    alias: '[]',                         // Look for a physical path instead of using the alias
     baseDir: './',                       // The base directory for all assets
     cdnPath: false,                      // You're own CDN path
     deleteOriginals: false,              // Delete the original file after hashing
@@ -104,6 +105,22 @@ Type: `String`
 Default value: `'md5'`
 
 `algorithm` is dependent on the available algorithms supported by the version of OpenSSL on the platform. Examples are `'sha1'`, `'md5'`, `'sha256'`, `'sha512'`
+
+#### options.alias
+Type: `Array`
+
+Default value: `'[]'`
+
+You can override this at the file level, e.g:
+
+```
+options: {
+  rename: false,
+  alias: [{
+   'path-to-search': 'new-path'
+  }],
+},
+```
 
 #### options.baseDir
 Type: `String`
@@ -302,6 +319,9 @@ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust. This assum
 ```
 
 ### Change Log
+
+**v0.5.0** - 2015-06-23
+* Added new configuration to enable server aliases.
 
 **v0.4.13** - 2015-02-27
 * Fixes issue with deleting the original files when referenced in more than one source file.

@@ -60,6 +60,43 @@ module.exports = function(opts) {
             return str.replace(findHash, function(match, hash, extension) {
                 return extension;
             });
+        },
+
+        /**
+         * The current filename can be obtained using some server aliases.
+         * If a filename part matches one of them, then the function returns the physical filename replacing all aliases
+         * with the real path.
+         *
+         * @param {string} filename
+         * @param {array} alias It should match following structure:
+         * [
+         * 	{
+         * 	 'path-to-search': 'new-path'
+         * 	},
+         * 	{
+         * 	 'other-path-to-search': 'other-path'
+         * 	},...
+         * ]
+         * @return {string} physicalFilename
+         */
+        getPhysicalPath: function(filename, alias) {
+            if (typeof filename !== "string") {
+                throw 'Filename MUST be a string';
+            }
+
+            var physicalFilename = filename;
+
+            if (alias && typeof alias === "object") {
+                alias.forEach(function(alias) {
+                    for (var key in alias) {
+                        if (filename.indexOf(key) > -1) {
+                            physicalFilename = physicalFilename.replace(key, alias[key]);
+                        }
+                    }
+                });
+            }
+
+            return physicalFilename;
         }
 
     };
