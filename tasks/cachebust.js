@@ -136,7 +136,7 @@ module.exports = function(grunt) {
                             return false;
                         }
 
-                        var fileHash = utils.generateFileHash(grunt.file.read(filename));
+                        var fileHash = utils.generateFileHash(grunt.file.read(filename, {encoding: null}));
 
                         // Create our new filename
                         newFilename = utils.addFileHash(filename, fileHash, path.extname(filename), opts.separator);
@@ -164,7 +164,7 @@ module.exports = function(grunt) {
                     // Cater for special `?#iefix` in font face declarations - this isn't pretty
                     reference = reference.replace('?#', '#');
 
-                    newFilename = reference.split('?')[0] + '?' + utils.generateFileHash(grunt.file.read(filename));
+                    newFilename = reference.split('?')[0] + '?' + utils.generateFileHash(grunt.file.read(filename, {encoding: null}));
                     newReference = newFilename;
                     markup = markup.replace(new RegExp(utils.regexEscape(reference), 'g'), newFilename);
                 }
