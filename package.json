@@ -28,7 +28,7 @@
         "grunt": "~0.4.5"
     },
     "dependencies": {
-        "cheerio": "~0.18.0",
+        "cheerio": "~0.19.0",
         "css": "~2.2.0",
         "flatten": "~0.0.1"
     },

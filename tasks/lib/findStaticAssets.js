@@ -88,6 +88,6 @@ module.exports = function(opts, filters) {
             }
         }
 
-        return paths.filter(utils.checkIfValidFile.bind(utils));
+        return paths.filter(utils.checkIfValidFile.bind(utils)).sort(function(a, b) { return b.localeCompare(a); });
     };
 };

@@ -5,6 +5,6 @@ module.exports = {
     files: [{
         expand: true,
         cwd: 'tmp/rename/',
-        src: ['*.html']
+        src: ['*.html', 'rename.css']
     }]
 };
