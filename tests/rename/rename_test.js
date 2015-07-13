@@ -19,6 +19,23 @@ module.exports = {
         test.done();
     },
 
+    renaming_css: function(test) {
+        test.expect(8);
+
+        var markup = grunt.file.read('tmp/rename/rename.css');
+
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/), 'testing renaming of fonts in CSS');
+        test.ok(grunt.file.exists('tmp/rename/' + markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/)[0]));
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.woff/), 'testing the that multiple urls busted');
+        test.ok(grunt.file.exists('tmp/rename/' + markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.woff/)[0]));
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.woff2/), 'testing the that multiple urls busted');
+        test.ok(grunt.file.exists('tmp/rename/' + markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.woff2/)[0]));
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.ttf/), 'testing the that multiple urls busted');
+        test.ok(grunt.file.exists('tmp/rename/' + markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.ttf/)[0]));
+
+        test.done();
+    },
+
     scriptsInDifferentFiles: function(test) {
         test.expect(6);
 
