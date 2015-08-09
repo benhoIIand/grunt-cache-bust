@@ -117,7 +117,7 @@ module.exports = {
 
         sourceFileDir += '/';
 
-        return path.normalize(sourceFileDir + parsedUrl.pathname);
+        return decodeURI(path.normalize(sourceFileDir + parsedUrl.pathname));
     }
 
 };

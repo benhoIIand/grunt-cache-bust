@@ -57,7 +57,7 @@ module.exports = function() {
                         .forEach(function(parsedUrl) {
                             var normalizedPath = utils.normalizePath(opts, file, path.dirname(filepath), parsedUrl);
                             var originalReference = decodeURI(parsedUrl.href);
-                            var newPathname = parsedUrl.pathname;
+                            var newPathname = decodeURI(parsedUrl.pathname);
                             var generateFileHash = utils.generateFileHash(opts);
                             var removePreviousHash = utils.removePreviousHash(opts);
                             var newReference;
