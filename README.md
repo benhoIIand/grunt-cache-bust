@@ -151,7 +151,7 @@ Type: `Boolean`
 
 Default value: `false`
 
-When true, cachebust will search single and double-quoted strings in the given files for any resource ending in `#grunt-cache-bust`. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/test/fixtures/enableUrlFragmentHint.php) for more details.
+When true, cachebust will search single and double-quoted strings in the given files for any resource ending in `#grunt-cache-bust`. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/tests/enableUrlFragments/enableUrlFragments.php) for more details.
 
 #### options.encoding
 Type: `String`
