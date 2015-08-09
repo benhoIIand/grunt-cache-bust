@@ -83,17 +83,10 @@ defaults. Extra details are below.
 {
     algorithm: 'md5',                    // Algoirthm used for hashing files
     baseDir: './',                       // The base directory for all assets
-    cdnPath: false,                      // You're own CDN path
     deleteOriginals: false,              // Delete the original file after hashing
-    enableUrlFragmentHint: false,        // Look for the URL fragment in URLs
     encoding: 'utf8',                    // The encoding used when reading/writing files
-    filters: {},                         // Filters used when searching the DOM for assets
-    ignorePatterns: [],                  // Ignore files that match given patterns
     jsonOutput: false,                   // Output the original => new URLs to a JSON file
     length: 16,                          // The length of the hash from a file
-    replaceTerms: [],                    // Replace terms in URLs
-    removeUrlFragmentHint: false,        // Remove the URL fragment from URLs after hashing
-    rename: true,                        // Rename files instead of appending a query string
     separator: '.'                       // The separator between the original file name and hash
 }
 ```
@@ -110,33 +103,22 @@ Type: `String`
 
 Default value: `false`
 
-When set, `cachebust` will try to find the asset files using the baseDir as base path.
-
-You can override this at the file level, e.g:
+When set, `cachebust` will try to find the assets using the baseDir as base path.
 
 ```js
 assets: {
+  options: {
+    baseDir: 'public/',
+  },
   files: [
       {   
         expand: true,
         cwd: 'public/',
-        baseDir: 'public/',
         src: ['modules/**/*.html']
-      },  
-      {   
-        baseDir: '/',
-        src: ['config/config.js']
-      }   
+      }
   ]   
 }   
 ```
-
-#### options.cdnPath
-Type: `String`
-
-Default value: `false`
-
-When set, `cachebust` test paths against this string when attempting to determine a path to be remote or not. This allows all assets to be busted locally and than uploaded to your own CDN. This string will be ignored in paths during file-handling to find files in `baseDir`.
 
 #### options.deleteOriginals
 Type: `Boolean`
@@ -144,14 +126,6 @@ Type: `Boolean`
 Default value: `false`
 
 When set, `cachebust` will delete the original versions of the files that have been renamed.  For example, `style.css` will be deleted after being copied to `style.dcf1d324cb50a1f9.css`.
-
-#### options.enableUrlFragmentHint
-
-Type: `Boolean`
-
-Default value: `false`
-
-When true, cachebust will search single and double-quoted strings in the given files for any resource ending in `#grunt-cache-bust`. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/tests/enableUrlFragments/enableUrlFragments.php) for more details.
 
 #### options.encoding
 Type: `String`
@@ -172,17 +146,6 @@ Default value:
 
 The key in the object is the `selector`, and the value provided is the filter. Filters will be merged with the 
 defaults above. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/tasks/cachebust.js#L39) for more details.
-
-#### options.ignorePatterns
-Type: `Array`
-
-Default value: `[]`
-
-This is a regex test against a file reference. If returned true for patterns in the array, then that file will be ignored.
-
-```js
-ignorePatterns: ['test', 'requirejs']
-```
 
 #### options.jsonOutput
 Type: `Boolean|String`
@@ -210,28 +173,6 @@ Default value: `16`
 
 The number of characters of the file content hash to prefix the file name with.
 
-#### options.replaceTerms
-Type: `Array`
-
-Default value: `[]`
-
-Replace terms within URLs. See the `replaceTerm` folder in `tests`.
-
-#### options.removeUrlFragmentHint
-
-Type: `Boolean`
-
-Default value: `false`
-
-Removes the URL fragment after it's been processed.
-
-#### options.rename
-Type: `Boolean`
-
-Default value: `true`
-
-When true, `cachebust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
-
 #### options.separator
 Type: `String`
 
@@ -255,53 +196,10 @@ grunt.initConfig({
 });
 ```
 
-#### Custom Options
-
-```js
-grunt.initConfig({
-  cacheBust: {
-    options: {
-      algorithm: 'sha1',
-      length: 32,
-      baseDir: '.tmp/public/',
-      filters: {
-        'script': [
-          function() {
-            return this.attribs['data-main'];
-          }, // for requirejs mains.js
-          function() {
-            return this.attribs.src;
-          } // keep 
-          default 'src' mapper
-        ]
-      }
-    },
-    assets: {
-      files: [{
-        expand: true,
-        cwd: 'src',
-        src: ['*.html'],
-        dest: 'dest/'
-      }]
-    }
-  }
-});
-```
-
-### CDNs
-
-Remote URLs for CSS, JavaScript, and images are ignored by cacheBust. This assumes that remote URLs for these assets will be CDN hosted content, typically for well known libraries like jQuery or Bootstrap. For example, all these URLs will be ignored:
-
-```html
-<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
-<img src="https://secure.gravatar.com/avatar/d3b2094f1b3386e660bb737e797f5dcc?s=420" alt="test" />
-```
-
 ### Change Log
+
+**v1.0.0**
+* Re-wrote the way the plugin functions. Instead of finding assets in files, the plugin now goes through a given assets folder and builds an object based on the original and hashed file name. You can read more later...
 
 **v0.5.1**
 * Reading files to be hashed as a buffer rather than string

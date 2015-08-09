@@ -1,7 +1,8 @@
 module.exports = {
     options: {
         baseDir: 'tmp/deleteOriginals',
-        deleteOriginals: true
+        deleteOriginals: true,
+        assets: 'assets/*'
     },
     files: [{
         expand: true,

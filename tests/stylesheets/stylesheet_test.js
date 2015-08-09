@@ -4,22 +4,6 @@ var grunt = require('grunt');
 
 module.exports = {
 
-    stylesheetImport: function(test) {
-        test.expect(6);
-
-        var stylesheet = grunt.file.read('tmp/stylesheets/stylesheetImport.html');
-
-        test.ok(stylesheet.match(/stylesheet1\.[a-z0-9]{16}\.css/), 'testing stylesheet1');
-        test.ok(stylesheet.match(/stylesheet2\.[a-z0-9]{16}\.css/), 'testing stylesheet2');
-        test.ok(stylesheet.match(/stylesheet4\.[a-z0-9]{16}\.css/), 'testing stylesheet4');
-
-        test.ok(stylesheet.match(/href="\/\/netdna.bootstrapcdn.com\/twitter-bootstrap\/2.3.2\/css\/bootstrap-combined.min.css"/), 'remotely hosted // syntax should remain untouched');
-        test.ok(stylesheet.match(/href="https:\/\/twitter.github.com\/bootstrap\/assets\/css\/bootstrap.css"/), 'remotely hosted https:// syntax should remain untouched');
-        test.ok(stylesheet.match(/href="http:\/\/twitter.github.com\/bootstrap\/assets\/css\/bootstrap.css"/), 'remotely hosted http:// syntax should remain untouched');
-
-        test.done();
-    },
-
     stylesheet: function(test) {
         test.expect(8);
 
@@ -53,7 +37,7 @@ module.exports = {
     multipleUrls: function(test) {
         test.expect(6);
 
-        var markup = grunt.file.read('tmp/stylesheets/multipleUrls.css');
+        var markup = grunt.file.read('tmp/stylesheets/stylesheet.css');
 
         test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/), 'testing the that multiple urls busted');
         test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot\?#iefix/), 'testing the that multiple urls busted');

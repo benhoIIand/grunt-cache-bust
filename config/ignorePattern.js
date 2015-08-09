@@ -1,10 +1,11 @@
 module.exports = {
     options: {
-        baseDir: 'tmp/ignorePatterns'
+        baseDir: 'tmp/ignorePattern',
+        assets: ['assets/*', '!assets/*.jpg']
     },
     files: [{
         expand: true,
-        cwd: 'tmp/ignorePatterns/',
+        cwd: 'tmp/ignorePattern/',
         src: ['*.html']
     }]
 };

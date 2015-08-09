@@ -9,9 +9,9 @@ module.exports = {
 
         var markup = grunt.file.read('tmp/ignorePattern/ignorePattern.html');
 
-        test.ok(markup.match(/assets\/toBeIgnoredCSS(?!\.[a-z0-9]{16})\.css"/), 'testing toBeIgnoredCSS');
-        test.ok(markup.match(/assets\/toBeIgnoredJPG(?!\.[a-z0-9]{16})\.jpg"/), 'testing toBeIgnoredJPG');
-        test.ok(markup.match(/assets\/toBeIgnoredJS(?!\.[a-z0-9]{16})\.js"/), 'testing toBeIgnoredJS');
+        test.ok(markup.match(/assets\/toBeIgnoredCSS\.[a-z0-9]{16}\.css"/), 'testing toBeIgnoredCSS');
+        test.ok(markup.match(/assets\/toBeIgnoredJPG\.jpg"/), 'testing toBeIgnoredJPG');
+        test.ok(markup.match(/assets\/toBeIgnoredJS\.[a-z0-9]{16}\.js"/), 'testing toBeIgnoredJS');
 
         test.done();
     }

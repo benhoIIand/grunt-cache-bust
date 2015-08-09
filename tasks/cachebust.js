@@ -1,168 +1,89 @@
 'use strict';
 
-var fs = require('fs');
 var url = require('url');
 var path = require('path');
 var grunt = require('grunt');
+var crypto = require('crypto');
 
-var opts;
+var _ = grunt.util._;
 
-var fileDoesntExist = function(normalizedPath, reference) {
-    grunt.log.warn('Static asset "' + normalizedPath + '" skipped because it wasn\'t found, original reference=' + reference);
-    return false;
-};
-
-var doesFileExist = function(filepath) {
-    if (!grunt.file.exists(filepath)) {
-        grunt.log.warn('Source file "' + filepath + '" not found.');
-        return false;
-    } else {
-        return true;
-    }
-};
-
-var removeIgnoredPatterns = function(parsedUrl) {
-    if (opts.ignorePatterns) {
-        var matched = opts.ignorePatterns.some(function(pattern) {
-            return new RegExp(pattern, 'ig').test(parsedUrl.href);
-        });
-
-        if (matched) {
-            return false;
-        }
-    }
-
-    return true;
+var DEFAULT_OPTIONS = {
+    algorithm: 'md5',
+    baseDir: './',
+    deleteOriginals: false,
+    encoding: 'utf8',
+    jsonOutput: false,
+    jsonOutputFilename: 'grunt-cache-bust.json',
+    length: 16,
+    separator: '.'
 };
 
 module.exports = function() {
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
-        opts = this.options(require('./lib/defaultOptions'));
+        var opts = this.options(DEFAULT_OPTIONS);
 
-        var processedFileMap = {};
-        var filesToDelete = [];
+        var discoveryOpts = {
+            cwd: path.resolve(opts.baseDir),
+            filter: 'isFile'
+        };
 
-        var utils = require('./lib/utils');
-        var findStaticAssets = require('./lib/findStaticAssets')(opts);
+        // Generate an asset map
+        var assetMap = grunt.file
+            .expand(discoveryOpts, opts.assets)
+            .reduce(hashFile, {});
 
-        // Kick things off!
-        this.files.forEach(function(file) {
-            file.src
-                .filter(doesFileExist)
-                .forEach(function(filepath) {
-                    var markup = grunt.file.read(filepath);
+        console.log(assetMap);
 
-                    findStaticAssets(markup, (/\.css$/).test(filepath))
-                        .filter(removeIgnoredPatterns)
-                        .forEach(function(parsedUrl) {
-                            var normalizedPath = utils.normalizePath(opts, file, path.dirname(filepath), parsedUrl);
-                            var originalReference = decodeURI(parsedUrl.href);
-                            var newPathname = decodeURI(parsedUrl.pathname);
-                            var generateFileHash = utils.generateFileHash(opts);
-                            var removePreviousHash = utils.removePreviousHash(opts);
-                            var newReference;
-                            var domain;
+        // Write out assetMap
+        if(opts.jsonOutput !== false) {
+            console.log(path.resolve(opts.baseDir, '../../', opts.jsonOutputFilename));
+            grunt.file.write(path.resolve(opts.baseDir, opts.jsonOutputFilename), JSON.stringify(assetMap));
+        }
 
-                            if (opts.rename) {
-
-                                // If the file has already been cached, use that
-                                if (processedFileMap[parsedUrl.pathname]) {
-                                    markup = markup.replace(new RegExp(utils.regexEscape(parsedUrl.pathname), 'g'), processedFileMap[parsedUrl.pathname]);
-                                } else {
-                                    // Remove any previous hashes from the filename
-                                    normalizedPath = removePreviousHash(normalizedPath);
-                                    newPathname = removePreviousHash(newPathname);
-
-                                    // Replacing specific terms in the import path so renaming files
-                                    if (opts.replaceTerms && opts.replaceTerms.length > 0) {
-                                        opts.replaceTerms.forEach(function(obj) {
-                                            grunt.util._.each(obj, function(replacement, term) {
-                                                normalizedPath = normalizedPath.replace(term, replacement);
-                                                newPathname = newPathname.replace(term, replacement);
-                                            });
-                                        });
-                                    }
-
-                                    // Check if file exists
-                                    if (!grunt.file.exists(normalizedPath)) {
-                                        return fileDoesntExist(normalizedPath, parsedUrl.pathname);
-                                    }
-
-                                    // Generate the file hash
-                                    var fileHash = generateFileHash(grunt.file.read(normalizedPath, {
-                                        encoding: null
-                                    }));
-
-                                    // Create our new filename
-                                    var newFilename = utils.addFileHash(normalizedPath, fileHash, opts.separator);
-
-                                    // Create the new reference
-                                    domain = (parsedUrl.hostname ? (parsedUrl.protocol ? parsedUrl.protocol : '') + '//' + (parsedUrl.hostname ? parsedUrl.hostname : '') : '');
-                                    newReference = domain + utils.addFileHash(newPathname, fileHash, opts.separator) + (parsedUrl.hash ? parsedUrl.hash : '');
-
-                                    // Update the reference in the markup
-                                    markup = markup.replace(new RegExp(utils.regexEscape(originalReference)), newReference);
-
-                                    // Create our new file
-                                    grunt.file.copy(normalizedPath, newFilename);
-
-                                    grunt.verbose.writeln(newFilename + ' was created!');
-                                }
-                            } else {
-                                // Remove any previous hashes from the filename
-                                normalizedPath = removePreviousHash(normalizedPath);
-                                newPathname = removePreviousHash(newPathname);
-
-                                // Check if file exists
-                                if (!grunt.file.exists(normalizedPath)) {
-                                    return fileDoesntExist(normalizedPath, parsedUrl.pathname);
-                                }
-
-                                // Create the new reference
-                                domain = (parsedUrl.hostname ? (parsedUrl.protocol ? parsedUrl.protocol : '') + '//' + (parsedUrl.hostname ? parsedUrl.hostname : '') : '');
-                                newReference = domain + newPathname + '?' + generateFileHash(grunt.file.read(normalizedPath, {
-                                        encoding: null
-                                    })) + (parsedUrl.hash ? parsedUrl.hash : '');
-
-                                // Update the reference in the markup
-                                markup = markup.replace(new RegExp(utils.regexEscape(originalReference)), newReference);
-                            }
-
-                            processedFileMap[parsedUrl.pathname] = newReference;
-
-                            if (opts.deleteOriginals) {
-                                filesToDelete.push(normalizedPath);
-                            }
-                        });
-
-                    if (opts.enableUrlFragmentHint && opts.removeUrlFragmentHint) {
-                        markup = markup.replace(/#grunt-cache-bust/g, '');
-                    }
-
-                    // Write back to the source file with changes
-                    grunt.file.write(filepath, markup);
-
-                    // Log that we've busted the file
-                    grunt.log.writeln(['The file ', filepath, ' was busted!'].join(''));
-                });
+        // Go through each source file and replace terms
+        this.files.forEach(function (file) {
+            file.src.forEach(replaceInFile);
         });
 
-        // Delete the original files
-        if (opts.deleteOriginals) {
-            filesToDelete.forEach(function(filename) {
-                if (grunt.file.exists(filename)) {
-                    grunt.file.delete(filename);
-                }
+        function replaceInFile(filepath) {
+            var markup = grunt.file.read(filepath);
+
+            _.each(assetMap, function(hashed, original) {
+                markup = markup.split(original).join(hashed);
             });
+
+            grunt.file.write(filepath, markup);
         }
 
-        // Generate a JSON file with the swapped file names if requested
-        if (opts.jsonOutput) {
-            var name = typeof opts.jsonOutput === 'string' ? opts.jsonOutput : opts.jsonOutputFilename;
+        function hashFile(obj, file) {
+            var absPath = path.resolve(opts.baseDir, file);
+            var hash = generateFileHash(grunt.file.read(absPath, {
+                encoding: null
+            }));
+            var newFilename = addFileHash(file, hash, opts.separator);
 
-            grunt.log.writeln(['File map has been exported to ', path.normalize(opts.baseDir + '/' + name), '!'].join(''));
-            grunt.file.write(path.normalize(opts.baseDir + '/' + name), JSON.stringify(processedFileMap));
+            grunt.file.copy(absPath, path.resolve(opts.baseDir, newFilename));
+
+            if(opts.deleteOriginals) {
+                grunt.file.delete(absPath);
+            }
+
+            obj[file] = newFilename;
+
+            return obj;
         }
+
+        function generateFileHash(data) {
+            return opts.hash || crypto.createHash(opts.algorithm).update(data, opts.encoding).digest('hex').substring(0, opts.length);
+        }
+
+        function addFileHash(str, hash, separator) {
+            var parsed = url.parse(str);
+            var ext = path.extname(parsed.pathname);
+
+            return (parsed.hostname ? parsed.protocol + parsed.hostname : '') + parsed.pathname.replace(ext, '') + separator + hash + ext;
+        }
+
     });
 
 };

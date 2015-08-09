@@ -1,11 +1,11 @@
 module.exports = {
     options: {
-        baseDir: 'tmp/scripts',
+        baseDir: 'tmp/xml',
         assets: 'assets/*'
     },
     files: [{
         expand: true,
-        cwd: 'tmp/scripts/',
-        src: ['*.js']
+        cwd: 'tmp/xml/',
+        src: ['*.xml']
     }]
 };

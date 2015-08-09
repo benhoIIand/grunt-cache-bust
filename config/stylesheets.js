@@ -1,10 +1,11 @@
 module.exports = {
     options: {
-        baseDir: 'tmp/stylesheets'
+        baseDir: 'tmp/stylesheets',
+        assets: 'assets/**/*'
     },
     files: [{
         expand: true,
         cwd: 'tmp/stylesheets/',
-        src: ['*.html', '**/*.css']
+        src: ['**/*.css']
     }]
 };

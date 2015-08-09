@@ -1,1 +1,0 @@
-var standard = this.window;
