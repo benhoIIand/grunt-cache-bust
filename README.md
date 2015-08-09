@@ -303,6 +303,9 @@ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust. This assum
 
 ### Change Log
 
+**v0.5.0** - 2015-08-09
+* Using Node's path module to help with getting the correct paths to assets
+
 **v0.4.13** - 2015-02-27
 * Fixes issue with deleting the original files when referenced in more than one source file.
 * Fixed issue with hashe in the url of assets when referenced in CSS
