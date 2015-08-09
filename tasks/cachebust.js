@@ -89,7 +89,9 @@ module.exports = function() {
                                     }
 
                                     // Generate the file hash
-                                    var fileHash = generateFileHash(grunt.file.read(normalizedPath));
+                                    var fileHash = generateFileHash(grunt.file.read(normalizedPath, {
+                                        encoding: null
+                                    }));
 
                                     // Create our new filename
                                     var newFilename = utils.addFileHash(normalizedPath, fileHash, opts.separator);
@@ -118,7 +120,9 @@ module.exports = function() {
 
                                 // Create the new reference
                                 domain = (parsedUrl.hostname ? (parsedUrl.protocol ? parsedUrl.protocol : '') + '//' + (parsedUrl.hostname ? parsedUrl.hostname : '') : '');
-                                newReference = domain + newPathname + '?' + generateFileHash(grunt.file.read(normalizedPath)) + (parsedUrl.hash ? parsedUrl.hash : '');
+                                newReference = domain + newPathname + '?' + generateFileHash(grunt.file.read(normalizedPath, {
+                                        encoding: null
+                                    })) + (parsedUrl.hash ? parsedUrl.hash : '');
 
                                 // Update the reference in the markup
                                 markup = markup.replace(new RegExp(utils.regexEscape(originalReference)), newReference);

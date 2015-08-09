@@ -303,6 +303,9 @@ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust. This assum
 
 ### Change Log
 
+**Next release**
+* Reading files to be hashed as a buffer rather than string
+
 **v0.5.0** - 2015-08-09
 * Using Node's path module to help with getting the correct paths to assets
 
