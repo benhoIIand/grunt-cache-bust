@@ -1,6 +1,7 @@
 module.exports = {
     options: {
-        baseDir: 'tmp/cdnPath'
+        baseDir: 'tmp/cdnPath',
+        cdnPath: 'domain.com'
     },
     files: [{
         expand: true,

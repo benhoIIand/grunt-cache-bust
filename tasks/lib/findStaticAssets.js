@@ -3,17 +3,17 @@
 var grunt = require('grunt');
 var cheerio = require('cheerio');
 var css = require('css');
-
-var regexs = require('./regexs');
+var url = require('url');
 
 var cheerioOptions = {
     ignoreWhitespace: true,
     lowerCaseTags: true
 };
 
-module.exports = function(opts, filters) {
-    var utils = require('./utils')(opts);
-    var processCssFile = require('./processCssFile')(opts);
+module.exports = function(opts) {
+    var utils = require('./utils');
+    var processCssFile = require('./processCssFile');
+    var filters = grunt.util._.defaults(opts.filters, require('./defaultFilters'));
 
     return function(data, isCSS) {
         var $ = cheerio.load(data, cheerioOptions);
@@ -55,7 +55,7 @@ module.exports = function(opts, filters) {
 
                     var foundPaths = $root(key)
                         .filter(function(i, element) {
-                            return utils.checkIfElemSrcValidFile(element);
+                            return utils.checkIfElemContainsValidFile(element, opts.cdnPath);
                         })
                         .map(mapper)
                         .filter(function(i, path) {
@@ -79,15 +79,24 @@ module.exports = function(opts, filters) {
 
         if (opts.enableUrlFragmentHint) {
             // Find any strings containing the hash `#grunt-cache-bust`
-            while ((match = regexs.urlFragHint.exec(data)) !== null) {
+            var fragRegex = /'(([^']+)#grunt-cache-bust)'|"(([^"]+)#grunt-cache-bust)"/g;
+
+            while ((match = fragRegex.exec(data)) !== null) {
                 potentialPath = match[2] || match[4];
 
-                if (utils.checkIfValidFile(potentialPath)) {
+                if (utils.checkIfValidFile(url.parse(potentialPath))) {
                     paths.push(potentialPath);
                 }
             }
         }
 
-        return paths.filter(utils.checkIfValidFile.bind(utils));
+        return paths
+            .filter(function(val) {
+                return val !== undefined;
+            })
+            .map(url.parse)
+            .filter(function(val) {
+                return utils.checkIfValidFile(val, opts.cdnPath);
+            });
     };
 };
