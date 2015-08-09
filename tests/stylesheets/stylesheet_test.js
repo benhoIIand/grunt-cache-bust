@@ -51,7 +51,7 @@ module.exports = {
     },
 
     multipleUrls: function(test) {
-        test.expect(5);
+        test.expect(6);
 
         var markup = grunt.file.read('tmp/stylesheets/multipleUrls.css');
 
@@ -59,6 +59,7 @@ module.exports = {
         test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot\?#iefix/), 'testing the that multiple urls busted');
         test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/), 'testing the that multiple urls busted');
         test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.woff/), 'testing the that multiple urls busted');
+        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.woff2/), 'testing the that multiple urls busted');
         test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.ttf/), 'testing the that multiple urls busted');
 
         test.done();
