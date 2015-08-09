@@ -77,8 +77,8 @@ module.exports = function() {
                                     if (opts.replaceTerms && opts.replaceTerms.length > 0) {
                                         opts.replaceTerms.forEach(function(obj) {
                                             grunt.util._.each(obj, function(replacement, term) {
-                                                normalizedPath = normalizedPath.replace(encodeURI(term), replacement);
-                                                newPathname = newPathname.replace(encodeURI(term), replacement);
+                                                normalizedPath = normalizedPath.replace(term, replacement);
+                                                newPathname = newPathname.replace(term, replacement);
                                             });
                                         });
                                     }

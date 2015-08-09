@@ -3,11 +3,12 @@
 var url = require('url');
 var path = require('path');
 var crypto = require('crypto');
+var pathIsAbsolute = require('path-is-absolute');
 
 module.exports = {
 
     isRelativePath: function(parsedUrl) {
-        return !path.isAbsolute(parsedUrl.pathname);
+        return !pathIsAbsolute(parsedUrl.pathname);
     },
 
     isRemotePath: function(parsedUrl, cdnHostname) {
