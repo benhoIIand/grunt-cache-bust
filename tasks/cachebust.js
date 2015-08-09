@@ -36,8 +36,8 @@ module.exports = function() {
 
         // Write out assetMap
         if(opts.jsonOutput !== false) {
-            console.log(path.resolve(opts.baseDir, '../../', opts.jsonOutputFilename));
-            grunt.file.write(path.resolve(opts.baseDir, opts.jsonOutputFilename), JSON.stringify(assetMap));
+            var filename = typeof opts.jsonOutput === 'string' ? opts.jsonOutput : opts.jsonOutputFilename;
+            grunt.file.write(path.resolve(opts.baseDir, filename), JSON.stringify(assetMap));
         }
 
         // Go through each source file and replace terms
