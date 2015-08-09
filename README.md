@@ -303,7 +303,7 @@ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust. This assum
 
 ### Change Log
 
-**Next release**
+**v0.5.1**
 * Reading files to be hashed as a buffer rather than string
 
 **v0.5.0** - 2015-08-09
