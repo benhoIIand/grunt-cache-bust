@@ -42,8 +42,8 @@ module.exports = {
         test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/), 'testing the that multiple urls busted');
         test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot\?#iefix/), 'testing the that multiple urls busted');
         test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.eot/), 'testing the that multiple urls busted');
-        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.woff/), 'testing the that multiple urls busted');
-        test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.woff2/), 'testing the that multiple urls busted');
+        test.ok(markup.match(/assets\/fonts\/icons\.303f279e24e9a1ed\.woff/), 'testing the that multiple urls busted');
+        test.ok(markup.match(/assets\/fonts\/icons\.f90c25689874683b\.woff2/), 'testing the that multiple urls busted');
         test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.ttf/), 'testing the that multiple urls busted');
 
         test.done();

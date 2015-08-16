@@ -30,6 +30,8 @@ module.exports = function() {
         // Generate an asset map
         var assetMap = grunt.file
             .expand(discoveryOpts, opts.assets)
+            .sort()
+            .reverse()
             .reduce(hashFile, {});
 
         console.log(assetMap);
@@ -80,8 +82,9 @@ module.exports = function() {
         function addFileHash(str, hash, separator) {
             var parsed = url.parse(str);
             var ext = path.extname(parsed.pathname);
+            var extensionless = parsed.pathname.slice(0, -ext.length);
 
-            return (parsed.hostname ? parsed.protocol + parsed.hostname : '') + parsed.pathname.replace(ext, '') + separator + hash + ext;
+            return (parsed.hostname ? parsed.protocol + parsed.hostname : '') + extensionless + separator + hash + ext;
         }
 
     });
