@@ -40,6 +40,7 @@ body {
 }
 
 @media only screen and (min-device-pixel-ratio: 2) and (min-resolution: 2dppx) {
+    /** Just a comment */
     .large-image {
         background-image: url('assets/image1.jpg');
     }
