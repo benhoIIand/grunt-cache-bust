@@ -21,6 +21,16 @@ module.exports = {
             });
         }
     ],
+    'video': function() {
+        return this.attribs['src'];
+    },
+    // Video source tag e.g. <video><source src="video.mp4" type="video/mp4" /></video>
+    'source' : function() {
+        if (this.attribs.type && this.attribs.type.indexOf("video") === 0 ){
+            return this.attribs.src;
+        }
+        return undefined;
+    },
     'link[rel="icon"], link[rel="shortcut icon"]': function() {
         return this.attribs.href;
     },
