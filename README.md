@@ -303,6 +303,11 @@ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust. This assum
 
 ### Change Log
 
+**v0.6.0**
+* Support cache busting for video tag
+* Fix CSS processing for media queries with comments
+* Use passed in grunt when registering
+
 **v0.5.1**
 * Reading files to be hashed as a buffer rather than string
 
