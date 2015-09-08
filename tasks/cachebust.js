@@ -35,7 +35,7 @@ var removeIgnoredPatterns = function(parsedUrl) {
     return true;
 };
 
-module.exports = function() {
+module.exports = function(grunt) {
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
         opts = this.options(require('./lib/defaultOptions'));
 
