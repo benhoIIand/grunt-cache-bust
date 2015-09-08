@@ -32,7 +32,10 @@ module.exports = function(data) {
     // Loop through each stylesheet rules
     cssObj.stylesheet.rules.forEach(function(rule) {
         var mediaQueryDeclarations = rule.type !== 'media' ? [] : rule.rules.reduce(function(acc, rule) {
-            return acc.concat(rule.declarations);
+            if (rule.declarations) {
+                return acc.concat(rule.declarations);
+            }
+            return acc;
         }, []);
 
         var declarations = (rule.declarations || []).concat(mediaQueryDeclarations);
