@@ -189,7 +189,7 @@ Type: `Boolean|String`
 
 Default value: `false`
 
-When set as `true`, `cachbust` will create a json file with an object inside that contains key value pairs of the original file name, and the renamed md5 hash name for each file.
+When set as `true`, `cachebust` will create a json file with an object inside that contains key value pairs of the original file name, and the renamed md5 hash name for each file.
 
 The default output file will be named `grunt-cache-bust.json` and is relative to the root of the project, or the `baseDir` option if set.
 
