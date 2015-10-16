@@ -31,7 +31,7 @@ module.exports = {
         }
         return undefined;
     },
-    'link[rel="icon"], link[rel="shortcut icon"]': function() {
+    'link[rel*="icon"]': function() {
         return this.attribs.href;
     },
     'script[type="text/template"]': function() {},
