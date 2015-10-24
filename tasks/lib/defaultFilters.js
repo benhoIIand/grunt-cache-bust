@@ -5,6 +5,9 @@ module.exports = {
     'link[rel="stylesheet"]': function() {
         return this.attribs['href'];
     },
+    'meta[property]': function() {
+        return this.attribs.content;
+    },
     'img': [
         function() {
             return this.attribs.src;

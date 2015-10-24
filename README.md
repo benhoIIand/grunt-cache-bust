@@ -303,6 +303,9 @@ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust. This assum
 
 ### Change Log
 
+**v0.6.1**
+* Support cache busting for meta tags
+
 **v0.6.0**
 * Support cache busting for video tag
 * Fix CSS processing for media queries with comments
