@@ -128,7 +128,8 @@ module.exports = function() {
                                 markup = markup.replace(new RegExp(utils.regexEscape(originalReference)), newReference);
                             }
 
-                            processedFileMap[parsedUrl.pathname] = newReference;
+                            if(newReference)
+                                processedFileMap[parsedUrl.pathname] = newReference;
 
                             if (opts.deleteOriginals) {
                                 filesToDelete.push(normalizedPath);
