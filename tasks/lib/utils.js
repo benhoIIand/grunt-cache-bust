@@ -68,6 +68,10 @@ module.exports = {
             filePath = element.attribs.href;
         }
 
+        if (element.attribs.content) {
+            filePath = element.attribs.content;
+        }
+
         return filePath ? this.checkIfValidFile(url.parse(filePath), cdnPath) : false;
     },
 
