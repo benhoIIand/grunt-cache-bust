@@ -5,6 +5,8 @@
 [![Dependencies](https://david-dm.org/hollandben/grunt-cache-bust.svg)](https://david-dm.org/hollandben/grunt-cache-bust.svg)
 [![devDependency Status](https://david-dm.org/alanshaw/david/dev-status.svg?style=flat)](https://david-dm.org/alanshaw/david#info=devDependencies)
 
+#### `v1.0.0` is currently in development and has breaking changes. You can read more about the changes in #147. The more people who try the branch, the quicker I can get it released. Thanks :)
+
 > Bust static assets from the cache using content hashing
 
 * [Getting Started](#getting-started)
