@@ -273,8 +273,7 @@ grunt.initConfig({
           }, // for requirejs mains.js
           function() {
             return this.attribs.src;
-          } // keep 
-          default 'src' mapper
+          } // keep default 'src' mapper
         ]
       }
     },
