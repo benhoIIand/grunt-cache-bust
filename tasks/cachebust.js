@@ -32,8 +32,6 @@ module.exports = function() {
             .expand(discoveryOpts, opts.assets)
             .reduce(hashFile, {});
 
-        console.log(assetMap);
-
         // Write out assetMap
         if(opts.jsonOutput !== false) {
             var filename = typeof opts.jsonOutput === 'string' ? opts.jsonOutput : opts.jsonOutputFilename;

@@ -85,6 +85,7 @@ defaults. Extra details are below.
     baseDir: './',                       // The base directory for all assets
     deleteOriginals: false,              // Delete the original file after hashing
     encoding: 'utf8',                    // The encoding used when reading/writing files
+    hash: '9ef00db36970718e',            // A user defined hash for every file. The `length` option will be ignored
     jsonOutput: false,                   // Output the original => new URLs to a JSON file
     length: 16,                          // The length of the hash from a file
     separator: '.'                       // The separator between the original file name and hash
@@ -133,6 +134,11 @@ Type: `String`
 Default value: `'utf8'`
 
 The encoding of the file contents.
+
+#### options.hash
+Type: `String`
+
+A user defined value to be used as the hash value for all files.
 
 #### options.filters
 Type : `Object`
