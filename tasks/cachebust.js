@@ -39,9 +39,7 @@ module.exports = function() {
         }
 
         // Go through each source file and replace terms
-        this.files.forEach(function (file) {
-            file.src.forEach(replaceInFile);
-        });
+        getFilesToBeRenamed(this.files).forEach(replaceInFile);
 
         function replaceInFile(filepath) {
             var markup = grunt.file.read(filepath);
@@ -80,6 +78,17 @@ module.exports = function() {
             var ext = path.extname(parsed.pathname);
 
             return (parsed.hostname ? parsed.protocol + parsed.hostname : '') + parsed.pathname.replace(ext, '') + separator + hash + ext;
+        }
+
+        function getFilesToBeRenamed(files) {
+            var originalConfig = files[0].orig;
+
+            return grunt.file
+                .expand(originalConfig, originalConfig.src)
+                .map(function (file) {
+                    console.log('file', file);
+                    return path.resolve((originalConfig.cwd ? originalConfig.cwd + path.sep : '') + file);
+                });
         }
 
     });
