@@ -32,46 +32,28 @@ npm install grunt-cache-bust --save-dev
 
 Use the `cacheBust` task for cache busting static files in your application. This allows the assets to have a large expiry time in the browsers cache and will only be forced to use an updated file when the contents of it changes. This is a good practice.
 
-Give the `cacheBust` a list of files that contain your resources and let it work it's magic.
+Tell the `cacheBust` task where your static assets are and the files that reference them and let it work it's magic.
 
-__By 
-default, it will bust the following file type: **CSS**, **JavaScript**, **images** and **favicons**_
-__You can manually add more if needed__
+### Support files
+Literally any file you wish!!
 
 ### Overview
 In your project's Gruntfile, add a section named `cacheBust` to the data object passed into `grunt.initConfig()`.
 
+This is the most basic configuration you can have:
+
 ```js
-grunt.initConfig({
-  cacheBust: {
-    options: {
-      encoding: 'utf8',
-      algorithm: 'md5',
-      length: 16,
-      deleteOriginals: true
-    },
-    assets: {
-      files: [{
+cacheBust: {
+    taskName: {
+        options: {
+            assets: ['assets/**']
+        },
         src: ['index.html']
-      }]
     }
-  }
-})
+}
 ```
 
-```html
-<!doctype html>
-<html>
-<head>
-    <title>This is a test page</title>
-    <link rel="stylesheet" href="/assets/standard.css" />
-</head>
-<body>
-    <img src="/assets/standard.jpg" alt="bird">
-    <script defer src="/assets/standard.js" type="text/javascript"></script>
-</body>
-</html>
-```
+This will hash all the files in the `assets` directory and replace any references to those files in the `index.html` file.
 
 ### Options
 
@@ -81,56 +63,58 @@ grunt.initConfig({
 // Here is a short summary of the options and some of their 
 defaults. Extra details are below.
 {
-    algorithm: 'md5',                    // Algoirthm used for hashing files
-    baseDir: './',                       // The base directory for all assets
-    deleteOriginals: false,              // Delete the original file after hashing
-    encoding: 'utf8',                    // The encoding used when reading/writing files
-    hash: '9ef00db36970718e',            // A user defined hash for every file. The `length` option will be ignored
-    jsonOutput: false,                   // Output the original => new URLs to a JSON file
-    length: 16,                          // The length of the hash from a file
-    separator: '.'                       // The separator between the original file name and hash
+    algorithm: 'md5',                             // Algoirthm used for hashing files
+    assets: ['css/*', 'js/*']                     // File patterns for where all your assets live
+    baseDir: './',                                // The base directory for all assets
+    deleteOriginals: false,                       // Delete the original file after hashing
+    encoding: 'utf8',                             // The encoding used when reading/writing files
+    hash: '9ef00db36970718e',                     // A user defined hash for every file. Not recommended.
+    jsonOutput: false,                            // Output the original => new URLs to a JSON file
+    jsonOutputFilename: 'grunt-cache-bust.json',  // The file path and name of the exported JSON. Is relative to baseDir
+    length: 16,                                   // The length of the hash value
+    separator: '.'                                // The separator between the original file name and hash
 }
 ```
 
 #### options.algorithm
-Type: `String`
-
+Type: `String`  
 Default value: `'md5'`
 
 `algorithm` is dependent on the available algorithms supported by the version of OpenSSL on the platform. Examples are `'sha1'`, `'md5'`, `'sha256'`, `'sha512'`
 
-#### options.baseDir
-Type: `String`
+#### options.assets
+Type: `Array`
 
+`assets` contains the file patterns for where all your assets live. This should point towards all the assets you wish to have busted. It uses the same glob pattern for matching files as Grunt.
+
+
+#### options.baseDir
+Type: `String`  
 Default value: `false`
 
 When set, `cachebust` will try to find the assets using the baseDir as base path.
 
 ```js
 assets: {
-  options: {
-    baseDir: 'public/',
-  },
-  files: [
-      {   
+    options: {
+        baseDir: 'public/',
+    },
+    files: [{   
         expand: true,
         cwd: 'public/',
         src: ['modules/**/*.html']
-      }
-  ]   
+    }]
 }   
 ```
 
 #### options.deleteOriginals
-Type: `Boolean`
-
+Type: `Boolean`  
 Default value: `false`
 
 When set, `cachebust` will delete the original versions of the files that have been renamed.  For example, `style.css` will be deleted after being copied to `style.dcf1d324cb50a1f9.css`.
 
 #### options.encoding
-Type: `String`
-
+Type: `String`  
 Default value: `'utf8'`
 
 The encoding of the file contents.
@@ -140,22 +124,8 @@ Type: `String`
 
 A user defined value to be used as the hash value for all files.
 
-#### options.filters
-Type : `Object`
-
-Default value:
-```js
-{
-    'SELECTOR' : function() { return this.attribs['ATTR']; }
-}
-```
-
-The key in the object is the `selector`, and the value provided is the filter. Filters will be merged with the 
-defaults above. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/tasks/cachebust.js#L39) for more details.
-
 #### options.jsonOutput
-Type: `Boolean|String`
-
+Type: `Boolean|String`  
 Default value: `false`
 
 When set as `true`, `cachbust` will create a json file with an object inside that contains key value pairs of the original file name, and the renamed md5 hash name for each file.
@@ -172,40 +142,91 @@ Output format looks like this:
 }
 ```
 
-#### options.length
-Type: `Number`
+#### options.jsonOutputFilename
+Type: `String`  
+Default value: `grunt-cache-bust.json`
 
+The file path and name of the exported JSON. It is exported relative to baseDir.
+
+#### options.length
+Type: `Number`  
 Default value: `16`
 
 The number of characters of the file content hash to prefix the file name with.
 
 #### options.separator
-Type: `String`
-
+Type: `String`  
 Default value: `.`
 
 The separator between the original file name and hash
 
 ### Usage Examples
 
-#### Basic Asset Cache Busting
-
+#### The most basic setup
 ```js
-grunt.initConfig({
-  cacheBust: {
-    assets: {
-      files: {
-        src: ['index.html', 'contact.html']
-      }
+cacheBust: {
+    taskName: {
+        options: {
+            assets: ['assets/**']
+        },
+        src: ['index.html']
     }
-  }
-});
+}
+```
+
+#### Bust all assets and update references in all assets
+```js
+cacheBust: {
+    options: {
+        assets: ['assets/**/*'],
+        baseDir: './public/'
+    },
+    taskName: {
+        files: [{   
+            expand: true,
+            cwd: 'public/',
+            src: ['templates/**/*.html', 'assets/**/*']
+        }]
+    }
+}
+```
+
+#### Inherited options for multiple tasks
+```js
+cacheBust: {
+    options: {
+        assets: ['assets/**'],
+        baseDir: './public/'
+    },
+    staging: {
+        options: {
+            jsonOutput: true
+        },
+        src: ['index.html']
+    },
+    production: {
+        options: {
+            jsonOutput: false
+        },
+        src: ['index.html']
+    }
+}
 ```
 
 ### Change Log
 
 **v1.0.0**
-* Re-wrote the way the plugin functions. Instead of finding assets in files, the plugin now goes through a given assets folder and builds an object based on the original and hashed file name. You can read more later...
+* Re-wrote the way the plugin functions. Instead of finding assets in files, the plugin now goes through a given assets folder and builds an object based on the original and hashed file name. Read more about the changes in #147
+* Fundamental breaking changes
+
+**v0.6.1**
+* Support cache busting for meta tags
+* Support cache busting for all favicons
+
+**v0.6.0**
+* Support cache busting for video tag
+* Fix CSS processing for media queries with comments
+* Use passed in grunt when registering
 
 **v0.5.1**
 * Reading files to be hashed as a buffer rather than string
