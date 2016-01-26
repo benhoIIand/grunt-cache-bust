@@ -15,6 +15,7 @@
 * [Options](#options)
 * [Usage Examples](#usage-examples)
 * [CDNs](#cdns)
+* [Lazy Loading](#lazy-loading)
 * [Change Log](#change-log)
 
 ## Getting Started
@@ -302,6 +303,14 @@ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust. This assum
 <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
 <img src="https://secure.gravatar.com/avatar/d3b2094f1b3386e660bb737e797f5dcc?s=420" alt="test" />
 ```
+
+### Lazy loading
+
+This plugin also supports lazy loading approach. For using this with any 'lazy loading' implementation, use class 'lazy' and 'data-original' for storing the original url.
+
+Example,
+
+[This](http://www.appelsiini.net/projects/lazyload) plugin works well.
 
 ### Change Log
 

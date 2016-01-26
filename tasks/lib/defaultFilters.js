@@ -8,9 +8,20 @@ module.exports = {
     'meta[property]': function() {
         return this.attribs.content;
     },
+    'div': function() {
+        if(this.attribs['class']&&(this.attribs['class'].indexOf(' lazy') >= 0 )){
+            return this.attribs['data-original'];
+        }else{
+            return false;
+        }
+    },
     'img': [
         function() {
-            return this.attribs.src;
+            if(this.attribs['class']&&(this.attribs['class'].indexOf(' lazy') >= 0 )){
+                return this.attribs['data-original'];
+            }else{
+                return this.attribs.src;
+            }
         },
         function() {
             var srcset = this.attribs.srcset;
