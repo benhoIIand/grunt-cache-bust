@@ -72,6 +72,10 @@ module.exports = {
             filePath = element.attribs.content;
         }
 
+        if(element.attribs.class && (element.attribs.class.indexOf(' lazy') >= 0 )){
+            filePath = element.attribs['data-original'];
+        }
+
         return filePath ? this.checkIfValidFile(url.parse(filePath), cdnPath) : false;
     },
 
