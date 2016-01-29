@@ -47,6 +47,17 @@ module.exports = {
         test.ok(markup.match(/assets\/fonts\/icons\.[a-z0-9]{16}\.ttf/), 'testing the that multiple urls busted');
 
         test.done();
+    },
+
+    correctlyOrdered: function(test) {
+        test.expect(2);
+
+        var markup = grunt.file.read('tmp/stylesheets/stylesheet.css');
+
+        test.ok(markup.match(/assets\/fonts\/icons.303f279e24e9a1ed.woff/), 'testing the correct order of replacements');
+        test.ok(markup.match(/assets\/fonts\/icons.f90c25689874683b.woff2/), 'testing the correct order of replacements');
+
+        test.done();
     }
 
 };
