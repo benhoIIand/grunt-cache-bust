@@ -4,6 +4,7 @@
 [![Build Status](https://travis-ci.org/hollandben/grunt-cache-bust.png?branch=master)](https://travis-ci.org/hollandben/grunt-cache-bust)
 [![Dependencies](https://david-dm.org/hollandben/grunt-cache-bust.svg)](https://david-dm.org/hollandben/grunt-cache-bust.svg)
 [![devDependency Status](https://david-dm.org/alanshaw/david/dev-status.svg?style=flat)](https://david-dm.org/alanshaw/david#info=devDependencies)
+[![Join the chat at https://gitter.im/hollandben/grunt-cache-bust](https://badges.gitter.im/hollandben/grunt-cache-bust.svg)](https://gitter.im/hollandben/grunt-cache-bust?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 > Bust static assets from the cache using content hashing
 
@@ -15,8 +16,8 @@
 * [CDNs](#cdns)
 * [Change Log](#change-log)
 
-## Notice
-This plugin recently upgraded to `v1.0.0`!! There was a big change in the way the plugin works. You can read me about the changes in issue #147. Please let me know if you have any questions on the changes via [Gitter](https://gitter.im/hollandben/grunt-cache-bust) or [Twitter](https://twitter.com/hollandben)
+## PLEASE READ
+This plugin recently upgraded to `v1.0.0`!! There was a big change in the way the plugin works. You can read me about the changes in issue [#147](https://github.com/hollandben/grunt-cache-bust/issues/147). Please let me know if you have any questions on the changes via [Gitter](https://gitter.im/hollandben/grunt-cache-bust) or [Twitter](https://twitter.com/hollandben)
 
 ## Getting Started
 _If you haven't used [grunt][] before, be sure to check out the [Getting Started][] guide._
@@ -221,8 +222,8 @@ cacheBust: {
 ### Change Log
 
 **v1.0.0**
-* Fundamental breaking changes - see issue #147 for more details
-* Re-wrote the way the plugin functions. Instead of finding assets in files, the plugin now goes through a given assets folder and builds an object based on the original and hashed file name. Read more about the changes in #147
+* Fundamental breaking changes - see issue [#147](https://github.com/hollandben/grunt-cache-bust/issues/147) for more details
+* Re-wrote the way the plugin functions. Instead of finding assets in files, the plugin now goes through a given assets folder and builds an object based on the original and hashed file name. Read more about the changes in [#147](https://github.com/hollandben/grunt-cache-bust/issues/147)
 * Remove string option for `jsonOutput`, enforcing the use of `jsonOutputFilename`
 * Sorting and reversing to collection of assets - fixes #176
 * Updated documentation
