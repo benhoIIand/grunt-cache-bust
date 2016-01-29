@@ -9,7 +9,7 @@
 
 * [Getting Started](#getting-started)
 * [Introduction](#the-cachebust-task)
-* [Overview](#overview)
+* [How it works](#how-it-works)
 * [Options](#options)
 * [Usage Examples](#usage-examples)
 * [CDNs](#cdns)
