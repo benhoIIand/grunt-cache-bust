@@ -128,17 +128,13 @@ The encoding of the file contents.
 #### options.hash
 Type: `String`
 
-A user defined value to be used as the hash value for all files.
+A user defined value to be used as the hash value for all files. For a more beneficial caching strategy, it's advised not to supply a hash value for all files.
 
 #### options.jsonOutput
-Type: `Boolean|String`  
+Type: `Boolean`  
 Default value: `false`
 
 When set as `true`, `cachbust` will create a json file with an object inside that contains key value pairs of the original file name, and the renamed md5 hash name for each file.
-
-The default output file will be named `grunt-cache-bust.json` and is relative to the root of the project, or the `baseDir` option if set.
-
-Alternatively, you can set this option as a string i.e. `example-file-name.json`, and this will be used.
 
 Output format looks like this:
 ```
@@ -152,7 +148,7 @@ Output format looks like this:
 Type: `String`  
 Default value: `grunt-cache-bust.json`
 
-The file path and name of the exported JSON. It is exported relative to baseDir.
+The file path and name of the exported JSON. It is exported relative to `baseDir`.
 
 #### options.length
 Type: `Number`  
@@ -180,7 +176,7 @@ cacheBust: {
 }
 ```
 
-#### Bust all assets and update references in all assets
+#### Bust all assets and update references in all templates and assets
 ```js
 cacheBust: {
     options: {
@@ -220,6 +216,11 @@ cacheBust: {
 ```
 
 ### Change Log
+
+**v1.0.1**
+* Remove string option for `jsonOutput`, enforcing the use of `jsonOutputFilename`
+* Sorting and reversing to collection of assets - fixes #176
+* Updated documentation
 
 **v1.0.0**
 * Re-wrote the way the plugin functions. Instead of finding assets in files, the plugin now goes through a given assets folder and builds an object based on the original and hashed file name. Read more about the changes in #147

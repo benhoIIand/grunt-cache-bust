@@ -35,9 +35,8 @@ module.exports = function() {
             .reduce(hashFile, {});
 
         // Write out assetMap
-        if(opts.jsonOutput !== false) {
-            var filename = typeof opts.jsonOutput === 'string' ? opts.jsonOutput : opts.jsonOutputFilename;
-            grunt.file.write(path.resolve(opts.baseDir, filename), JSON.stringify(assetMap));
+        if(opts.jsonOutput === true) {
+            grunt.file.write(path.resolve(opts.baseDir, opts.jsonOutputFilename), JSON.stringify(assetMap));
         }
 
         // Go through each source file and replace terms
