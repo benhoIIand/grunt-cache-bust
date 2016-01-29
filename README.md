@@ -34,11 +34,11 @@ Use the `cacheBust` task for cache busting static files in your application. Thi
 
 Tell the `cacheBust` task where your static assets are and the files that reference them and let it work it's magic.
 
-### Support files
-Literally any file you wish!!
+### Supported file types
+All of them!!
 
-### Overview
-In your project's Gruntfile, add a section named `cacheBust` to the data object passed into `grunt.initConfig()`.
+### How it works
+In your project's Gruntfile, add a new task called `cacheBust`.
 
 This is the most basic configuration you can have:
 
@@ -53,7 +53,13 @@ cacheBust: {
 }
 ```
 
-This will hash all the files in the `assets` directory and replace any references to those files in the `index.html` file.
+These are the two mandatory fields you need to supply:
+
+The `assets` option that is passed to the plugin tells it what types of files you want to hash, i.e. `css` and `js` files. You must also provide the location for these files. In the example above, they live in the `assets` folder.
+
+The `src` part of the configuration you should have seen before as it's used by pretty much every Grunt plugin. We use this to tell the plugin which files contain references to assets we're going to be adding a hash to. You can [use the `expand` configuration option here as well](http://gruntjs.com/configuring-tasks#building-the-files-object-dynamically)
+
+**To summarise, the above configuration will hash all the files in the `assets` directory and replace any references to those files in the `index.html` file.**
 
 ### Options
 
@@ -64,7 +70,7 @@ This will hash all the files in the `assets` directory and replace any reference
 defaults. Extra details are below.
 {
     algorithm: 'md5',                             // Algoirthm used for hashing files
-    assets: ['css/*', 'js/*']                     // File patterns for where all your assets live
+    assets: ['css/*', 'js/*']                     // File patterns for the assets you wish to hash
     baseDir: './',                                // The base directory for all assets
     deleteOriginals: false,                       // Delete the original file after hashing
     encoding: 'utf8',                             // The encoding used when reading/writing files
