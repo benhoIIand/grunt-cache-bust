@@ -10,6 +10,7 @@ var _ = grunt.util._;
 var DEFAULT_OPTIONS = {
     algorithm: 'md5',
     baseDir: './',
+    createCopies: true,
     deleteOriginals: false,
     encoding: 'utf8',
     jsonOutput: false,
@@ -59,7 +60,9 @@ module.exports = function() {
             }));
             var newFilename = addFileHash(file, hash, opts.separator);
 
-            grunt.file.copy(absPath, path.resolve(opts.baseDir, newFilename));
+            if(opts.createCopies) {
+                grunt.file.copy(absPath, path.resolve(opts.baseDir, newFilename));
+            }
 
             if(opts.deleteOriginals) {
                 grunt.file.delete(absPath);
