@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-**v1.0.1**
+**v1.1.0**
 * Added option `createCopies` to disable creating hashed copies of the files
 
 **v1.0.0**
