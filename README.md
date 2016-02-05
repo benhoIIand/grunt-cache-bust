@@ -118,7 +118,7 @@ assets: {
 ```
 
 #### options.createCopies
-Type: `Boolean`
+Type: `Boolean`  
 Default value: `true`
 
 When set to `false`, `cachebust` will not create hashed copies of the files. Useful if you use server rewrites to serve your files.
