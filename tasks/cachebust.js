@@ -64,7 +64,7 @@ module.exports = function() {
                 grunt.file.copy(absPath, path.resolve(opts.baseDir, newFilename));
             }
 
-            if(opts.deleteOriginals && opts.createCopies) {
+            if(opts.deleteOriginals) {
                 grunt.file.delete(absPath);
             }
 

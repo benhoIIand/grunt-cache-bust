@@ -127,7 +127,7 @@ When set to `false`, `cachebust` will not create hashed copies of the files. Use
 Type: `Boolean`  
 Default value: `false`
 
-When set, `cachebust` will delete the original versions of the files that have been copied. For example, `style.css` will be deleted after being copied to `style.dcf1d324cb50a1f9.css`. Will not delete original files with `options.createCopies` set to `false`.
+When set, `cachebust` will delete the original versions of the files that have been hashed. For example, `style.css` will be deleted after being copied to `style.dcf1d324cb50a1f9.css`.
 
 #### options.encoding
 Type: `String`  
