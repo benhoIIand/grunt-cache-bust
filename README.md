@@ -75,6 +75,7 @@ defaults. Extra details are below.
     algorithm: 'md5',                             // Algoirthm used for hashing files
     assets: ['css/*', 'js/*']                     // File patterns for the assets you wish to hash
     baseDir: './',                                // The base directory for all assets
+    createCopies: true,                           // Create hashed copies of files
     deleteOriginals: false,                       // Delete the original file after hashing
     encoding: 'utf8',                             // The encoding used when reading/writing files
     hash: '9ef00db36970718e',                     // A user defined hash for every file. Not recommended.
@@ -116,11 +117,17 @@ assets: {
 }   
 ```
 
+#### options.createCopies
+Type: `Boolean`
+Default value: `true`
+
+When set to `false`, `cachebust` will not create hashed copies of the files. Useful if you use server rewrites to serve your files.
+
 #### options.deleteOriginals
 Type: `Boolean`  
 Default value: `false`
 
-When set, `cachebust` will delete the original versions of the files that have been renamed.  For example, `style.css` will be deleted after being copied to `style.dcf1d324cb50a1f9.css`.
+When set, `cachebust` will delete the original versions of the files that have been copied. For example, `style.css` will be deleted after being copied to `style.dcf1d324cb50a1f9.css`. Will not delete original files with `options.createCopies` set to `false`.
 
 #### options.encoding
 Type: `String`  
