@@ -227,6 +227,9 @@ cacheBust: {
 
 ### Change Log
 
+**v1.0.1**
+* Added option `createCopies` to disable creating hashed copies of the files
+
 **v1.0.0**
 * Fundamental breaking changes - see issue [#147](https://github.com/hollandben/grunt-cache-bust/issues/147) for more details
 * Re-wrote the way the plugin functions. Instead of finding assets in files, the plugin now goes through a given assets folder and builds an object based on the original and hashed file name. Read more about the changes in [#147](https://github.com/hollandben/grunt-cache-bust/issues/147)
