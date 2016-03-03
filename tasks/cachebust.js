@@ -35,6 +35,8 @@ module.exports = function() {
             .reverse()
             .reduce(hashFile, {});
 
+        grunt.verbose.write('Assets found:', assetMap);
+
         // Write out assetMap
         if(opts.jsonOutput === true) {
             grunt.file.write(path.resolve(opts.baseDir, opts.jsonOutputFilename), JSON.stringify(assetMap));
@@ -90,7 +92,7 @@ module.exports = function() {
             return grunt.file
                 .expand(originalConfig, originalConfig.src)
                 .map(function (file) {
-                    console.log('file', file);
+                    grunt.log.ok('Busted:', file);
                     return path.resolve((originalConfig.cwd ? originalConfig.cwd + path.sep : '') + file);
                 });
         }
