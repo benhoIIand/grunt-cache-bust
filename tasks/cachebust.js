@@ -16,7 +16,8 @@ var DEFAULT_OPTIONS = {
     jsonOutput: false,
     jsonOutputFilename: 'grunt-cache-bust.json',
     length: 16,
-    separator: '.'
+    separator: '.',
+    useUrlParam: false
 };
 
 module.exports = function() {
@@ -62,12 +63,14 @@ module.exports = function() {
             }));
             var newFilename = addFileHash(file, hash, opts.separator);
 
-            if(opts.createCopies) {
-                grunt.file.copy(absPath, path.resolve(opts.baseDir, newFilename));
-            }
+            if (!opts.useUrlParam) {
+                if (opts.createCopies) {
+                    grunt.file.copy(absPath, path.resolve(opts.baseDir, newFilename));
+                }
 
-            if(opts.deleteOriginals) {
-                grunt.file.delete(absPath);
+                if (opts.deleteOriginals) {
+                    grunt.file.delete(absPath);
+                }
             }
 
             obj[file] = newFilename;
@@ -80,10 +83,14 @@ module.exports = function() {
         }
 
         function addFileHash(str, hash, separator) {
-            var parsed = url.parse(str);
-            var ext = path.extname(parsed.pathname);
+            if (opts.useUrlParam) {
+                return str + '?cache-bust=' + hash
+            } else {
+                var parsed = url.parse(str);
+                var ext = path.extname(parsed.pathname);
 
-            return (parsed.hostname ? parsed.protocol + parsed.hostname : '') + parsed.pathname.replace(ext, '') + separator + hash + ext;
+                return (parsed.hostname ? parsed.protocol + parsed.hostname : '') + parsed.pathname.replace(ext, '') + separator + hash + ext;
+            }
         }
 
         function getFilesToBeRenamed(files) {
