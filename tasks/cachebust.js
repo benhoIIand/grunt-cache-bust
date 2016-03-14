@@ -84,7 +84,7 @@ module.exports = function() {
 
         function addFileHash(str, hash, separator) {
             if (opts.queryString) {
-                return str + '?cache-bust=' + hash;
+                return str + '?' + hash;
             } else {
                 var parsed = url.parse(str);
                 var ext = path.extname(parsed.pathname);
