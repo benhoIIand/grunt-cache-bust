@@ -17,7 +17,7 @@ var DEFAULT_OPTIONS = {
     jsonOutputFilename: 'grunt-cache-bust.json',
     length: 16,
     separator: '.',
-    useUrlParam: false
+    queryString: false
 };
 
 module.exports = function() {
@@ -63,7 +63,7 @@ module.exports = function() {
             }));
             var newFilename = addFileHash(file, hash, opts.separator);
 
-            if (!opts.useUrlParam) {
+            if (!opts.queryString) {
                 if (opts.createCopies) {
                     grunt.file.copy(absPath, path.resolve(opts.baseDir, newFilename));
                 }
@@ -83,7 +83,7 @@ module.exports = function() {
         }
 
         function addFileHash(str, hash, separator) {
-            if (opts.useUrlParam) {
+            if (opts.queryString) {
                 return str + '?cache-bust=' + hash;
             } else {
                 var parsed = url.parse(str);
