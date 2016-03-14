@@ -72,7 +72,7 @@ The `src` part of the configuration you should have seen before as it's used by 
 // Here is a short summary of the options and some of their 
 defaults. Extra details are below.
 {
-    algorithm: 'md5',                             // Algoirthm used for hashing files
+    algorithm: 'md5',                             // Algorithm used for hashing files
     assets: ['css/*', 'js/*']                     // File patterns for the assets you wish to hash
     baseDir: './',                                // The base directory for all assets
     createCopies: true,                           // Create hashed copies of files
@@ -82,7 +82,8 @@ defaults. Extra details are below.
     jsonOutput: false,                            // Output the original => new URLs to a JSON file
     jsonOutputFilename: 'grunt-cache-bust.json',  // The file path and name of the exported JSON. Is relative to baseDir
     length: 16,                                   // The length of the hash value
-    separator: '.'                                // The separator between the original file name and hash
+    separator: '.',                               // The separator between the original file name and hash
+    queryString: false                            // Use a query string for cache busting instead of rewriting files
 }
 ```
 
@@ -170,7 +171,13 @@ The number of characters of the file content hash to prefix the file name with.
 Type: `String`  
 Default value: `.`
 
-The separator between the original file name and hash
+The separator between the original file name and hash.
+
+#### options.queryString
+Type: `Boolean`
+Default value: `false`
+
+Use a query string for cache busting instead of rewriting files.
 
 ### Usage Examples
 
@@ -180,6 +187,19 @@ cacheBust: {
     taskName: {
         options: {
             assets: ['assets/**']
+        },
+        src: ['index.html']
+    }
+}
+```
+
+#### Bust using a query string instead of rewriting files
+```js
+cacheBust: {
+    taskName: {
+        options: {
+            assets: ['assets/**'],
+            queryString: true
         },
         src: ['index.html']
     }
