@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-**v1.1.2**
+**v1.2.0**
 * Added option `queryString` to bust using a query string and keep original files intact
 
 **v1.1.0**
