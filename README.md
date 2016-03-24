@@ -174,7 +174,7 @@ Default value: `.`
 The separator between the original file name and hash.
 
 #### options.queryString
-Type: `Boolean`
+Type: `Boolean`  
 Default value: `false`
 
 Use a query string for cache busting instead of rewriting files.
