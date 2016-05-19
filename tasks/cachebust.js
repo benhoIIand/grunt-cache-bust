@@ -17,7 +17,9 @@ var DEFAULT_OPTIONS = {
     jsonOutputFilename: 'grunt-cache-bust.json',
     length: 16,
     separator: '.',
-    queryString: false
+    queryString: false,
+    nestedMappings: false,
+    nestedMappingsPattern: []
 };
 
 module.exports = function() {
@@ -71,6 +73,18 @@ module.exports = function() {
                 if (opts.deleteOriginals) {
                     grunt.file.delete(absPath);
                 }
+            }
+
+            if (opts.nestedMappings) {
+                opts.nestedMappingsPattern.map(function(mapping) {
+                    if (file.match(mapping.pattern)) {
+                        var splitAt = mapping.splitAt;
+                        var nestedFile = file.split(splitAt)[1];
+                        var newNestedFilename = newFilename.split(splitAt)[1];
+
+                        obj[nestedFile] = newNestedFilename;
+                    }
+                });
             }
 
             obj[file] = newFilename;
