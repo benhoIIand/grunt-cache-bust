@@ -1,6 +1,8 @@
 module.exports = function(grunt) {
     'use strict';
 
+    require('jit-grunt')(grunt);
+
     var configFiles = grunt.file.expand('./config/*.js');
 
     // Default cacheBust options
@@ -17,6 +19,7 @@ module.exports = function(grunt) {
         var taskName = filename.replace('./config/', '').replace('.js', '');
         cacheBustObj[taskName] = require(filename);
     });
+
 
     grunt.initConfig({
 
@@ -47,7 +50,7 @@ module.exports = function(grunt) {
             }
         },
 
-        cacheBust: cacheBustObj,
+        cacheBustKey: cacheBustObj,
 
         nodeunit: {
             tests: ['tests/**/*_test.js']
@@ -64,14 +67,7 @@ module.exports = function(grunt) {
 
     // Load this plugins tasks
     grunt.loadTasks('tasks');
-
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-copy');
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-nodeunit');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-
     grunt.registerTask('default', 'bust');
     grunt.registerTask('test', ['bust', 'nodeunit']);
-    grunt.registerTask('bust', ['jshint', 'clean', 'copy', 'cacheBust']);
+    grunt.registerTask('bust', ['jshint', 'clean', 'copy', 'cacheBustKey']);
 };
