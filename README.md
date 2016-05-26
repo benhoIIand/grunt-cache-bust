@@ -1,11 +1,43 @@
-# grunt-cache-bust
+# grunt-cache-bust-key
 
-[![npm version](https://badge.fury.io/js/grunt-cache-bust.svg)](http://badge.fury.io/js/grunt-cache-bust)
-[![Build Status](https://travis-ci.org/hollandben/grunt-cache-bust.png?branch=master)](https://travis-ci.org/hollandben/grunt-cache-bust)
-[![Dependency Status](https://david-dm.org/hollandben/grunt-cache-bust.svg)](https://david-dm.org/hollandben/grunt-cache-bust)
-[![Join the chat at https://gitter.im/hollandben/grunt-cache-bust](https://badges.gitter.im/hollandben/grunt-cache-bust.svg)](https://gitter.im/hollandben/grunt-cache-bust?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+This is a fork of Ben Holland's excellent [grunt-cache-bust](https://github.com/hollandben/grunt-cache-bust) module altered for my own/internal company use.
+Unless you share our very specific use case, you'll probably want to use Ben Holland's original, but in the spirit of open source I've made this available.
+
+[![npm version](https://badge.fury.io/js/grunt-cache-bust-key.svg)](http://badge.fury.io/js/grunt-cache-bust-key)
+[![Build Status](https://travis-ci.org/ieb-josh/grunt-cache-bust-key.png?branch=master)](https://travis-ci.org/ieb-josh/grunt-cache-bust-key)
+[![Dependency Status](https://david-dm.org/ieb-josh/grunt-cache-bust-key.svg)](https://david-dm.org/ieb-josh/grunt-cache-bust-key)
 
 > Bust static assets from the cache using content hashing
+
+## Changes
+Almost everything from grunt-cache-bust should work as it did at version 1.3.0. Existing tests still pass but there have been a few additions and alterations:
+
+* If you don't want the task to search through files and update references, you can now specify `{jsonOnly: true}`. 
+  * No need to create a dummy file for `src` to avoid an error.
+  * `{jsonOnly: true}` also implies `{jsonOutput: true}`.
+* If you specify `jsonDir` you can control where the json file is created. If undefined it falls back to using `baseDir`.
+* When using `jsonOnly`, you can pass in a map of keys and filenames to `assets` instead of a string/array of strings. Example below:
+```
+assets: {
+    'mobile-js': 'assets/mobile.js',
+    'theme-x-css': 'theme/x/styles.css'
+}
+```
+Output json will then look something like this:
+```
+{ 
+    "mobile-js":"assets/mobile.3bc124f632c7cdbc.js",
+    "core-js":"theme/x/styles.7024c34ca835c674.css"
+}
+```
+**Using globs (e.g. \*\*/\*.{css, js}) while specifying keys & files is not supported**
+
+## Why?
+I wanted something that we could use as part of our release process to cache bust our core js & css resource files. grunt-cache-bust mostly fit the bill, but as we have control of the stack, we'd rather read the new filenames from generated json and fall back to non hashed versions by default if there is a problem.
+With our case, if something silently breaks in the busting process, some returning visitors may have old cached versions of files, but the site will work just fine for new visitors - as opposed to potentially breaking for every visitor. Raw HTML is for the hardcore.
+
+
+**The following is largerly unedited from the original readme.md**
 
 * [Getting Started](#getting-started)
 * [Introduction](#the-cachebust-task)
@@ -14,9 +46,6 @@
 * [Usage Examples](#usage-examples)
 * [CDNs](#cdns)
 * [Change Log](#change-log)
-
-## PLEASE READ
-This plugin recently upgraded to `v1.0.0`!! There was a big change in the way the plugin works. You can read me about the changes in issue [#147](https://github.com/hollandben/grunt-cache-bust/issues/147). Please let me know if you have any questions on the changes via [Gitter](https://gitter.im/hollandben/grunt-cache-bust) or [Twitter](https://twitter.com/hollandben)
 
 ## Getting Started
 _If you haven't used [grunt][] before, be sure to check out the [Getting Started][] guide._

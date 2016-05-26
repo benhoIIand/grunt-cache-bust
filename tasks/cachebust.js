@@ -5,7 +5,7 @@ var path = require('path');
 var grunt = require('grunt');
 var crypto = require('crypto');
 
-var _ = grunt.util._;
+var _ = require('lodash');
 
 var DEFAULT_OPTIONS = {
     algorithm: 'md5',
@@ -13,6 +13,7 @@ var DEFAULT_OPTIONS = {
     createCopies: true,
     deleteOriginals: false,
     encoding: 'utf8',
+    jsonOnly: false,
     jsonOutput: false,
     jsonOutputFilename: 'grunt-cache-bust.json',
     length: 16,
@@ -21,17 +22,30 @@ var DEFAULT_OPTIONS = {
 };
 
 module.exports = function() {
-    grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
+    grunt.registerMultiTask('cacheBustKey', 'Bust static assets from the cache using content hashing', function() {
         var opts = this.options(DEFAULT_OPTIONS);
-
+        if (opts.jsonOnly === true) {
+            opts.jsonOutput = true;
+            opts.queryString = false;
+        }
+        if (opts.jsonDir === undefined && typeof opts.baseDir === 'string' && opts.baseDir.length > 1) {
+            opts.jsonDir = opts.baseDir;
+        }
+        
         var discoveryOpts = {
             cwd: path.resolve(opts.baseDir),
             filter: 'isFile'
         };
 
+        // Support object maps
+        var assetArr = opts.assets;
+        if (opts.jsonOnly && typeof assetArr === 'object' && !Array.isArray(assetArr)) {
+            assetArr = grunt.util.toArray(assetArr);
+        }
+
         // Generate an asset map
         var assetMap = grunt.file
-            .expand(discoveryOpts, opts.assets)
+            .expand(discoveryOpts, assetArr)
             .sort()
             .reverse()
             .reduce(hashFile, {});
@@ -39,12 +53,14 @@ module.exports = function() {
         grunt.verbose.write('Assets found:', assetMap);
 
         // Write out assetMap
-        if(opts.jsonOutput === true) {
-            grunt.file.write(path.resolve(opts.baseDir, opts.jsonOutputFilename), JSON.stringify(assetMap));
+        if (opts.jsonOutput === true) {
+            grunt.file.write(path.resolve(opts.jsonDir, opts.jsonOutputFilename), JSON.stringify(assetMap));
         }
 
-        // Go through each source file and replace terms
-        getFilesToBeRenamed(this.files).forEach(replaceInFile);
+        if (!opts.jsonOnly) {
+            // Go through each source file and replace terms
+            getFilesToBeRenamed(this.files).forEach(replaceInFile);
+        }
 
         function replaceInFile(filepath) {
             var markup = grunt.file.read(filepath);
@@ -73,8 +89,19 @@ module.exports = function() {
                 }
             }
 
-            obj[file] = newFilename;
-
+            // This is probably a horrific way to remap the files back to the keys, and I'm very sorry.
+            if (opts.jsonOnly && typeof opts.assets === 'object' && !Array.isArray(opts.assets)) {
+                for (var i in opts.assets) {
+                    if (!Object.prototype.hasOwnProperty.call(opts.assets, i)) {
+                        continue;
+                    }
+                    if (opts.assets[i] === file) {
+                        obj[i] = newFilename;
+                    }
+                }
+            } else {
+                obj[file] = newFilename;
+            }
             return obj;
         }
 
