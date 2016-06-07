@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+**v1.4.0**
+* Added options `indexFilename` and `indexHashFilename` to specify the index file to hash and the output file to write the hash to
+
 **v1.2.0**
 * Added option `queryString` to bust using a query string and keep original files intact
 

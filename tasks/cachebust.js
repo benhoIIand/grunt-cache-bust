@@ -15,6 +15,8 @@ var DEFAULT_OPTIONS = {
     encoding: 'utf8',
     jsonOutput: false,
     jsonOutputFilename: 'grunt-cache-bust.json',
+    indexFilename: 'index.html',
+    indexHashFilename: null,
     length: 16,
     separator: '.',
     queryString: false
@@ -45,6 +47,27 @@ module.exports = function() {
 
         // Go through each source file and replace terms
         getFilesToBeRenamed(this.files).forEach(replaceInFile);
+
+        // Write the index file hash to a file if the appropriate options were defined
+        if (opts.indexHashFilename && opts.indexFilename) {
+            var absIndexPath = path.resolve(opts.baseDir, opts.indexFilename);
+
+            // Compute the hash of the index file
+            var hash = generateFileHash(grunt.file.read(absIndexPath, {
+                encoding: null
+            }));
+
+            grunt.verbose.write('Index hash: ' + hash);
+
+            var absHashfilePath = path.resolve(opts.baseDir, opts.indexHashFilename);
+
+            // Write the hash of the index file to the specified file
+            grunt.file.write(absHashfilePath, hash, {
+                encoding: null
+            });
+
+            grunt.log.ok('Index file hash written to ' + opts.indexHashFilename);
+        }
 
         function replaceInFile(filepath) {
             var markup = grunt.file.read(filepath);

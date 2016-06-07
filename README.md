@@ -81,6 +81,8 @@ defaults. Extra details are below.
     hash: '9ef00db36970718e',                     // A user defined hash for every file. Not recommended.
     jsonOutput: false,                            // Output the original => new URLs to a JSON file
     jsonOutputFilename: 'grunt-cache-bust.json',  // The file path and name of the exported JSON. Is relative to baseDir
+    indexFilename: 'index.html',                  // The name of the index file to hash
+    indexHashFilename: null,                      // The name of the file to write the index hash to
     length: 16,                                   // The length of the hash value
     separator: '.',                               // The separator between the original file name and hash
     queryString: false                            // Use a query string for cache busting instead of rewriting files
@@ -200,6 +202,20 @@ cacheBust: {
         options: {
             assets: ['assets/**'],
             queryString: true
+        },
+        src: ['index.html']
+    }
+}
+```
+
+#### Write the hash of the index.html file to a file
+```js
+cacheBust: {
+    taskName: {
+        options: {
+            assets: ['assets/**'],
+            indexFilename: 'indexHash.html',
+            indexHashFilename: 'INDEX_HASH'
         },
         src: ['index.html']
     }
