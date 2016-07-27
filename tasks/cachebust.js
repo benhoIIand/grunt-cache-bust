@@ -1,5 +1,6 @@
 'use strict';
 
+var fs = require('fs-extra');
 var url = require('url');
 var path = require('path');
 var grunt = require('grunt');
@@ -17,7 +18,9 @@ var DEFAULT_OPTIONS = {
     jsonOutputFilename: 'grunt-cache-bust.json',
     length: 16,
     separator: '.',
-    queryString: false
+    queryString: false,
+    outputDir: '',
+    clearOutputDir: false
 };
 
 module.exports = function() {
@@ -28,6 +31,11 @@ module.exports = function() {
             cwd: path.resolve(opts.baseDir),
             filter: 'isFile'
         };
+
+        //clear output dir if it was set
+        if(opts.clearOutputDir && opts.outputDir.length > 0) {
+            fs.removeSync(path.resolve((discoveryOpts.cwd ? discoveryOpts.cwd + opts.clearOutputDir : opts.clearOutputDir)));
+        }
 
         // Generate an asset map
         var assetMap = grunt.file
@@ -87,9 +95,10 @@ module.exports = function() {
                 return str + '?' + hash;
             } else {
                 var parsed = url.parse(str);
+                var pathToFile = opts.outputDir.length > 0 ? path.join(opts.outputDir, parsed.pathname.replace(/^.*[\\\/]/, '')) : parsed.pathname;
                 var ext = path.extname(parsed.pathname);
 
-                return (parsed.hostname ? parsed.protocol + parsed.hostname : '') + parsed.pathname.replace(ext, '') + separator + hash + ext;
+                return (parsed.hostname ? parsed.protocol + parsed.hostname : '') + pathToFile.replace(ext, '') + separator + hash + ext;
             }
         }
 
