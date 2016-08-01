@@ -2,10 +2,8 @@
 
 var url = require('url');
 var path = require('path');
-var grunt = require('grunt');
 var crypto = require('crypto');
-
-var _ = grunt.util._;
+var _ = require('grunt').util._;
 
 var DEFAULT_OPTIONS = {
     algorithm: 'md5',
@@ -20,7 +18,7 @@ var DEFAULT_OPTIONS = {
     queryString: false
 };
 
-module.exports = function() {
+module.exports = function(grunt) {
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
         var opts = this.options(DEFAULT_OPTIONS);
 
