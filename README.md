@@ -69,7 +69,7 @@ The `src` part of the configuration you should have seen before as it's used by 
 #### Summary
 
 ```
-// Here is a short summary of the options and some of their 
+// Here is a short summary of the options and some of their
 defaults. Extra details are below.
 {
     algorithm: 'md5',                             // Algorithm used for hashing files
@@ -83,7 +83,9 @@ defaults. Extra details are below.
     jsonOutputFilename: 'grunt-cache-bust.json',  // The file path and name of the exported JSON. Is relative to baseDir
     length: 16,                                   // The length of the hash value
     separator: '.',                               // The separator between the original file name and hash
-    queryString: false                            // Use a query string for cache busting instead of rewriting files
+    queryString: false,                           // Use a query string for cache busting instead of rewriting files
+    nestedMappings: false,                        // Create Nested Mapping for the same file
+    nestedMappingsPattern: []                     // Array of Objects with pattern and splitAt values
 }
 ```
 
@@ -178,6 +180,55 @@ Type: `Boolean`
 Default value: `false`
 
 Use a query string for cache busting instead of rewriting files.
+
+#### options.nestedMappings
+Type: `Boolean`  
+Default value: `false`
+
+When set as `true`, it will create nested Mapping for the same filename as per the given pattern in `nestedMappingsPattern`
+
+#### options.nestedMappingsPattern
+Type: `Array`  
+Default value: `[]`
+
+Add Array of Objects with `pattern` and `splitAt` as keys.
+
+Example
+```js
+cacheBust: {
+    generate: {
+        options: {
+            assets: ['**'],
+            baseDir: 'build/',
+            jsonOutputFilename:'staticFilesCacheMapping.json',
+            jsonOutput: true,
+            nestedMappings: true,
+            nestedMappingsPattern: [
+                {
+                    pattern: 'assets/images/',
+                    splitAt: 'assets/'
+                },
+                {
+                    pattern: 'assets/fonts/',
+                    splitAt: 'assets/'
+                },
+            ]
+        },
+        src: ['build/assets/**/*.css']
+    }
+}
+```
+
+It will create the staticFilesCacheMapping.json like :
+
+```
+{
+  "assets/fonts/myCustomFont/myFont_semibold-webfont.woff2":"assets/fonts/myCustomFont/myFont_semibold-webfont.62772b8a9895121d.woff2",
+  "fonts/myCustomFont/myFont_semibold-webfont.woff":"fonts/myCustomFont/myFont_semibold-webfont.d842eed1cd97157c.woff",
+  "assets/images/homepage/uncle.png":"assets/images/homepage/uncle.1cce4a56e28c269b.png",
+  "images/homepage/trust-seal.png":"images/homepage/trust-seal.6ffe0c838d82331e.png"
+}
+```
 
 ### Usage Examples
 
