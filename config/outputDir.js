@@ -2,7 +2,8 @@ module.exports = {
     options: {
         baseDir: 'tmp/outputDir',
         outputDir: 'outputDir',
-        assets: 'assets/*'
+        assets: 'assets/*',
+        hash: 'abcdef123456'
     },
     files: [{
         expand: true,
