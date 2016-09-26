@@ -84,6 +84,8 @@ defaults. Extra details are below.
     length: 16,                                   // The length of the hash value
     separator: '.',                               // The separator between the original file name and hash
     queryString: false                            // Use a query string for cache busting instead of rewriting files
+    outputDir: ''                                 // Directory where all hashed assets will be copied. Is relative to baseDir
+    clearOutputDir: false                         // Clear output directory. If outputDir was not set clear will not work
 }
 ```
 
