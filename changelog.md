@@ -1,6 +1,15 @@
 Change Log
 ==========
 
+**v1.4.1**
+* Move `fs-extra` from dev dependency to dependency
+
+**v1.4.0**
+* Added option `outputDir`, a directory where all hashed assets will be copied
+
+**v1.3.0**
+* Upgraded to `grunt@1.x.x`
+
 **v1.2.0**
 * Added option `queryString` to bust using a query string and keep original files intact
 
