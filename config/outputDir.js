@@ -8,6 +8,6 @@ module.exports = {
     files: [{
         expand: true,
         cwd: 'tmp/outputDir/',
-        src: ['*.html']
+        src: ['outputDir.html', 'assets/outputDir.css']
     }]
 };
