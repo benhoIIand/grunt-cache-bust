@@ -70,8 +70,7 @@ module.exports = function(grunt) {
         }));
 
         // Go through each source file and replace them with busted file if available
-        var files = getFilesToBeRenamed(this.files, !opts.queryString ? assetMap : undefined, opts.baseDir);
-        files.forEach(replaceInFile);
+        getFilesToBeRenamed(this.files, !opts.queryString ? assetMap : undefined, opts.baseDir).forEach(replaceInFile);
 
         function replaceInFile(filepath) {
             var markup = grunt.file.read(filepath);
@@ -170,6 +169,13 @@ module.exports = function(grunt) {
             return grunt.file
                 .expand(originalConfig, originalConfig.src)
                 .map(function (file) {
+
+                    // if the file is hashed, then the hashed file should be
+                    // used instead of the original for replacement.  This will
+                    // only be the case if an outputDir is being used.
+                    if (!opts.queryString && opts.outputDir && _.has(assetMap, file)) {
+                        file = assetMap[file];
+                    }
                     grunt.log.ok('Busted:', file);
                     return path.resolve((originalConfig.cwd ? originalConfig.cwd + path.sep : '') + file);
                 });
