@@ -49,14 +49,82 @@ module.exports = function(grunt) {
             grunt.file.write(path.resolve(opts.baseDir, opts.jsonOutputFilename), JSON.stringify(assetMap));
         }
 
+        // don't just split on the filename, if the filename = 'app.css' it will replace
+        // all app.css references, even to files in other dirs
+        // so replace this:
+        // "{file}"
+        // '{file}'
+        // ({file}) (css url(...))
+        // ={file}> (unquoted html attribute)
+        // ={file}\s (unquoted html attribute followed by more attributes)
+        // files may contain a querystring, so all with ? as closing too
+        var replaceEnclosedBy = [
+          ['"', '"'],
+          ['"', '?'],
+          ["'", "'"],
+          ["'", "?"],
+          ['(', ')'],
+          ['(', '?'],
+          ['=', '>'],
+          ['=', '?'],
+          ['=', ' '],
+          ['=', '?'],
+        ];
+
         // Go through each source file and replace terms
-        getFilesToBeRenamed(this.files).forEach(replaceInFile);
+        var files = getFilesToBeRenamed(this.files);
+        if( !opts.queryString ) {
+          files = files.map(function( file ) {
+            var relFile = file.substr(discoveryOpts.cwd.length + 1);
+            if( relFile in assetMap ) {
+              return discoveryOpts.cwd + '/' + assetMap[relFile];
+            }
+            return file;
+          });
+        }
+        files.forEach(replaceInFile);
 
         function replaceInFile(filepath) {
             var markup = grunt.file.read(filepath);
+            var baseDir = discoveryOpts.cwd + '/';
+            var relativeFileDir = path.dirname(filepath).substr(baseDir.length);
+            var fileDepth = 0;
+            if( relativeFileDir !== '' ) {
+              fileDepth = relativeFileDir.split('/').length;
+            }
+
+            var baseDirs = filepath.substr(baseDir.length).split('/');
 
             _.each(assetMap, function(hashed, original) {
-                markup = markup.split(original).join(hashed);
+                var replace = [
+                  // abs path
+                  ['/' + original, '/' + hashed],
+                  // relative
+                  [grunt.util.repeat(fileDepth, '../') + original, grunt.util.repeat(fileDepth, '../') + hashed],
+                ];
+                // find relative paths for shared dirs
+                var originalDirParts = path.dirname(original).split('/');
+                for( var i = 1; i <= fileDepth; i++ ) {
+                  var fileDir = originalDirParts.slice(0, i).join('/');
+                  var baseDir = baseDirs.slice(0, i).join('/');
+                  if( fileDir === baseDir ) {
+                    var originalFilename = path.basename(original);
+                    var hashedFilename = path.basename(hashed);
+                    var dir = grunt.util.repeat(fileDepth - 1, '../') + originalDirParts.slice(i).join('/');
+                    if( dir.substr(-1) !== '/' ) {
+                      dir += '/';
+                    }
+                    replace.push([dir + originalFilename, dir + hashedFilename]);
+                  }
+                }
+
+                _.each(replace, function(r) {
+                  var original = r[0];
+                  var hashed = r[1];
+                  _.each(replaceEnclosedBy, function(reb) {
+                    markup = markup.split(reb[0] + original + reb[1]).join(reb[0] + hashed + reb[1]);
+                  });
+                });
             });
 
             grunt.file.write(filepath, markup);
