@@ -60,28 +60,17 @@ module.exports = function(grunt) {
         // files may contain a querystring, so all with ? as closing too
         var replaceEnclosedBy = [
           ['"', '"'],
-          ['"', '?'],
           ["'", "'"],
-          ["'", "?"],
           ['(', ')'],
-          ['(', '?'],
           ['=', '>'],
-          ['=', '?'],
           ['=', ' '],
-          ['=', '?'],
         ];
+        replaceEnclosedBy = replaceEnclosedBy.concat(replaceEnclosedBy.map(function(reb) {
+          return [reb[0], '?'];
+        }));
 
-        // Go through each source file and replace terms
-        var files = getFilesToBeRenamed(this.files);
-        if( !opts.queryString ) {
-          files = files.map(function( file ) {
-            var relFile = file.substr(discoveryOpts.cwd.length + 1);
-            if( relFile in assetMap ) {
-              return discoveryOpts.cwd + '/' + assetMap[relFile];
-            }
-            return file;
-          });
-        }
+        // Go through each source file and replace them with busted file if available
+        var files = getFilesToBeRenamed(this.files, !opts.queryString ? assetMap : undefined, opts.baseDir);
         files.forEach(replaceInFile);
 
         function replaceInFile(filepath) {
@@ -168,8 +157,15 @@ module.exports = function(grunt) {
             }
         }
 
-        function getFilesToBeRenamed(files) {
+        function getFilesToBeRenamed(files, assetMap, baseDir) {
             var originalConfig = files[0].orig;
+            // check if fully specified filenames have been busted and replace with busted file
+            originalConfig.src = originalConfig.src.map(function(file) {
+              if (file.substr(0, baseDir.length) === baseDir && (file.substr(baseDir.length + 1)) in assetMap ) {
+                return baseDir + '/' + assetMap[file.substr(baseDir.length + 1)];
+              }
+              return file;
+            });
 
             return grunt.file
                 .expand(originalConfig, originalConfig.src)
