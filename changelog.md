@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+**v1.5.0**
+* Fix paths in hashed files (#211)
+* Files in outputDir should have files replaced (#210)
+
 **v1.4.1**
 * Move `fs-extra` from dev dependency to dependency
 
