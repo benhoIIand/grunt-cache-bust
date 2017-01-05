@@ -72,6 +72,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('default', 'bust');
-    grunt.registerTask('test', ['bust', 'nodeunit']);
+    grunt.registerTask('test', ['clean', 'copy', 'bust', 'nodeunit']);
     grunt.registerTask('bust', ['jshint', 'clean', 'copy', 'cacheBust']);
 };

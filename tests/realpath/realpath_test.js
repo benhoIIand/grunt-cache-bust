@@ -5,7 +5,7 @@ var grunt = require('grunt');
 module.exports = {
 
     realpath: function(test) {
-        //test.expect(2);
+        test.expect(3);
 
         var markup = grunt.file.read('tmp/realpath/realpath.html');
 
