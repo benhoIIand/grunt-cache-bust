@@ -70,7 +70,7 @@ module.exports = function(grunt) {
         }));
 
         // Go through each source file and replace them with busted file if available
-        var map = opts.queryString ? undefined : assetMap;
+        var map = opts.queryString ? {} : assetMap;
         getFilesToBeRenamed(this.files, map, opts.baseDir).forEach(replaceInFile);
 
         function replaceInFile(filepath) {
