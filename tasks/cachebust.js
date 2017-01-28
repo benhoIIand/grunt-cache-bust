@@ -24,6 +24,9 @@ var DEFAULT_OPTIONS = {
 module.exports = function(grunt) {
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
         var opts = this.options(DEFAULT_OPTIONS);
+        if( opts.baseDir.substr(-1) !== '/' ) {
+            opts.baseDir += '/';
+        }
 
         var discoveryOpts = {
             cwd: path.resolve(opts.baseDir),
@@ -161,9 +164,29 @@ module.exports = function(grunt) {
         function getFilesToBeRenamed(files, assetMap, baseDir) {
             var originalConfig = files[0].orig;
             // check if fully specified filenames have been busted and replace with busted file
+            var baseDirResolved = path.resolve(baseDir) + '/';
+            var cwd = process.cwd() + '/';
             originalConfig.src = originalConfig.src.map(function(file) {
-                if (file.substr(0, baseDir.length) === baseDir && (file.substr(baseDir.length + 1)) in assetMap) {
-                    return baseDir + '/' + assetMap[file.substr(baseDir.length + 1)];
+                if( assetMap ) {
+                    var files = [file];
+                    if(path.resolve(cwd + file).substr(0, baseDirResolved.length) === baseDirResolved) {
+                        files.push(path.resolve(cwd + file).substr(baseDirResolved.length));
+                    }
+                    var result;
+                    files.forEach(function(file2) {
+                        var fileResolved = path.resolve(baseDirResolved + file2);
+                        if (!result && fileResolved.substr(0, baseDirResolved.length) === baseDirResolved && (fileResolved.substr(baseDirResolved.length)) in assetMap) {
+                            result = assetMap[fileResolved.substr(baseDirResolved.length)];
+                            // if original file had baseDir at the start, make sure it's there now
+                            var baseDirNormalized = path.normalize(baseDir);
+                            if(path.normalize(file).substr(0, baseDirNormalized.length) === baseDirNormalized) {
+                                result = baseDir + result;
+                            }
+                        }
+                    });
+                    if(result) {
+                        return result;
+                    }
                 }
                 return file;
             });
