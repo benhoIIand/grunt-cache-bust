@@ -57,7 +57,6 @@ module.exports = function(grunt) {
         // ({file}) (css url(...))
         // ={file}> (unquoted html attribute)
         // ={file}\s (unquoted html attribute followed by more attributes)
-        // files may contain a querystring, so all with ? as closing too
         var replaceEnclosedBy = [
             ['"', '"'],
             ["'", "'"],
@@ -65,9 +64,6 @@ module.exports = function(grunt) {
             ['=', '>'],
             ['=', ' '],
         ];
-        replaceEnclosedBy = replaceEnclosedBy.concat(replaceEnclosedBy.map(function(reb) {
-            return [reb[0], '?'];
-        }));
 
         // Go through each source file and replace them with busted file if available
         var map = opts.queryString ? undefined : assetMap;
