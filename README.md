@@ -181,14 +181,6 @@ Default value: `false`
 
 Use a query string for cache busting instead of rewriting files.
 
-#### options.cdnPath
-Type: `String`
-Default value: `false`
-
-When set, `cachebust` test paths against this string when attempts to determine a path to be remote or not.
-So all assets can be busted localy and than uploaded to your own CDN.
-This string will be ignored in paths during file-handling to find files in baseDir.
-
 ### Usage Examples
 
 #### The most basic setup
