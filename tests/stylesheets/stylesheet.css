@@ -1,0 +1,57 @@
+body {
+    background-color: red;
+}
+
+.body:after {
+    content: url('assets/image2.jpg');
+}
+
+.image {
+    width: auto;
+    max-height: 120px;
+    background: #FFFFFF url('assets/css-image.jpg') center center no-repeat;
+}
+
+.image-quotes {
+    width: auto;
+    max-height: 120px;
+    background: #FFFFFF url("assets/css-image-quotes.jpg") center center no-repeat;
+}
+
+.large-image {
+    width: 100%;
+    background-image: url(assets/css-image-large.jpg);
+    background-position: top center;
+    background-size: contain;
+}
+
+.external-image {
+    background-image: url('//www.external.com/external-image1.jpg');
+    background-image: url('http://www.external.com/external-image2.jpg');
+    background-image: url('https://www.external.com/external-image3.jpg');
+}
+
+@font-face {
+    src: local('Lato-Hairline'), url('https://fonts.gstatic.com/s/lato/v11/zJY4gsxBiSo5L7tNutxFNg.ttf');
+}
+
+.data-url-image {
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwgAADsIBFShKgAAAABp0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuMTAw9HKhAAAAmElEQVQoU33PQapBURjA8UtkwJuaWYGSgfQWYBMvczPmTCzAAGVuaA228BZhRCkDGSmE31FucuRfvzq3vr5zT/JSjSU7DsypEPXDkDVn2hSIytJhw4kWGaLCxgHh2gt/RBuLzNhz5caWPjnSqqw4EraFfwznf8qklWjwy4IRTerkiQoPGtPl40OehcEJvcfXl8LglLfBJLkDcMgbgHlHhK8AAAAASUVORK5CYII=);
+}
+
+@media only screen and (min-device-pixel-ratio: 2) and (min-resolution: 2dppx) {
+    .large-image {
+        background-image: url('assets/image1.jpg');
+    }
+}
+
+@font-face {
+    font-family: icons;
+    src: url(/assets/fonts/icons.eot);
+    src: url(/assets/fonts/icons.eot?#iefix) format(embedded-opentype),
+         url(/assets/fonts/icons.woff) format(woff),
+         url(/assets/fonts/icons.woff2) format(woff2),
+         url(/assets/fonts/icons.ttf) format(truetype);
+    font-weight: 400;
+    font-style: normal;
+}

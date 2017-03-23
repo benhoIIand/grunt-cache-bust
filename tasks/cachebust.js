@@ -1,313 +1,192 @@
 'use strict';
 
+var fs = require('fs-extra');
+var url = require('url');
+var path = require('path');
+var crypto = require('crypto');
+var _ = require('grunt').util._;
+
+var DEFAULT_OPTIONS = {
+    algorithm: 'md5',
+    baseDir: './',
+    createCopies: true,
+    deleteOriginals: false,
+    encoding: 'utf8',
+    jsonOutput: false,
+    jsonOutputFilename: 'grunt-cache-bust.json',
+    length: 16,
+    separator: '.',
+    queryString: false,
+    outputDir: '',
+    clearOutputDir: false
+};
+
 module.exports = function(grunt) {
-
-    var fs = require('fs');
-    var path = require('path');
-    var crypto = require('crypto');
-    var cheerio = require('cheerio');
-    var css = require('css');
-
-    var remoteRegex = /http:|https:|\/\/|data:image/;
-    var extensionRegex = /(\.[a-zA-Z0-9]{2,4})(|\?.*)$/;
-    var urlFragHintRegex = /'(([^']+)#grunt-cache-bust)'|"(([^"]+)#grunt-cache-bust)"/g;
-
-    var filenameSwaps = {};
-
-    var regexEscape = function(str) {
-        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
-    };
-
-    var cheerioOptions = {
-        ignoreWhitespace: true,
-        lowerCaseTags: true
-    };
-
-    var options = {
-        algorithm: 'md5',
-        cdnPath: false,
-        deleteOriginals: false,
-        encoding: 'utf8',
-        length: 16,
-        replaceTerms: [],
-        rename: true,
-        separator: '.',
-        ignorePatterns: [],
-        filters: {},
-        jsonOutput: false,
-        jsonOutputFilename: 'cachebuster.json'
-    };
-
-    var defaultFilters = {
-        'script': function() {
-            return this.attribs['src'];
-        },
-        'link[rel="stylesheet"]': function() {
-            return this.attribs['href'];
-        },
-        'img': [
-            function() {
-                return this.attribs['src'];
-            },
-            function() {
-                var srcset = this.attribs['srcset'];
-
-                if (!srcset) {
-                    return false;
-                }
-
-                return srcset.split(',').map(function(src) {
-                    return src.trim().split(' ')[0];
-                });
-            }
-        ],
-        'link[rel="icon"], link[rel="shortcut icon"]': function() {
-            return this.attribs['href'];
-        }
-    };
-
-    var checkIfRemote = function(path, cdnPath) {
-        if (cdnPath) {
-            var cdnPattern = new RegExp(cdnPath);
-            return remoteRegex.test(path) && !cdnPattern.test(path);
-        } else {
-            return remoteRegex.test(path)
-        }
-    };
-
-    var checkIfHasExtension = function(path) {
-        return extensionRegex.test(path);
-    };
-
-    var checkIfValidFile = function(path, cdnPath) {
-        return path !== 'undefined' && path !== undefined && !checkIfRemote(path, cdnPath) && checkIfHasExtension(path);
-    };
-
-    var checkIfElemSrcValidFile = function(el, cdnPath) {
-        return checkIfValidFile(el.attr('src'), cdnPath) || checkIfValidFile(el.attr('href'), cdnPath);
-    };
-
-    var findStaticAssets = function(data, filters, isCSS, cdnPath) {
-        var $ = cheerio.load(data, cheerioOptions);
-
-        var paths = [];
-
-        if (isCSS) {
-            var cssObj = css.parse(data);
-
-            // Loop through each stylesheet rules
-            cssObj.stylesheet.rules.forEach(function(rule) {
-
-                var mediaQueryDeclarations = rule.type !== 'media' ? [] : rule.rules.reduce(function(acc, rule) {
-                    return acc.concat(rule.declarations);
-                }, []);
-
-                var declarations = (rule.declarations || []).concat(mediaQueryDeclarations);
-
-                // Loop through all declarations
-                if (declarations && declarations.length > 0) {
-                    declarations.forEach(function(declaration) {
-                        var hasBackgroundUrl = (/background/).test(declaration.property) && (/url/).test(declaration.value),
-                            hasContentUrl = (/content/).test(declaration.property) && (/url/).test(declaration.value);
-
-                        // Check if it has a background property, and if so, check that it contains a URL
-                        if (hasBackgroundUrl || hasContentUrl) {
-                            paths.push(declaration.value.match(/url\(["|']?(.*?)['|"]?\)/)[1]);
-                        }
-                    });
-                }
-            });
-        } else {
-            // Add any conditional statements or assets in comments to the DOM
-            var assets = '';
-
-            $('head, body').contents().filter(function() {
-                return this[0].type === 'comment';
-            }).each(function(i, e) {
-                assets += e.data.replace(/\[.*\]>|<!\[endif\]/g, '').trim();
-            });
-
-            $('body').append(assets);
-        }
-
-        Object.keys(filters).forEach(function(key) {
-            var mappers = filters[key];
-
-            var addPaths = function(mapper) {
-                var i,
-                    item,
-
-                    foundPaths = $(key)
-                    .filter(function(){
-                        return checkIfElemSrcValidFile($(this), cdnPath);
-                    })
-                    .map(mapper)
-                    .filter(function(path, el) {
-                        var rtn = false;
-                        if (el) {
-                            rtn = true;
-                        }
-
-                        return rtn;
-                    });
-
-                for (i = 0; i < foundPaths.length; i++) {
-                    paths = paths.concat(foundPaths[i]);
-                }
-            };
-
-            if (grunt.util.kindOf(mappers) === 'array') {
-                mappers.forEach(addPaths);
-            } else {
-                addPaths(mappers);
-            }
-        });
-
-        var match, potentialPath;
-
-        // Find any strings containing the hash `#grunt-cache-bust`
-        while ((match = urlFragHintRegex.exec(data)) != null) {
-            potentialPath = match[2] || match[4];
-
-            if (checkIfValidFile(potentialPath, cdnPath)) {
-                paths.push(potentialPath);
-            }
-        }
-
-        return paths.filter(function(path, index) {
-            return paths.indexOf(path) === index;
-        });
-    };
-
-    grunt.file.defaultEncoding = options.encoding;
-
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
-        var opts = grunt.util._.defaults(this.options(), options);
-        var filters = grunt.util._.defaults(opts.filters, defaultFilters);
+        var opts = this.options(DEFAULT_OPTIONS);
 
-        var generateHash = function(fileData) {
-            return opts.hash || crypto.createHash(opts.algorithm).update(fileData, opts.encoding).digest('hex').substring(0, opts.length);
+        var discoveryOpts = {
+            cwd: path.resolve(opts.baseDir),
+            filter: 'isFile'
         };
 
-        var addHash = function(str, hash, extension) {
-            return str.replace(extension, '') + opts.separator + hash + extension;
-        };
+        //clear output dir if it was set
+        if (opts.clearOutputDir && opts.outputDir.length > 0) {
+            fs.removeSync(path.resolve((discoveryOpts.cwd ? discoveryOpts.cwd + opts.clearOutputDir : opts.clearOutputDir)));
+        }
 
-        var processedFileMap = {};
+        // Generate an asset map
+        var assetMap = grunt.file
+            .expand(discoveryOpts, opts.assets)
+            .sort()
+            .reverse()
+            .reduce(hashFile, {});
 
-        this.files.forEach(function(file) {
-            var src = file.src.filter(function(filepath) {
+        grunt.verbose.write('Assets found:', assetMap);
 
-                // Warn on and remove invalid source files (if nonull was set).
-                if (!grunt.file.exists(filepath)) {
-                    grunt.log.warn('Source file "' + filepath + '" not found.');
-                    return false;
-                } else {
-                    return true;
+        // Write out assetMap
+        if (opts.jsonOutput === true) {
+            grunt.file.write(path.resolve(opts.baseDir, opts.jsonOutputFilename), JSON.stringify(assetMap));
+        }
+
+        // don't just split on the filename, if the filename = 'app.css' it will replace
+        // all app.css references, even to files in other dirs
+        // so replace this:
+        // "{file}"
+        // '{file}'
+        // ({file}) (css url(...))
+        // ={file}> (unquoted html attribute)
+        // ={file}\s (unquoted html attribute fonllowed by more attributes)
+        // "{file}\s (first entry of img srcset)
+        // \s{file}\s (other entries of img srcset)
+        // files may contain a querystring, so all with ? as closing too
+        var replaceEnclosedBy = [
+            ['"', '"'],
+            ["'", "'"],
+            ['(', ')'],
+            ['=', '>'],
+            ['=', ' '],
+            ['"', ' '],
+            [' ', ' '],
+        ];
+        replaceEnclosedBy = replaceEnclosedBy.concat(replaceEnclosedBy.map(function(reb) {
+            return [reb[0], '?'];
+        }));
+
+        // Go through each source file and replace them with busted file if available
+        var map = opts.queryString ? undefined : assetMap;
+        getFilesToBeRenamed(this.files, map, opts.baseDir).forEach(replaceInFile);
+
+        function replaceInFile(filepath) {
+            var markup = grunt.file.read(filepath);
+            var baseDir = discoveryOpts.cwd + '/';
+            var relativeFileDir = path.dirname(filepath).substr(baseDir.length);
+            var fileDepth = 0;
+
+            if (relativeFileDir !== '') {
+                fileDepth = relativeFileDir.split('/').length;
+            }
+
+            var baseDirs = filepath.substr(baseDir.length).split('/');
+
+            _.each(assetMap, function(hashed, original) {
+                var replace = [
+                    // abs path
+                    ['/' + original, '/' + hashed],
+                    // relative
+                    [grunt.util.repeat(fileDepth, '../') + original, grunt.util.repeat(fileDepth, '../') + hashed],
+                ];
+                // find relative paths for shared dirs
+                var originalDirParts = path.dirname(original).split('/');
+                for (var i = 1; i <= fileDepth; i++) {
+                    var fileDir = originalDirParts.slice(0, i).join('/');
+                    var baseDir = baseDirs.slice(0, i).join('/');
+                    if (fileDir === baseDir) {
+                        var originalFilename = path.basename(original);
+                        var hashedFilename = path.basename(hashed);
+                        var dir = grunt.util.repeat(fileDepth - 1, '../') + originalDirParts.slice(i).join('/');
+                        if (dir.substr(-1) !== '/') {
+                            dir += '/';
+                        }
+                        replace.push([dir + originalFilename, dir + hashedFilename]);
+                    }
                 }
 
-            }).map(function(filepath) {
-                var markup = grunt.file.read(filepath);
-
-                var isCSS = (/\.css$/).test(filepath);
-
-                findStaticAssets(markup, filters, isCSS, opts.cdnPath).forEach(function(reference) {
-                    var newFilename;
-                    var newFilePath;
-                    var newReference;
-
-                    var filePath = (opts.baseDir ? opts.baseDir : path.dirname(filepath)) + '/';
-                    var filename = path.normalize((filePath + (opts.cdnPath ? reference.replace(opts.cdnPath, '') : reference) ).split('?')[0]);
-                    var originalFilename = filename;
-                    var originalReference = reference;
-
-                    if (opts.ignorePatterns) {
-                        var matched = opts.ignorePatterns.some(function(pattern) {
-                            return new RegExp(pattern, 'ig').test(filename);
-                        });
-
-                        if (matched) {
-                            return false;
-                        }
-                    }
-
-                    if (opts.rename) {
-
-                        // If the file has already been cached, use that
-                        if (processedFileMap[filename]) {
-                            markup = markup.replace(new RegExp(regexEscape(reference), 'g'), processedFileMap[filename]);
-                        } else {
-                            var hashReplaceRegex = new RegExp(regexEscape(opts.separator) + '(' + (opts.hash ? opts.hash + '|' : '') + '[a-zA-Z0-9]{' + opts.length + '})', 'ig');
-
-                            // Get the original filename
-                            filename = filename.replace(hashReplaceRegex, '');
-
-                            // Replacing specific terms in the import path so renaming files
-                            if (opts.replaceTerms && opts.replaceTerms.length > 0) {
-                                opts.replaceTerms.forEach(function(obj) {
-                                    grunt.util._.each(obj, function(replacement, term) {
-                                        filename = filename.replace(term, replacement);
-                                        reference = reference.replace(term, replacement);
-                                    });
-                                });
-                            }
-
-                            if (!grunt.file.exists(filename)) {
-                                grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
-                                return false;
-                            }
-
-                            var hash = generateHash(grunt.file.read(filename));
-
-                            // Create our new filename
-                            newFilename = addHash(filename, hash, path.extname(filename));
-
-                            // Create the new reference
-                            newReference = addHash(reference.replace(hashReplaceRegex, ''), hash, path.extname(filename));
-
-                            // Update the reference in the markup
-                            markup = markup.replace(new RegExp(regexEscape(originalReference), 'g'), newReference);
-
-                            // Create our new file
-                            grunt.file.copy(filename, newFilename);
-                        }
-                    } else {
-                        if (!grunt.file.exists(filename)) {
-                            grunt.log.warn('Static asset "' + filename + '" skipped because it wasn\'t found.');
-                            return false;
-                        }
-                        newFilename = reference.split('?')[0] + '?' + generateHash(grunt.file.read(filename));
-                        newReference = newFilename;
-                        markup = markup.replace(new RegExp(regexEscape(reference), 'g'), newFilename);
-                    }
-
-                    if (newFilename) {
-                        processedFileMap[originalFilename] = newReference;
-                    }
+                _.each(replace, function(r) {
+                    var original = r[0];
+                    var hashed = r[1];
+                    _.each(replaceEnclosedBy, function(reb) {
+                        markup = markup.split(reb[0] + original + reb[1]).join(reb[0] + hashed + reb[1]);
+                    });
                 });
-
-                grunt.file.write(filepath, markup);
-
-                grunt.log.writeln(['The file ', filepath, ' was busted!'].join(''));
             });
-        });
 
-        // Delete the original files, if enabled
-        if (opts.rename && opts.deleteOriginals) {
-            for (var file in processedFileMap) {
-                if (grunt.file.exists(file)) {
-                    grunt.file.delete(file);
+            grunt.file.write(filepath, markup);
+        }
+
+        function hashFile(obj, file) {
+            var absPath = path.resolve(opts.baseDir, file);
+            var hash = generateFileHash(grunt.file.read(absPath, {
+                encoding: null
+            }));
+            var newFilename = addFileHash(file, hash, opts.separator);
+
+            if (!opts.queryString) {
+                if (opts.createCopies) {
+                    grunt.file.copy(absPath, path.resolve(opts.baseDir, newFilename));
                 }
+
+                if (opts.deleteOriginals) {
+                    grunt.file.delete(absPath);
+                }
+            }
+
+            obj[file] = newFilename;
+
+            return obj;
+        }
+
+        function generateFileHash(data) {
+            return opts.hash || crypto.createHash(opts.algorithm).update(data, opts.encoding).digest('hex').substring(0, opts.length);
+        }
+
+        function addFileHash(str, hash, separator) {
+            if (opts.queryString) {
+                return str + '?' + hash;
+            } else {
+                var parsed = url.parse(str);
+                var pathToFile = opts.outputDir.length > 0 ? path.join(opts.outputDir, parsed.pathname.replace(/^.*[\\\/]/, '')) : parsed.pathname;
+                var ext = path.extname(parsed.pathname);
+
+                return (parsed.hostname ? parsed.protocol + parsed.hostname : '') + pathToFile.replace(ext, '') + separator + hash + ext;
             }
         }
 
-        // Generate a JSON with the swapped file names if requested
-        if (opts.jsonOutput) {
-            var name = typeof opts.jsonOutput === 'string' ? opts.jsonOutput : opts.jsonOutputFilename;
+        function getFilesToBeRenamed(files, assetMap, baseDir) {
+            var originalConfig = files[0].orig;
+            // check if fully specified filenames have been busted and replace with busted file
+            originalConfig.src = originalConfig.src.map(function(file) {
+                if (file.substr(0, baseDir.length) === baseDir && (file.substr(baseDir.length + 1)) in assetMap) {
+                    return baseDir + '/' + assetMap[file.substr(baseDir.length + 1)];
+                }
+                return file;
+            });
 
-            grunt.log.writeln(['File map has been exported to ', path.normalize(opts.baseDir + '/' + name), '!'].join(''));
-            grunt.file.write(path.normalize(opts.baseDir + '/' + name), JSON.stringify(processedFileMap));
+            return grunt.file
+                .expand(originalConfig, originalConfig.src)
+                .map(function(file) {
+
+                    // if the file is hashed, then the hashed file should be
+                    // used instead of the original for replacement.  This will
+                    // only be the case if an outputDir is being used.
+                    if (!opts.queryString && opts.outputDir && _.has(assetMap, file)) {
+                        file = assetMap[file];
+                    }
+                    grunt.log.ok('Busted:', file);
+                    return path.resolve((originalConfig.cwd ? originalConfig.cwd + path.sep : '') + file);
+                });
         }
+
     });
 
 };

@@ -1,14 +1,22 @@
 # grunt-cache-bust
 
+[![npm version](https://badge.fury.io/js/grunt-cache-bust.svg)](http://badge.fury.io/js/grunt-cache-bust)
 [![Build Status](https://travis-ci.org/hollandben/grunt-cache-bust.png?branch=master)](https://travis-ci.org/hollandben/grunt-cache-bust)
+[![Dependency Status](https://david-dm.org/hollandben/grunt-cache-bust.svg)](https://david-dm.org/hollandben/grunt-cache-bust)
+[![Join the chat at https://gitter.im/hollandben/grunt-cache-bust](https://badges.gitter.im/hollandben/grunt-cache-bust.svg)](https://gitter.im/hollandben/grunt-cache-bust?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 > Bust static assets from the cache using content hashing
 
 * [Getting Started](#getting-started)
 * [Introduction](#the-cachebust-task)
-* [Overview](#overview)
+* [How it works](#how-it-works)
 * [Options](#options)
 * [Usage Examples](#usage-examples)
+* [CDNs](#cdns)
+* [Change Log](#change-log)
+
+## PLEASE READ
+This plugin recently upgraded to `v1.0.0`!! There was a big change in the way the plugin works. You can read me about the changes in issue [#147](https://github.com/hollandben/grunt-cache-bust/issues/147). Please let me know if you have any questions on the changes via [Gitter](https://gitter.im/hollandben/grunt-cache-bust) or [Twitter](https://twitter.com/hollandben)
 
 ## Getting Started
 _If you haven't used [grunt][] before, be sure to check out the [Getting Started][] guide._
@@ -19,149 +27,159 @@ From the same directory as your project's [Gruntfile][Getting Started] and [pack
 npm install grunt-cache-bust --save-dev
 ```
 
-Once that's done, add this line to your project's Gruntfile:
-
-```js
-grunt.loadNpmTasks('grunt-cache-bust');
-```
-
-If the plugin has been installed correctly, running `grunt --help` at the command line should list the newly-installed plugin's task or tasks. In addition, the plugin should be listed in package.json as a `devDependency`, which ensures that it will be installed whenever the `npm install` command is run.
-
 [grunt]: http://gruntjs.com/
 [Getting Started]: https://github.com/gruntjs/grunt/blob/devel/docs/getting_started.md
 [package.json]: https://npmjs.org/doc/json.html
 
 ## The "cacheBust" task
 
-Use the **cacheBust** task for cache busting static files in your application. This allows them to be cached forever by the browser, just point the task towards any file that contains references to static assets.
+Use the `cacheBust` task for cache busting static files in your application. This allows the assets to have a large expiry time in the browsers cache and will only be forced to use an updated file when the contents of it changes. This is a good practice.
 
-_Currently supported static assets: **CSS**, **JavaScript**, **images** and **favicons**_
+Tell the `cacheBust` task where your static assets are and the files that reference them and let it work it's magic.
 
-_Note:_ Remote URLs for CSS, JavaScript, and images are ignored by cacheBust.  This assumes that remote URLs for these assets will
-be CDN hosted content, typically for well known libraries like jQuery or Bootstrap. For example, all of below URLs will be ignored:
+### Supported file types
+All of them!!
 
-```html
-<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-<link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
-<img src="https://secure.gravatar.com/avatar/d3b2094f1b3386e660bb737e797f5dcc?s=420" alt="test" />
-```
+### How it works
+In your project's Gruntfile, add a new task called `cacheBust`.
 
-### Overview
-In your project's Gruntfile, add a section named `cacheBust` to the data object passed into `grunt.initConfig()`.
+This is the most basic configuration you can have:
 
 ```js
-grunt.initConfig({
-  cacheBust: {
-    options: {
-      encoding: 'utf8',
-      algorithm: 'md5',
-      length: 16
-    },
-    assets: {
-        files: [{
-            src: ['index.html']
-        }]
+cacheBust: {
+    taskName: {
+        options: {
+            assets: ['assets/**']
+        },
+        src: ['index.html']
     }
-  }
-})
+}
 ```
 
-```html
-<!doctype html>
-<html>
-<head>
-    <title>This is a test page</title>
-    <link rel="stylesheet" href="assets/standard.css" />
-</head>
-<body>
-    <img src="assets/standard.jpg" alt="bird">
-    <script defer src="assets/standard.js" type="text/javascript"></script>
-</body>
-</html>
-```
+These are the two mandatory fields you need to supply:
 
-All single and double-quoted strings in the target files with "#grunt-cache-bust" appended to the URL will be cache busted.
+The `assets` option that is passed to the plugin tells it what types of files you want to hash, i.e. `css` and `js` files. You must also provide the location for these files. In the example above, they live in the `assets` folder.
+
+The `src` part of the configuration you should have seen before as it's used by pretty much every Grunt plugin. We use this to tell the plugin which files contain references to assets we're going to be adding a hash to. You can [use the `expand` configuration option here as well](http://gruntjs.com/configuring-tasks#building-the-files-object-dynamically)
+
+**To summarise, the above configuration will hash all the files in the `assets` directory and replace any references to those files in the `index.html` file.**
 
 ### Options
 
+#### Summary
+
+```
+// Here is a short summary of the options and some of their 
+defaults. Extra details are below.
+{
+    algorithm: 'md5',                             // Algorithm used for hashing files
+    assets: ['css/*', 'js/*']                     // File patterns for the assets you wish to hash
+    baseDir: './',                                // The base directory for all assets
+    createCopies: true,                           // Create hashed copies of files
+    deleteOriginals: false,                       // Delete the original file after hashing
+    encoding: 'utf8',                             // The encoding used when reading/writing files
+    hash: '9ef00db36970718e',                     // A user defined hash for every file. Not recommended.
+    jsonOutput: false,                            // Output the original => new URLs to a JSON file
+    jsonOutputFilename: 'grunt-cache-bust.json',  // The file path and name of the exported JSON. Is relative to baseDir
+    length: 16,                                   // The length of the hash value
+    separator: '.',                               // The separator between the original file name and hash
+    queryString: false                            // Use a query string for cache busting instead of rewriting files
+    outputDir: ''                                 // Directory where all hashed assets will be copied. Is relative to baseDir
+    clearOutputDir: false                         // Clear output directory. If outputDir was not set clear will not work
+}
+```
+
 #### options.algorithm
-Type: `String`
+Type: `String`  
 Default value: `'md5'`
 
 `algorithm` is dependent on the available algorithms supported by the version of OpenSSL on the platform. Examples are `'sha1'`, `'md5'`, `'sha256'`, `'sha512'`
 
+#### options.assets
+Type: `Array`
+
+`assets` contains the file patterns for where all your assets live. This should point towards all the assets you wish to have busted. It uses the same glob pattern for matching files as Grunt.
+
+
 #### options.baseDir
-Type: `String`
+Type: `String`  
 Default value: `false`
 
-When set, `cachebust` will try to find the asset files using the baseDir as base path.
+When set, `cachebust` will try to find the assets using the baseDir as base path.
 
-#### options.enableUrlFragmentHint
+```js
+assets: {
+    options: {
+        baseDir: 'public/',
+    },
+    files: [{   
+        expand: true,
+        cwd: 'public/',
+        src: ['modules/**/*.html']
+    }]
+}   
+```
 
-Type: `Boolean`
+#### options.createCopies
+Type: `Boolean`  
+Default value: `true`
+
+When set to `false`, `cachebust` will not create hashed copies of the files. Useful if you use server rewrites to serve your files.
+
+#### options.deleteOriginals
+Type: `Boolean`  
 Default value: `false`
 
-When true, cachebust will search single and double-quoted strings in scripting languages such as PHP for asset paths. Asset paths must have the `#grunt-cache-bust` URL fragment appended. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/test/fixtures/enableUrlFragmentHint.php) for more details.
+When set, `cachebust` will delete the original versions of the files that have been hashed. For example, `style.css` will be deleted after being copied to `style.dcf1d324cb50a1f9.css`.
 
 #### options.encoding
-Type: `String`
+Type: `String`  
 Default value: `'utf8'`
 
 The encoding of the file contents.
 
-#### options.filters
-Type : `Object`
-Default value:
-```js
-{
-    'SELECTOR' : function() { return this.attribs['ATTR']; }
-}
-```
+#### options.hash
+Type: `String`
 
-The key in the object is the `selector`, and the value provided is the filter. Filters will be merged with the defaults above. See [an example](https://github.com/hollandben/grunt-cache-bust/blob/master/tasks/cachebust.js#L39) for more details.
-
-#### options.ignorePatterns
-Type: `Array`
-Default value: `[]`
-
-This is a regex test against a file reference. If returned true for patterns in the array, then that file will be ignored.
-
-```js
-ignorePatterns: ['test', 'requirejs']
-```
+A user defined value to be used as the hash value for all files. For a more beneficial caching strategy, it's advised not to supply a hash value for all files.
 
 #### options.jsonOutput
-Type: `Boolean|String`
+Type: `Boolean`  
 Default value: `false`
 
 When set as `true`, `cachbust` will create a json file with an object inside that contains key value pairs of the original file name, and the renamed md5 hash name for each file.
 
-The default output file will be named `cachebuster.json` and is relative to the root of the project, or the `baseDir` option if set.
-
-Alternatively, you can set this option as a string i.e. `example-file-name.json`, and this will be used.
-
 Output format looks like this:
 ```
 {
-  'app.js' : 'app_23E6F7AC5623E96F7AC56293E6F7AC56.js',
-  'vendor.js': 'vendor_KJJKNB1FHjh421fwaj124bfaf52jwWAA.js'
+  '/scripts/app.js' : '/scripts/app.23e6f7ac5623e96f.js',
+  '/scripts/vendor.js': '/scripts/vendor.h421fwaj124bfaf5.js'
 }
 ```
 
+#### options.jsonOutputFilename
+Type: `String`  
+Default value: `grunt-cache-bust.json`
+
+The file path and name of the exported JSON. It is exported relative to `baseDir`.
+
 #### options.length
-Type: `Number`
+Type: `Number`  
 Default value: `16`
 
 The number of characters of the file content hash to prefix the file name with.
 
-#### options.rename
-Type: `Boolean`
-Default value: `true`
+#### options.separator
+Type: `String`  
+Default value: `.`
 
-When true, `cachebust` will rename the reference to the file and the file itself with the generated hash. When set to false, then a query string parameter is added to the end of the file reference.
+The separator between the original file name and hash.
+
+#### options.queryString
+Type: `Boolean`  
+Default value: `false`
+
+Use a query string for cache busting instead of rewriting files.
 
 #### options.cdnPath
 Type: `String`
@@ -173,48 +191,70 @@ This string will be ignored in paths during file-handling to find files in baseD
 
 ### Usage Examples
 
-#### Basic Asset Cache Busting
-
+#### The most basic setup
 ```js
-grunt.initConfig({
-  cacheBust: {
-    assets: {
-      files: {
-        src: ['index.html', 'contact.html']
-      }
+cacheBust: {
+    taskName: {
+        options: {
+            assets: ['assets/**']
+        },
+        src: ['index.html']
     }
-  }
-});
+}
 ```
 
-#### Custom Options
-
+#### Bust using a query string instead of rewriting files
 ```js
-grunt.initConfig({
-  cacheBust: {
+cacheBust: {
+    taskName: {
+        options: {
+            assets: ['assets/**'],
+            queryString: true
+        },
+        src: ['index.html']
+    }
+}
+```
+
+#### Bust all assets and update references in all templates and assets
+```js
+cacheBust: {
     options: {
-      algorithm: 'sha1',
-      length: 32,
-      baseDir: '.tmp/public/',
-      filters: {
-        'script': [
-          function() {
-            return this.attribs['data-main'];
-          }, // for requirejs mains.js
-          function() {
-            return this.attribs.src;
-          } // keep default 'src' mapper
-        ]
-      }
+        assets: ['assets/**/*'],
+        baseDir: './public/'
     },
-    assets: {
-      files: [{
-        expand: true,
-        cwd: 'src',
-        src: ['*.html'],
-        dest: 'dest/'
-      }]
+    taskName: {
+        files: [{   
+            expand: true,
+            cwd: 'public/',
+            src: ['templates/**/*.html', 'assets/**/*']
+        }]
     }
-  }
-});
+}
 ```
+
+#### Inherited options for multiple tasks
+```js
+cacheBust: {
+    options: {
+        assets: ['assets/**'],
+        baseDir: './public/'
+    },
+    staging: {
+        options: {
+            jsonOutput: true
+        },
+        src: ['index.html']
+    },
+    production: {
+        options: {
+            jsonOutput: false
+        },
+        src: ['index.html']
+    }
+}
+```
+
+# License
+
+MIT © [Ben Holland](https://benholland.me)

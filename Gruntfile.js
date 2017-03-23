@@ -1,6 +1,23 @@
 module.exports = function(grunt) {
     'use strict';
 
+    var configFiles = grunt.file.expand('./config/*.js');
+
+    // Default cacheBust options
+    var cacheBustObj = {
+        options: {
+            encoding: 'utf8',
+            length: 16,
+            algorithm: 'md5'
+        }
+    };
+
+    // Load each cacheBust config
+    configFiles.forEach(function(filename) {
+        var taskName = filename.replace('./config/', '').replace('.js', '');
+        cacheBustObj[taskName] = require(filename);
+    });
+
     grunt.initConfig({
 
         clean: {
@@ -10,7 +27,7 @@ module.exports = function(grunt) {
         jshint: {
             all: [
                 'Gruntfile.js',
-                'tasks/*.js',
+                'tasks/**/*.js',
                 '<%= nodeunit.tests %>'
             ],
             options: {
@@ -22,74 +39,28 @@ module.exports = function(grunt) {
             main: {
                 files: [{
                     expand: true,
-                    cwd: 'test/fixtures',
-                    src: ['**'],
+                    dot: true,
+                    cwd: 'tests/',
+                    src: ['**', '!**/*_test.js'],
                     dest: 'tmp/'
                 }]
             }
         },
 
-        cacheBust: {
-            options: {
-                encoding: 'utf8',
-                length: 16,
-                algorithm: 'md5',
-                baseDir: 'tmp/'
-            },
-            queryString: {
-                options: {
-                    jsonOutput: true,
-                    rename: false,
-                    ignorePatterns: ['toBeIgnoredCSS', 'toBeIgnoredJS', 'toBeIgnoredJPG']
-                },
-                files: [{
-                    expand: true,
-                    cwd: 'tmp/',
-                    src: ['*.html', '*.css', '!replace*.*', '!*.php']
-                }]
-            },
-            rename: {
-                options: {
-                    baseDir: './tmp',
-                    deleteOriginals: true,
-                    jsonOutput: 'output/replace-cachebuster-map.json',
-                    replaceTerms: [{
-                        '${Html.GetAppSetting(ThemeId)}': 'com'
-                    }],
-                    filters: {
-                        script : [
-                            function() { return this.attribs['data-main'] +'.js'; },
-                            function() { return this.attribs['src']; }
-                        ]
-                    }
-                },
-                files: [{
-                    src: ['tmp/replace*.*']
-                }]
-            },
-            enableUrlFragmentHint: {
-                options: {
-                    enableUrlFragmentHint: true
-                },
-                files: [{
-                    src: ['tmp/*.php']
-                }]
-            }
-        },
+        cacheBust: cacheBustObj,
 
         nodeunit: {
-            tests: ['test/*_test.js']
+            tests: ['tests/**/*_test.js']
         },
 
         watch: {
             task: {
-                files: ['tasks/cacheBust.js', 'test/cachebust_test.js'],
+                files: ['tasks/**/*.js', 'tests/**/*', 'config/*.js'],
                 tasks: 'test'
             }
         }
 
     });
-
 
     // Load this plugins tasks
     grunt.loadTasks('tasks');
@@ -101,6 +72,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('default', 'bust');
-    grunt.registerTask('bust', ['clean', 'copy', 'cacheBust']);
-    grunt.registerTask('test', ['clean', 'copy', 'cacheBust', 'nodeunit']);
+    grunt.registerTask('test', ['bust', 'nodeunit']);
+    grunt.registerTask('bust', ['jshint', 'clean', 'copy', 'cacheBust']);
 };
