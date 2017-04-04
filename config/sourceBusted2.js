@@ -1,11 +1,12 @@
 module.exports = {
     options: {
         assets: ['assets/**'],
-        baseDir: 'tmp/sourceBusted',
+        baseDir: 'tmp/sourceBusted2',
         deleteOriginals: true,
         hash: '123456789',
     },
     files: [{
-        src: ['tmp/sourceBusted/assets/css/application.css', 'tmp/sourceBusted/sourceBusted.html']
+        cwd: './tmp/sourceBusted2/',
+        src: ['assets/css/application.css', 'sourceBusted2.html']
     }]
 };
