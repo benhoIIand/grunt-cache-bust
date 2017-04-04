@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+**v1.5.1**
+* Fix "Warning: Cannot use 'in' operator to search" error when queryString option is passed
+* Fix several paths issues
+* Enable Busting of img srcset
+
 **v1.5.0**
 * Fix paths in hashed files (#211)
 * Files in outputDir should have files replaced (#210)
