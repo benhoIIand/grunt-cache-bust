@@ -56,7 +56,9 @@ module.exports = function(grunt) {
         // '{file}'
         // ({file}) (css url(...))
         // ={file}> (unquoted html attribute)
-        // ={file}\s (unquoted html attribute followed by more attributes)
+        // ={file}\s (unquoted html attribute fonllowed by more attributes)
+        // "{file}\s (first entry of img srcset)
+        // \s{file}\s (other entries of img srcset)
         // files may contain a querystring, so all with ? as closing too
         var replaceEnclosedBy = [
             ['"', '"'],
@@ -64,6 +66,8 @@ module.exports = function(grunt) {
             ['(', ')'],
             ['=', '>'],
             ['=', ' '],
+            ['"', ' '],
+            [' ', ' '],
         ];
         replaceEnclosedBy = replaceEnclosedBy.concat(replaceEnclosedBy.map(function(reb) {
             return [reb[0], '?'];
