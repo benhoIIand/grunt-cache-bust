@@ -22,6 +22,9 @@ var DEFAULT_OPTIONS = {
 };
 
 module.exports = function(grunt) {
+    var isUsingQueryString = function(opts) {
+        return opts.queryString;
+    };
     grunt.registerMultiTask('cacheBust', 'Bust static assets from the cache using content hashing', function() {
         var opts = this.options(DEFAULT_OPTIONS);
         if( opts.baseDir.substr(-1) !== '/' ) {
@@ -72,9 +75,12 @@ module.exports = function(grunt) {
             ['"', ' '],
             [' ', ' '],
         ];
-        replaceEnclosedBy = replaceEnclosedBy.concat(replaceEnclosedBy.map(function(reb) {
-            return [reb[0], '?'];
-        }));
+        // don't replace references that are already cache busted
+        if (!isUsingQueryString(opts)) {
+            replaceEnclosedBy = replaceEnclosedBy.concat(replaceEnclosedBy.map(function(reb) {
+                return [reb[0], '?'];
+            }));
+        }
 
         // Go through each source file and replace them with busted file if available
         var map = opts.queryString ? {} : assetMap;
