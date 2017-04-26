@@ -35,7 +35,7 @@ module.exports = function(grunt) {
 
         //clear output dir if it was set
         if (opts.clearOutputDir && opts.outputDir.length > 0) {
-            fs.removeSync(path.resolve((discoveryOpts.cwd ? discoveryOpts.cwd + opts.clearOutputDir : opts.clearOutputDir)));
+            fs.removeSync(path.resolve((discoveryOpts.cwd ? discoveryOpts.cwd + '/' +opts.outputDir : opts.outputDir)));
         }
 
         // Generate an asset map
