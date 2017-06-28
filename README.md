@@ -27,6 +27,12 @@ From the same directory as your project's [Gruntfile][Getting Started] and [pack
 npm install grunt-cache-bust --save-dev
 ```
 
+Once the plugin has been installed, enabled it inside your Gruntfile.
+
+```bash
+grunt.loadNpmTasks('grunt-cache-bust');
+```
+
 [grunt]: http://gruntjs.com/
 [Getting Started]: https://github.com/gruntjs/grunt/blob/devel/docs/getting_started.md
 [package.json]: https://npmjs.org/doc/json.html
