@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+**v1.6.0**
+* Log out busted files in verbose mode only (#228)
+* Updating documentation to show the loadNpmTasks business (#231)
+* Fix for clearOutputDir option (#230)
+* Fix multiple cache bust query params being added (#227)
+
 **v1.5.1**
 * Fix "Warning: Cannot use 'in' operator to search" error when queryString option is passed
 * Fix several paths issues
