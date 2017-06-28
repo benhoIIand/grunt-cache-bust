@@ -48,7 +48,7 @@ module.exports = function(grunt) {
             .reverse()
             .reduce(hashFile, {});
 
-        grunt.verbose.write('Assets found:', assetMap);
+        grunt.verbose.writeln('Assets found:', JSON.stringify(assetMap, null, 2));
 
         // Write out assetMap
         if (opts.jsonOutput === true) {
@@ -84,7 +84,9 @@ module.exports = function(grunt) {
 
         // Go through each source file and replace them with busted file if available
         var map = opts.queryString ? {} : assetMap;
-        getFilesToBeRenamed(this.files, map, opts.baseDir).forEach(replaceInFile);
+        var files = getFilesToBeRenamed(this.files, map, opts.baseDir);
+        files.forEach(replaceInFile);
+        grunt.log.ok(files.length + ' file' + (files.length !== 1 ? 's ' : ' ') + 'busted.');
 
         function replaceInFile(filepath) {
             var markup = grunt.file.read(filepath);
@@ -211,7 +213,7 @@ module.exports = function(grunt) {
                     if (!opts.queryString && opts.outputDir && _.has(assetMap, file)) {
                         file = assetMap[file];
                     }
-                    grunt.log.ok('Busted:', file);
+                    grunt.verbose.writeln('Busted:', file);
                     return path.resolve((originalConfig.cwd ? originalConfig.cwd + path.sep : '') + file);
                 });
         }
