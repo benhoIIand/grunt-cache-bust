@@ -18,7 +18,8 @@ var DEFAULT_OPTIONS = {
     separator: '.',
     queryString: false,
     outputDir: '',
-    clearOutputDir: false
+    clearOutputDir: false,
+    cdnPath: ''
 };
 
 module.exports = function(grunt) {
@@ -75,6 +76,10 @@ module.exports = function(grunt) {
             ['"', ' '],
             [' ', ' '],
         ];
+        if (opts.cdnPath) {
+            replaceEnclosedBy.push([opts.cdnPath, '"']);
+            replaceEnclosedBy.push([opts.cdnPath, "'"]);
+        }
         // don't replace references that are already cache busted
         if (!isUsingQueryString(opts)) {
             replaceEnclosedBy = replaceEnclosedBy.concat(replaceEnclosedBy.map(function(reb) {
