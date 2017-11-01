@@ -75,7 +75,7 @@ The `src` part of the configuration you should have seen before as it's used by 
 #### Summary
 
 ```
-// Here is a short summary of the options and some of their 
+// Here is a short summary of the options and some of their
 defaults. Extra details are below.
 {
     algorithm: 'md5',                             // Algorithm used for hashing files
@@ -133,10 +133,11 @@ Default value: `true`
 When set to `false`, `cachebust` will not create hashed copies of the files. Useful if you use server rewrites to serve your files.
 
 #### options.deleteOriginals
-Type: `Boolean`  
+Type: `Boolean|Object`  
 Default value: `false`
 
 When set, `cachebust` will delete the original versions of the files that have been hashed. For example, `style.css` will be deleted after being copied to `style.dcf1d324cb50a1f9.css`.
+Alternatively, you can pass an object as `force: true` to force delete the files outside current working directory.
 
 #### options.encoding
 Type: `String`  

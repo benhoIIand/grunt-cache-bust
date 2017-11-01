@@ -148,7 +148,7 @@ module.exports = function(grunt) {
                 }
 
                 if (opts.deleteOriginals) {
-                    grunt.file.delete(absPath);
+                    grunt.file.delete(absPath, {force : opts.deleteOriginals.force});
                 }
             }
 
