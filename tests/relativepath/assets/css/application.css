@@ -1,13 +1,16 @@
 @charset "UTF-8";
 
-body {
-	background-image: url(../images/testbg.png);
+div {
+	width: 224px;
+    height: 100px;
 }
 
 div.test {
-	background-image: url(../../assets/images/testbg.png);
+	background-image: url(../images/testbg.png);
+	background-repeat: no-repeat;
 }
 
 div.test2 {
-	background-image: url(/assets/images/testbg.png);
+	background-image: url(../../assets/images/testbg.png);
+	background-repeat: no-repeat;
 }
