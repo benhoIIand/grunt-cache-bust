@@ -5,6 +5,8 @@ var grunt = require('grunt');
 module.exports = {
 
     absolutepath: function(test) {
+        test.expect(2);
+
         var html = grunt.file.read('tmp/absolutepath/absolutepath.html');
         test.ok(html.match(/"\/assets\/css\/application\.123456789\.css"/), 'testing /assets/css/application.css replaced in HTML');
 
