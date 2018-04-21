@@ -41,7 +41,7 @@ module.exports = function(grunt) {
                     expand: true,
                     dot: true,
                     cwd: 'tests/',
-                    src: ['<%= tests + "/**" || "**" %>', '!**/*_test.js'],
+                    src: ['<%= testName !== "**" ? (testName + "/**") : testName %>', '!**/*_test.js'],
                     dest: 'tmp/'
                 }]
             }
@@ -50,7 +50,7 @@ module.exports = function(grunt) {
         cacheBust: cacheBustObj,
 
         nodeunit: {
-            tests: ['tests/<%= tests || "**" %>/*_test.js']
+            tests: ['tests/<%= testName %>/*_test.js']
         },
 
         watch: {
@@ -62,6 +62,8 @@ module.exports = function(grunt) {
 
     });
 
+    grunt.config.set('testName', '**');
+
     // Load this plugins tasks
     grunt.loadTasks('tasks');
 
@@ -72,13 +74,21 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('default', 'bust');
-    grunt.registerTask('test', ['bust', 'nodeunit']);
     grunt.registerTask('bust', ['jshint', 'clean', 'copy', 'cacheBust']);
 
-    grunt.task.registerTask('single', 'Run a single test', function(testName) {
-        console.info('Testint /tests/'+testName+'/*_test.js');
-        grunt.config.set('tests', testName);
-        grunt.task.run(['jshint', 'clean', 'copy', 'cacheBust:'+testName, 'nodeunit']);
+    /**
+     * To run all tests:        grunt test
+     * To run a single test:    grunt test:<test_name>
+     *                      eg. grunt test:absolutepath
+     */
+    grunt.task.registerTask('test', 'Run a single test or all tests', function(testName) {
+        var cacheBustTask = 'cacheBust';
+        if (testName) {
+            console.info('Testint /tests/'+testName+'/*_test.js');
+            grunt.config.set('testName', testName);
+            cacheBustTask = 'cacheBust:'+testName;
+        }
+        grunt.task.run(['jshint', 'clean', 'copy', cacheBustTask, 'nodeunit']);
     });
 
 };
