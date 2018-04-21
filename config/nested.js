@@ -9,6 +9,6 @@ module.exports = {
     files: [{
         expand: true,
         cwd: 'tmp/nested',
-        src: ['assets/js/**', 'nested.html']
+        src: ['**/*.{js,css,html}', '!lib/**', '!node_modules/**']
     }]
 };
