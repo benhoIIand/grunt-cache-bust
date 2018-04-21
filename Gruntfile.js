@@ -41,7 +41,7 @@ module.exports = function(grunt) {
                     expand: true,
                     dot: true,
                     cwd: 'tests/',
-                    src: ['**', '!**/*_test.js'],
+                    src: ['<%= tests + "/**" || "**" %>', '!**/*_test.js'],
                     dest: 'tmp/'
                 }]
             }
@@ -50,7 +50,7 @@ module.exports = function(grunt) {
         cacheBust: cacheBustObj,
 
         nodeunit: {
-            tests: ['tests/**/*_test.js']
+            tests: ['tests/<%= tests || "**" %>/*_test.js']
         },
 
         watch: {
@@ -74,4 +74,11 @@ module.exports = function(grunt) {
     grunt.registerTask('default', 'bust');
     grunt.registerTask('test', ['bust', 'nodeunit']);
     grunt.registerTask('bust', ['jshint', 'clean', 'copy', 'cacheBust']);
+
+    grunt.task.registerTask('single', 'Run a single test', function(testName) {
+        console.info('Testint /tests/'+testName+'/*_test.js');
+        grunt.config.set('tests', testName);
+        grunt.task.run(['jshint', 'clean', 'copy', 'cacheBust:'+testName, 'nodeunit']);
+    });
+
 };
