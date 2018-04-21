@@ -1,0 +1,1 @@
+angular.module('main', ['oc.lazyLoad', 'ui.router']);
