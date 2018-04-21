@@ -8,6 +8,6 @@ module.exports = {
     files: [{
         expand: true,
         cwd: 'tmp/absolutepath',
-        src: ['css/*.css', '*.html']
+        src: ['assets/css/*.css', '*.html']
     }]
 };

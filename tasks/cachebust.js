@@ -74,6 +74,8 @@ module.exports = function(grunt) {
         
         // Generate an asset map
         var assetMap, concatenatedAssetMap = {}, filesBusted = 0, step = 0, totalFilesBusted = 0;
+
+        // Find assets until the content of those assets stop changing
         while( Object.keys(assetMap = generateAssetMap()).length > 0 ){
             // Go through each source file and replace them with busted file if available
             grunt.verbose.writeln('(' + (++step) + ') Assets count: ' + Object.keys(assetMap).length);
