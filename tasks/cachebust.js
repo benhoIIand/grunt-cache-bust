@@ -36,36 +36,24 @@ module.exports = function(grunt) {
             filter: 'isFile'
         };
 
-        //clear output dir if it was set
+        // Clear output dir if it was set
         if (opts.clearOutputDir && opts.outputDir.length > 0) {
             fs.removeSync(path.resolve((discoveryOpts.cwd ? discoveryOpts.cwd + '/' +opts.outputDir : opts.outputDir)));
         }
 
-        // Generate an asset map
-        var assetMap = grunt.file
-            .expand(discoveryOpts, opts.assets)
-            .sort()
-            .reverse()
-            .reduce(hashFile, {});
-
-        grunt.verbose.writeln('Assets found:', JSON.stringify(assetMap, null, 2));
-
-        // Write out assetMap
-        if (opts.jsonOutput === true) {
-            grunt.file.write(path.resolve(opts.baseDir, opts.jsonOutputFilename), JSON.stringify(assetMap));
-        }
-
-        // don't just split on the filename, if the filename = 'app.css' it will replace
-        // all app.css references, even to files in other dirs
-        // so replace this:
-        // "{file}"
-        // '{file}'
-        // ({file}) (css url(...))
-        // ={file}> (unquoted html attribute)
-        // ={file}\s (unquoted html attribute fonllowed by more attributes)
-        // "{file}\s (first entry of img srcset)
-        // \s{file}\s (other entries of img srcset)
-        // files may contain a querystring, so all with ? as closing too
+        /**
+         * Don't just split on the filename, if the filename = 'app.css' it will replace
+         * all app.css references, even to files in other dirs
+         * so replace this:
+         * "{file}"
+         * '{file}'
+         * ({file}) (css url(...))
+         * ={file}> (unquoted html attribute)
+         * ={file}\s (unquoted html attribute fonllowed by more attributes)
+         * "{file}\s (first entry of img srcset)
+         * \s{file}\s (other entries of img srcset)
+         * files may contain a querystring, so all with ? as closing too
+         */
         var replaceEnclosedBy = [
             ['"', '"'],
             ["'", "'"],
@@ -82,14 +70,43 @@ module.exports = function(grunt) {
             }));
         }
 
-        // Go through each source file and replace them with busted file if available
-        var map = opts.queryString ? {} : assetMap;
-        var files = getFilesToBeRenamed(this.files, map, opts.baseDir);
-        files.forEach(replaceInFile);
-        grunt.log.ok(files.length + ' file' + (files.length !== 1 ? 's ' : ' ') + 'busted.');
+        grunt.log.ok('Total files to replace: ' + this.files.length);
+        
+        // Generate an asset map
+        var assetMap, concatenatedAssetMap = {}, filesBusted = 0, step = 0, totalFilesBusted = 0;
+        while( Object.keys(assetMap = generateAssetMap()).length > 0 ){
+            // Go through each source file and replace them with busted file if available
+            grunt.verbose.writeln('(' + (++step) + ') Assets count: ' + Object.keys(assetMap).length);
+            var map = opts.queryString ? {} : assetMap;
+            var files = getFilesToBeRenamed(this.files, map, opts.baseDir);
+            var _t = Date.now();
+            files.forEach(replaceInFile);
+            grunt.verbose.writeln('  Assets replacing cost: ' + (Date.now() - _t) + 'ms');
+            grunt.verbose.writeln('  Files replaced: ' + filesBusted);
+            totalFilesBusted += filesBusted;
+            filesBusted = 0;
+            _.merge(concatenatedAssetMap, assetMap);
+        }
+        
+        grunt.verbose.writeln('Assets:', JSON.stringify(concatenatedAssetMap, null, 2));
+        grunt.log.ok(totalFilesBusted + ' file' + (totalFilesBusted !== 1 ? 's ' : ' ') + 'busted.');
 
-        function replaceInFile(filepath) {
+        // Write out assetMap
+        if (opts.jsonOutput === true) {
+            grunt.file.write(path.resolve(opts.baseDir, opts.jsonOutputFilename), JSON.stringify(concatenatedAssetMap, null, 2));
+        }
+
+        function generateAssetMap() {
+            return grunt.file
+            .expand(discoveryOpts, opts.assets)
+            .sort()
+            .reverse()
+            .reduce(hashFile, {});
+        }
+
+        function replaceInFile(filepath, cb) {
             var markup = grunt.file.read(filepath);
+            var _markup = markup;
             var baseDir = discoveryOpts.cwd + '/';
             var relativeFileDir = path.dirname(filepath).substr(baseDir.length);
             var fileDepth = 0;
@@ -106,6 +123,7 @@ module.exports = function(grunt) {
                     ['/' + original, '/' + hashed],
                     // relative
                     [grunt.util.repeat(fileDepth, '../') + original, grunt.util.repeat(fileDepth, '../') + hashed],
+                    [original, hashed],
                 ];
                 // find relative paths for shared dirs
                 var originalDirParts = path.dirname(original).split('/');
@@ -131,8 +149,10 @@ module.exports = function(grunt) {
                     });
                 });
             });
-
-            grunt.file.write(filepath, markup);
+            if (markup !== _markup) {
+                filesBusted++;
+                grunt.file.write(filepath, markup);
+            }
         }
 
         function hashFile(obj, file) {
@@ -140,7 +160,14 @@ module.exports = function(grunt) {
             var hash = generateFileHash(grunt.file.read(absPath, {
                 encoding: null
             }));
+
             var newFilename = addFileHash(file, hash, opts.separator);
+
+            // If file has the same hash name of the recalculated hash, do nothing
+            // or it already has an entry in the global assets object
+            if (absPath.match(new RegExp(opts.separator + hash, 'g')) || !!concatenatedAssetMap[file]) {
+                return obj;
+            }
 
             if (!opts.queryString) {
                 if (opts.createCopies) {

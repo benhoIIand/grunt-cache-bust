@@ -10,7 +10,7 @@ module.exports = {
         var outputMap = grunt.file.read('tmp/jsonOutput/jsonOutput-map.json');
         var expectedMap = JSON.stringify({
             'assets/jsonOutput.js': 'assets/jsonOutput.3bc124f632c7cdbc.js'
-        });
+        }, null, 2);
 
         test.equal(outputMap, expectedMap, 'testing output of json file');
 
