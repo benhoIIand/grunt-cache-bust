@@ -1,6 +1,9 @@
 Change Log
 ==========
 
+**v1.7.0**
+* Add urlPrefixes option (#234)
+
 **v1.6.0**
 * Log out busted files in verbose mode only (#228)
 * Updating documentation to show the loadNpmTasks business (#231)

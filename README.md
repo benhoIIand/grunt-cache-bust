@@ -16,7 +16,7 @@
 * [Change Log](#change-log)
 
 ## PLEASE READ
-This plugin recently upgraded to `v1.0.0`!! There was a big change in the way the plugin works. You can read me about the changes in issue [#147](https://github.com/hollandben/grunt-cache-bust/issues/147). Please let me know if you have any questions on the changes via [Gitter](https://gitter.im/hollandben/grunt-cache-bust) or [Twitter](https://twitter.com/hollandben)
+This plugin recently upgraded to `v1.0.0`!! There was a big change in the way the plugin works. You can read me about the changes in issue [#147](https://github.com/hollandben/grunt-cache-bust/issues/147).
 
 ## Getting Started
 _If you haven't used [grunt][] before, be sure to check out the [Getting Started][] guide._
