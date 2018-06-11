@@ -18,7 +18,8 @@ var DEFAULT_OPTIONS = {
     separator: '.',
     queryString: false,
     outputDir: '',
-    clearOutputDir: false
+    clearOutputDir: false,
+    urlPrefixes: []
 };
 
 module.exports = function(grunt) {
@@ -61,6 +62,7 @@ module.exports = function(grunt) {
         // "{file}"
         // '{file}'
         // ({file}) (css url(...))
+        // /{file} (css url(...))
         // ={file}> (unquoted html attribute)
         // ={file}\s (unquoted html attribute fonllowed by more attributes)
         // "{file}\s (first entry of img srcset)
@@ -73,8 +75,19 @@ module.exports = function(grunt) {
             ['=', '>'],
             ['=', ' '],
             ['"', ' '],
-            [' ', ' '],
+            [' ', ' ']
         ];
+
+        // add urlPrefixes to enclosing scenarios
+        if (opts.urlPrefixes && Array.isArray(opts.urlPrefixes) && opts.urlPrefixes.length > 0) {
+            opts.urlPrefixes.forEach(function(urlPrefix) {
+                replaceEnclosedBy.push([urlPrefix, '"']);
+                replaceEnclosedBy.push([urlPrefix, "'"]);
+                replaceEnclosedBy.push([urlPrefix, ")"]);
+                replaceEnclosedBy.push([urlPrefix, ">"]);
+                replaceEnclosedBy.push([urlPrefix, " "]);
+            });
+        }
         // don't replace references that are already cache busted
         if (!isUsingQueryString(opts)) {
             replaceEnclosedBy = replaceEnclosedBy.concat(replaceEnclosedBy.map(function(reb) {
@@ -122,7 +135,6 @@ module.exports = function(grunt) {
                         replace.push([dir + originalFilename, dir + hashedFilename]);
                     }
                 }
-
                 _.each(replace, function(r) {
                     var original = r[0];
                     var hashed = r[1];

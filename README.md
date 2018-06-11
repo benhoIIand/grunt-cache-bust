@@ -91,7 +91,8 @@ defaults. Extra details are below.
     separator: '.',                               // The separator between the original file name and hash
     queryString: false                            // Use a query string for cache busting instead of rewriting files
     outputDir: ''                                 // Directory where all hashed assets will be copied. Is relative to baseDir
-    clearOutputDir: false                         // Clear output directory. If outputDir was not set clear will not work
+    clearOutputDir: false,                        // Clear output directory. If outputDir was not set clear will not work
+    urlPrefixes: ['http://owncdn.test.com/path']  // Array of Url + Path of own CDNs where hashed files are uploaded to. 
 }
 ```
 
@@ -125,6 +126,11 @@ assets: {
     }]
 }   
 ```
+#### options.urlPrefixes
+Type: `Array of Strings`  
+Default value: ``
+
+When set, `cachebust` will try to find the assets with this prefixes - useful for e.g. asset-files uploaded to a separate cdn.
 
 #### options.createCopies
 Type: `Boolean`  
