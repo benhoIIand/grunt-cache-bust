@@ -75,7 +75,7 @@ module.exports = function(grunt) {
             ['=', '>'],
             ['=', ' '],
             ['"', ' '],
-            [' ', ' '],
+            [' ', ' ']
         ];
 
         // add urlPrefixes to enclosing scenarios
