@@ -109,7 +109,7 @@ module.exports = function(grunt) {
 
             if (relativeFileDir !== '') {
                 if(process.platform === "win32"){
-                    fileDepth = relativeFileDir.split('/').length;
+                    fileDepth = relativeFileDir.split('\\').length;
                 }else{
                     fileDepth = relativeFileDir.split('/').length;
                 }
