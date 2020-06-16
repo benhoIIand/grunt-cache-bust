@@ -136,7 +136,7 @@ When set, `cachebust` will try to find the assets with this prefixes, useful for
 
 For example:
 
-```json
+```js
 cacheBust: {
   options: {
     urlPrefixes: ['/dashboard/app/app.min.js']
