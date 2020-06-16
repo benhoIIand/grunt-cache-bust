@@ -130,7 +130,31 @@ assets: {
 Type: `Array of Strings`  
 Default value: ``
 
-When set, `cachebust` will try to find the assets with this prefixes - useful for e.g. asset-files uploaded to a separate cdn.
+When set, `cachebust` will try to find the assets with this prefixes, useful for:
+- Asset files uploaded to a separate cdn
+- Asset files which are served out of a deeper path within your deployment
+
+For example:
+
+```json
+cacheBust: {
+  options: {
+    urlPrefixes: ['/dashboard/app/app.min.js']
+  }
+}
+```
+
+will convert:
+
+```html
+<script src="/dashboard/app/app.min.js"></script>   
+```
+
+into 
+
+```html
+<script src="/dashboard/app/app.min.bce0b589338ff97a.js"></script>   
+```
 
 #### options.createCopies
 Type: `Boolean`  
