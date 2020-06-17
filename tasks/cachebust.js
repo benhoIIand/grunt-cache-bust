@@ -122,7 +122,7 @@ module.exports = function(grunt) {
                 ];
                 // find relative paths for shared dirs
                 var originalDirParts = path.dirname(original).split('/');
-                for (var i = 1; i <= fileDepth; i++) {
+                for (var i = 0; i <= fileDepth; i++) {
                     var fileDir = originalDirParts.slice(0, i).join('/');
                     var baseDir = baseDirs.slice(0, i).join('/');
                     if (fileDir === baseDir) {
