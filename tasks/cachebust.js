@@ -97,7 +97,12 @@ module.exports = function(grunt) {
 
         // Go through each source file and replace them with busted file if available
         var map = opts.queryString ? {} : assetMap;
-        var files = getFilesToBeRenamed(this.files, map, opts.baseDir);
+
+        var files = [];
+        this.files.forEach(function (v) {
+            files = files.concat(getFilesToBeRenamed([v], map, opts.baseDir))
+        });
+
         files.forEach(replaceInFile);
         grunt.log.ok(files.length + ' file' + (files.length !== 1 ? 's ' : ' ') + 'busted.');
 
